@@ -32,5 +32,8 @@ This project is developed and tested on the following platform. Other platforms 
 
 Dependencies exist to common libraries and SDKs.
 
-- CUDA 8 SDK
-- google test `sudo apt-get install googletest # ubuntu`
+- CUDA 8 SDK  
+  https://developer.nvidia.com/cuda-downloads
+- https://github.com/google/googletest  
+  `sudo apt-get install googletest # ubuntu`  
+- GLUT might come later, others?
