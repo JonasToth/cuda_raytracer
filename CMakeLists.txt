@@ -20,9 +20,23 @@ find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
 # cuda
+find_package(CUDA REQUIRED)
 
 # ----------------------------------------------------------------------------------------
 #                         ===== Compiler Configuration =====
+if(NOT UNIX)
+    message(FATAL_ERROR "Unix system required!")
+endif()
+
+add_definitions("--std=c++14")
+
+set(${CMAKE_CXX_FLAGS_RELEASE} "${CMAKE_CXX_FLAGS_RELEASE} -O3 -march=native")
+
+if(CMAKE_BUILD_TYPE MATCHES DEBUG)
+    set(${CMAKE_CXX_FLAGS} "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
+    set(${CMAKE_CXX_LINK_EXECUTABLE} "${CMAKE_CXX_LINK_EXECUTABLE} -fsanitize=address")
+endif(CMAKE_BUILD_TYPE MATCHES DEBUG)
+
 
 # ----------------------------------------------------------------------------------------
 #                              ===== Build targets =====
