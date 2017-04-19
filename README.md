@@ -27,3 +27,10 @@ This project is developed and tested on the following platform. Other platforms 
 - ubuntu 17.04
 - CUDA 8
 - clang-4 (/ gcc 5.4)
+
+## Dependencies
+
+Dependencies exist to common libraries and SDKs.
+
+- CUDA 8 SDK
+- google test `sudo apt-get install googletest # ubuntu`
