@@ -24,10 +24,6 @@ find_package(CUDA REQUIRED)
 
 # ----------------------------------------------------------------------------------------
 #                         ===== Compiler Configuration =====
-if(NOT UNIX)
-    message(FATAL_ERROR "Unix system required!")
-endif()
-
 add_definitions("--std=c++14")
 
 # optimize in release
@@ -49,6 +45,11 @@ target_link_libraries(test_obj_io.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 add_executable(test_ad_san.x test/test_ad_san.cpp)
 target_link_libraries(test_ad_san.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
+
+add_executable(test_cuda_build.x test/test_cuda_build.cu)
+target_link_libraries(test_cuda_build.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
+
+
 # ----------------------------------------------------------------------------------------
 #                               ===== Testing =====
 enable_testing()
@@ -59,3 +60,4 @@ add_test(test_ad_san test_ad_san.x)
 set_tests_properties(test_ad_san PROPERTIES 
                      PASS_REGULAR_EXPRESSION "AddressSanitizer: stack-buffer-overflow")
 
+add_test(test_cuda_build test_cuda_build.x)
