@@ -47,7 +47,15 @@ add_executable(raytracer.x src/main.cpp)
 add_executable(test_obj_io.x test/test_obj_io.cpp)
 target_link_libraries(test_obj_io.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
+add_executable(test_ad_san.x test/test_ad_san.cpp)
+target_link_libraries(test_ad_san.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 # ----------------------------------------------------------------------------------------
 #                               ===== Testing =====
 enable_testing()
+
 add_test(test_obj_io test_obj_io.x)
+
+add_test(test_ad_san test_ad_san.x)
+set_tests_properties(test_ad_san PROPERTIES 
+                     PASS_REGULAR_EXPRESSION "AddressSanitizer: stack-buffer-overflow")
+
