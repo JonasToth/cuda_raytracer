@@ -26,7 +26,7 @@ This project is developed and tested on the following platform. Other platforms 
 - GTX 1070
 - ubuntu 17.04
 - CUDA 8
-- clang-4 (/ gcc 5.4)
+- clang 4 and gcc 5.4
 
 ## Dependencies
 

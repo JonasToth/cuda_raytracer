@@ -30,12 +30,12 @@ endif()
 
 add_definitions("--std=c++14")
 
+# optimize in release
 set(${CMAKE_CXX_FLAGS_RELEASE} "${CMAKE_CXX_FLAGS_RELEASE} -O3 -march=native")
 
-if(CMAKE_BUILD_TYPE MATCHES DEBUG)
-    set(${CMAKE_CXX_FLAGS} "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
-    set(${CMAKE_CXX_LINK_EXECUTABLE} "${CMAKE_CXX_LINK_EXECUTABLE} -fsanitize=address")
-endif(CMAKE_BUILD_TYPE MATCHES DEBUG)
+# build debug with sanitizer
+set(${CMAKE_CXX_FLAGS_DEBUG} "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address -fno-omit-frame-pointer")
+set(${CMAKE_CXX_EXE_LINKER_FLAGS_DEBUG} "${CMAKE_CXX_EXE_LINKER_FLAGS_DEBUG} -fsanitize=address")
 
 
 # ----------------------------------------------------------------------------------------
