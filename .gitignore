@@ -37,3 +37,6 @@
 *.cubin
 *.fatbin
 examples/
+build_opt
+build
+build_ci
