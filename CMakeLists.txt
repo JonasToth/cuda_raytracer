@@ -33,7 +33,7 @@ set(${CMAKE_CXX_FLAGS_RELEASE} "${CMAKE_CXX_FLAGS_RELEASE} -O3 -march=native")
 set(${CMAKE_CXX_FLAGS_DEBUG} "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address -fno-omit-frame-pointer")
 set(${CMAKE_CXX_EXE_LINKER_FLAGS_DEBUG} "${CMAKE_CXX_EXE_LINKER_FLAGS_DEBUG} -fsanitize=address")
 
-file(GLOB cu *.cu)
+file(GLOB cudafiles *.cu)
 
 # ----------------------------------------------------------------------------------------
 #                              ===== Build targets =====
@@ -47,8 +47,8 @@ target_link_libraries(test_obj_io.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 add_executable(test_ad_san.x test/test_ad_san.cpp)
 target_link_libraries(test_ad_san.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
-cuda_add_executable(test_cuda_build.x test/test_cuda_build.cpp ${cu})
-target_link_libraries(test_cuda_build.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
+cuda_add_executable(test_build_cuda.x test/test_build_cuda.cpp ${cudafiles})
+target_link_libraries(test_build_cuda.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 
 # ----------------------------------------------------------------------------------------
@@ -61,4 +61,4 @@ add_test(test_ad_san test_ad_san.x)
 set_tests_properties(test_ad_san PROPERTIES 
                      PASS_REGULAR_EXPRESSION "AddressSanitizer: stack-buffer-overflow")
 
-add_test(test_cuda_build test_cuda_build.x)
+add_test(test_build_cuda test_build_cuda.x)
