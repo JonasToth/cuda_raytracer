@@ -35,5 +35,6 @@ Dependencies exist to common libraries and SDKs.
 - CUDA 8 SDK  
   https://developer.nvidia.com/cuda-downloads
 - https://github.com/google/googletest  
-  `sudo apt-get install googletest # ubuntu`  
+  `sudo apt-get install libgtest-dev googletest # ubuntu`  
+  https://askubuntu.com/questions/145887/why-no-library-files-installed-for-google-test  
 - GLUT might come later, others?
