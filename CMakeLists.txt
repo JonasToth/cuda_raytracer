@@ -24,7 +24,7 @@ find_package(CUDA REQUIRED)
 
 # ----------------------------------------------------------------------------------------
 #                         ===== Compiler Configuration =====
-add_definitions("--std=c++14")
+add_definitions("--std=c++14 -Wall -Wextra")
 
 # optimize in release
 set(${CMAKE_CXX_FLAGS_RELEASE} "${CMAKE_CXX_FLAGS_RELEASE} -O3 -march=native")
@@ -34,6 +34,14 @@ set(${CMAKE_CXX_FLAGS_DEBUG} "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address -fno-o
 set(${CMAKE_CXX_EXE_LINKER_FLAGS_DEBUG} "${CMAKE_CXX_EXE_LINKER_FLAGS_DEBUG} -fsanitize=address")
 
 file(GLOB cudafiles *.cu)
+
+
+if(${COMPILER_ID} MATCHES "GNU") # gcc specific flags
+
+elseif(${COMPILER_ID} MATCHES "clang") # clang specific flags
+
+endif()
+
 
 # ----------------------------------------------------------------------------------------
 #                              ===== Build targets =====
