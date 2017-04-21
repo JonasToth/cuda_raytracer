@@ -25,7 +25,7 @@ find_package(CUDA REQUIRED)
 #                         ===== Compiler Configuration =====
 # optimize in release
 
-add_definitions("--std=c++14 -Wall -Wextra")
+add_definitions("--std=c++14 -Wall -Wextra -Werror")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native")
 
 # build debug with sanitizer
