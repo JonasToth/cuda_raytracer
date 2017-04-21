@@ -1,6 +1,3 @@
-/** Main Source for executable. */
-
-
 #include <iostream>
 
 int main(int  /*argc*/, char**  /*argv*/) 
