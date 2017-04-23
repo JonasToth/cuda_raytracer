@@ -1,7 +1,8 @@
-// Testcase to load an object file
-
 #include "gtest/gtest.h"
 
+/** @file test/test_obj_io.cpp
+ * Test if .obj - Files for geometry are correctly loaded and saved.
+ */
 
 TEST(ci_test, basic_build) {
     ASSERT_EQ(0,0) << "Basic Testcase succeeds";

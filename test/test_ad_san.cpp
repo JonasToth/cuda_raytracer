@@ -1,8 +1,9 @@
-// Testcase to load an object file
-
 #include "gtest/gtest.h"
 #include <iostream>
 
+/** @file test/test_ad_san.cpp
+ * Test if the Address Sanitizer works and find bugs. Tests Static Analysis silencing as well.
+ */
 
 #if (defined (__GNUC__) && !defined(__clang__))
 #pragma GCC diagnostic push

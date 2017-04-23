@@ -2,6 +2,9 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 
+/** @file test/test_build_cuda.cpp
+ * Test if cuda is found on the system and is useable on the machine.
+ */
 
 TEST(CUDA, init) {
     int nDevices;
