@@ -4,8 +4,10 @@
 #include <iostream>
 
 
+#if defined (__GCC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#endif
 TEST(ad_san, test_out_of_bounds) {
     char some_array[10];
     some_array[9] = 0;
@@ -19,7 +21,9 @@ TEST(ad_san, test_out_of_bounds) {
 #pragma clang diagnostic pop
 #endif
 }
+#if defined (__GCC__)
 #pragma GCC diagnostic pop
+#endif
 
 int main(int argc, char** argv)
 {
