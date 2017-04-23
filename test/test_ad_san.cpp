@@ -20,6 +20,9 @@ TEST(ad_san, test_out_of_bounds) {
 #if defined (__clang__)
 #pragma clang diagnostic pop
 #endif
+
+    int* ptr = nullptr;
+    int i = *ptr;
 }
 #if (defined (__GNUC__) && !defined(__clang__))
 #pragma GCC diagnostic pop
