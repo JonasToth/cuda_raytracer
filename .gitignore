@@ -44,3 +44,4 @@ build_debug
 build_clang
 compile_commands.json
 build_*
+doc/
