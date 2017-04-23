@@ -5,7 +5,14 @@
 
 TEST(ad_san, test_out_of_bounds) {
     char some_array[10];
+#if defined (__GCC__)
+#   pragma GCC diagnostic push
+#   pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#endif
     some_array[9] = 0;
+#if defined (__GCC__)
+#   pragma GCC diagnostic pop
+#endif
 
 #if defined (__clang__)
 #   pragma clang diagnostic push
