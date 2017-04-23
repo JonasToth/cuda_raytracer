@@ -1,5 +1,5 @@
 ---
-Checks:          'clang-diagnostic-*,*'
+Checks:          'clang-diagnostic-*,*,-hicpp-*'
 WarningsAsErrors: ''
 HeaderFilterRegex: ''
 AnalyzeTemporaryDtors: false
@@ -26,5 +26,23 @@ CheckOptions:
     value:           llvm
   - key:             modernize-use-nullptr.NullMacros
     value:           'NULL'
+  - key:             readability-identifier-naming.ClassCase
+    value:           lower_case
+  - key:             readability-identifier-naming.EnumCase
+    value:           CamelCase
+  - key:             readability-identifier-naming.FunctionCase
+    value:           camelBack
+  - key:             readability-identifier-naming.MemberCase
+    value:           camelBack
+  - key:             readability-identifier-naming.PrivateMemberPrefix
+    value:           '__'
+  - key:             readability-identifier-naming.PrivateMethodPrefix
+    value:           '__'
+  - key:             readability-identifier-naming.ProtectedMemberPrefix
+    value:           '__'
+  - key:             readability-identifier-naming.ProtectedMethodPrefix
+    value:           '__'
+  - key:             readability-identifier-naming.VariableCase
+    value:           CamelCase
 ...
 
