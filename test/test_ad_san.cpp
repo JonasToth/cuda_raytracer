@@ -16,13 +16,11 @@ TEST(ad_san, test_out_of_bounds) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warray-bounds"
 #endif
-    some_array[15] = 'c';
+    // cppcheck-suppress arrayIndexOutOfBounds
+    some_array[15] = 'c'; // NOLINT
 #if defined (__clang__)
 #pragma clang diagnostic pop
 #endif
-
-    int* ptr = nullptr;
-    int i = *ptr;
 }
 #if (defined (__GNUC__) && !defined(__clang__))
 #pragma GCC diagnostic pop
