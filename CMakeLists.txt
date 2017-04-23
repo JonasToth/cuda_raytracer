@@ -20,7 +20,7 @@ find_package(CUDA REQUIRED)
 
 # ----------------------------------------------------------------------------------------
 #                         ===== Compiler Configuration =====
-add_definitions("--std=c++14 -Wall -Wextra -Werror")
+add_definitions("--std=c++14 -Wall -pedantic")
 
 # optimize in release
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native")
@@ -30,7 +30,9 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address -fno-omit
 set(CMAKE_CXX_EXE_LINKER_FLAGS_DEBUG "${CMAKE_CXX_EXE_LINKER_FLAGS_DEBUG} -fsanitize=address")
 
 if(${COMPILER_ID} MATCHES "GNU") # gcc specific flags
+    add_definitions("-Wextra -Wpedantic")
 elseif(${COMPILER_ID} MATCHES "clang") # clang specific flags
+    add_definitions("-Weverything")
 endif()
 
 # ----------------------------------------------------------------------------------------
