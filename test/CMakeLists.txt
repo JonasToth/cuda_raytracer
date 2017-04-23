@@ -26,3 +26,5 @@ set_tests_properties(test_ad_san PROPERTIES
                      PASS_REGULAR_EXPRESSION "AddressSanitizer: stack-buffer-overflow")
 
 add_test(test_build_cuda test_build_cuda.x)
+set_tests_properties(test_build_cuda PROPERTIES
+                     PASS_REGULAR_EXPRESSION "LeakSanitizer: detected memory leaks")
