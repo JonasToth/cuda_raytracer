@@ -10,15 +10,15 @@
 #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 #endif
 TEST(ad_san, test_out_of_bounds) {
-    char some_array[10];
-    some_array[9] = 0;
+    char SomeArray[10];
+    SomeArray[9] = 0;
 
 #if defined (__clang__)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warray-bounds"
 #endif
     // cppcheck-suppress arrayIndexOutOfBounds
-    some_array[15] = 'c'; // NOLINT
+    SomeArray[15] = 'c'; // NOLINT
 #if defined (__clang__)
 #pragma clang diagnostic pop
 #endif

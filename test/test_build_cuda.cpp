@@ -7,9 +7,9 @@
  */
 
 TEST(CUDA, init) {
-    int nDevices;
-    cudaGetDeviceCount(&nDevices);
-    ASSERT_GT(nDevices, 0) << "No Cuda devices were found";
+    int NbrDevices;
+    cudaGetDeviceCount(&NbrDevices);
+    ASSERT_GT(NbrDevices, 0) << "No Cuda devices were found";
 }
 
 int main(int argc, char** argv)
