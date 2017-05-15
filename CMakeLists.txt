@@ -40,7 +40,7 @@ endif()
 file(GLOB cudafiles *.cu)
 
 # executable raytracer
-add_executable(raytracer.x src/main.cpp)
+cuda_add_executable(raytracer.x src/main.cpp)
 
 if(${CMAKE_BUILD_TYPE} MATCHES "DEBUG")
     add_subdirectory(test)
