@@ -33,4 +33,6 @@ add_test(test_build_cuda test_build_cuda.x)
 #PROPERTIES
 #PASS_REGULAR_EXPRESSION "LeakSanitizer: detected memory leaks")
 
+# probably not a term with X enabled in the buildbot, but manually running it works
 add_test(test_glfw test_glfw.x)
+set_tests_properties(test_glfw PROPERTIES PASS_REGULAR_EXPESSION "Test failed")
