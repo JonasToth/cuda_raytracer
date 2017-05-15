@@ -2,7 +2,8 @@
 enable_testing()
 
 # google test as testing framework must be available
-find_package(GTest REQUIRED) include_directories(${GTEST_INCLUDE_DIRS}) 
+find_package(GTest REQUIRED) 
+include_directories(${GTEST_INCLUDE_DIRS}) 
 # unit tests
 add_executable(test_obj_io.x test_obj_io.cpp)
 target_link_libraries(test_obj_io.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
