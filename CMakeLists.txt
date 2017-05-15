@@ -21,7 +21,7 @@ find_package(CUDA REQUIRED)
 # ----------------------------------------------------------------------------------------
 #                         ===== Compiler Configuration =====
 add_definitions("--std=c++11 -Wall -pedantic")
-set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} --std=c++11 -O3 -gencode arch=compute_50,code=sm_50")
+set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} --std=c++11 -O3 -Wno-deprecated-gpu-targets")
 
 # optimize in release
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native")
