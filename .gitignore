@@ -45,3 +45,4 @@ build_clang
 compile_commands.json
 build_*
 doc/
+*.swp

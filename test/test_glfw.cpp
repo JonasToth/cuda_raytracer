@@ -1,37 +1,27 @@
+#include "gtest/gtest.h"
+#include <gsl/gsl>
 #include <GLFW/glfw3.h>
+
+TEST(GLFW, init) {
+    auto init_val = glfwInit();
+    ASSERT_NE(init_val, 0) << "Could not initialize GLFW";
+    glfwTerminate();
+}
+
+TEST(GLFW, window) {
+    auto init_val = glfwInit();
+    ASSERT_NE(init_val, 0) << "Could not initialize GLFW";
+
+    gsl::owner<GLFWwindow*> window = glfwCreateWindow(640, 480, "Test", nullptr, nullptr);
+    ASSERT_NE(window, nullptr) << "Window not created";
+    
+    // cleanup
+    glfwDestroyWindow(window);
+    glfwTerminate();
+}
 
 int main(int argc, char** argv)
 {
-    GLFWwindow* window;
-
-    /* Initialize the library */
-    if (!glfwInit())
-        return -1;
-
-    /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
-    if (!window)
-    {
-        glfwTerminate();
-        return -1;
-    }
-
-    /* Make the window's context current */
-    glfwMakeContextCurrent(window);
-
-    /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
-    {
-        /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
-
-        /* Poll for and process events */
-        glfwPollEvents();
-    }
-
-    glfwTerminate();
-    return 0;
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
