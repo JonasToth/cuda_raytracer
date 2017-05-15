@@ -17,6 +17,10 @@ include(safeguards)
 
 # cuda
 find_package(CUDA REQUIRED)
+# opengl and libraries to make windows and stuff
+find_package(glfw3 3.2 REQUIRED) # http://www.glfw.org/docs/latest/build_guide.html#build_link_cmake_package
+find_package(OpenGL REQUIRED)
+
 
 # ----------------------------------------------------------------------------------------
 #                         ===== Compiler Configuration =====

@@ -9,6 +9,9 @@ include_directories(${GTEST_INCLUDE_DIRS})
 add_executable(test_obj_io.x test_obj_io.cpp)
 target_link_libraries(test_obj_io.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
+add_executable(test_glfw.x test_glfw.cpp)
+target_link_libraries(test_glfw.x ${GTEST_MAIN} ${GTEST_LIBRARIES} glfw ${OPENGL_gl_LIBRARY} pthread)
+
 #add_executable(test_ad_san.x test_ad_san.cpp)
 #target_link_libraries(test_ad_san.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
@@ -29,3 +32,5 @@ add_test(test_build_cuda test_build_cuda.x)
 #set_tests_properties(test_build_cuda)
 #PROPERTIES
 #PASS_REGULAR_EXPRESSION "LeakSanitizer: detected memory leaks")
+
+add_test(test_glfw test_glfw.x)
