@@ -21,7 +21,7 @@ TEST(CUDA, init) {
 
 // copied from 
 TEST(CUDA, thrust_call) {
-    constexpr std::size_t VectorSize = 10000000;
+    constexpr std::size_t VectorSize = 10000000u;
 
     // generate many random numbers
     thrust::host_vector<int> HVec(VectorSize);
