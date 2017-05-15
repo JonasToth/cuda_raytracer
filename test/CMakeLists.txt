@@ -2,9 +2,7 @@
 enable_testing()
 
 # google test as testing framework must be available
-find_package(GTest REQUIRED)
-include_directories(${GTEST_INCLUDE_DIRS})
-
+find_package(GTest REQUIRED) include_directories(${GTEST_INCLUDE_DIRS}) 
 # unit tests
 add_executable(test_obj_io.x test_obj_io.cpp)
 target_link_libraries(test_obj_io.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
@@ -35,4 +33,4 @@ add_test(test_build_cuda test_build_cuda.x)
 
 # probably not a term with X enabled in the buildbot, but manually running it works
 add_test(test_glfw test_glfw.x)
-set_tests_properties(test_glfw PROPERTIES PASS_REGULAR_EXPESSION "Test failed")
+set_tests_properties(test_glfw PROPERTIES PASS_REGULAR_EXPESSION "FAILED")
