@@ -20,14 +20,15 @@ find_package(CUDA REQUIRED)
 
 # ----------------------------------------------------------------------------------------
 #                         ===== Compiler Configuration =====
-add_definitions("--std=c++14 -Wall -pedantic")
+add_definitions("--std=c++11 -Wall -pedantic")
+set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} --std=c++11 -O3")# -gencode arch=compute_60,code=sm_60")
 
 # optimize in release
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native")
 
 # build debug with sanitizer
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address -fno-omit-frame-pointer")
-set(CMAKE_CXX_EXE_LINKER_FLAGS_DEBUG "${CMAKE_CXX_EXE_LINKER_FLAGS_DEBUG} -fsanitize=address")
+#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address -fno-omit-frame-pointer")
+#set(CMAKE_CXX_EXE_LINKER_FLAGS_DEBUG "${CMAKE_CXX_EXE_LINKER_FLAGS_DEBUG} -fsanitize=address")
 
 if(${COMPILER_ID} MATCHES "GNU") # gcc specific flags
     add_definitions("-Wextra -Wpedantic")

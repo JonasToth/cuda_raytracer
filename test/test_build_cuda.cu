@@ -19,21 +19,26 @@ TEST(CUDA, init) {
     ASSERT_GT(NbrDevices, 0) << "No Cuda devices were found";
 }
 
+// copied from 
 TEST(CUDA, thrust_call) {
-    // generate 32M random numbers serially
-    thrust::host_vector<int> h_vec(32 << 20);
-    std::generate(h_vec.begin(), h_vec.end(), rand);
+    constexpr std::size_t VectorSize = 10000000;
+
+    // generate many random numbers
+    thrust::host_vector<int> HVec(VectorSize);
+    ASSERT_EQ(HVec.size(), VectorSize) << "Host vector not created with correct size";
+    std::generate(HVec.begin(), HVec.end(), rand);
 
     // transfer data to the device
-    thrust::device_vector<int> d_vec = h_vec;
+    thrust::device_vector<int> DVec = HVec;
+    ASSERT_EQ(DVec.size(), VectorSize) << "Device Vector not created with correct size";
 
-    // sort data on the device (846M keys per second on GeForce GTX 480)
-    thrust::sort(d_vec.begin(), d_vec.end());
+    // sort data on the device 
+    thrust::sort(DVec.begin(), DVec.end());
+    ASSERT_TRUE(thrust::is_sorted(DVec.begin(), DVec.end())) << "Sorted on GPU";
 
     // transfer data back to host
-    thrust::copy(d_vec.begin(), d_vec.end(), h_vec.begin());
-
-    ASSERT_TRUE(std::is_sorted(h_vec.begin(), h_vec.end())) << "Vector is not sorted";
+    thrust::copy(DVec.begin(), DVec.end(), HVec.begin());
+    ASSERT_TRUE(std::is_sorted(HVec.begin(), HVec.end())) << "Vector is not sorted";
 }
 
 int main(int argc, char** argv)
