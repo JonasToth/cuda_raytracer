@@ -38,6 +38,40 @@ TEST(vector, products)
     ASSERT_EQ(e3.z, 1);
 }
 
+TEST(vector, norm)
+{
+    coord v1{10, 0, 0}, v2{0, 10, 0}, v3{0, 0, 10}, v4{4, -2, 10};
+
+    ASSERT_EQ(norm(v1), 10);
+    ASSERT_EQ(norm(v2), 10);
+    ASSERT_EQ(norm(v3), 10);
+    ASSERT_NEAR(norm(v4), 10.9545, 0.001);
+
+    ASSERT_FLOAT_EQ(normalize(v1).x, 1);
+    ASSERT_FLOAT_EQ(normalize(v2).y, 1);
+    ASSERT_FLOAT_EQ(normalize(v3).z, 1);
+}
+
+TEST(vector, math_operators)
+{
+    coord v1{15, 10, -4}, v2{-5, 12, 10};
+
+    auto sum = v1 + v2;
+    ASSERT_EQ(sum.x, 10);
+    ASSERT_EQ(sum.y, 22);
+    ASSERT_EQ(sum.z, 6);
+
+    auto difference = v1 - v2;
+    ASSERT_EQ(difference.x, 20);
+    ASSERT_EQ(difference.y, -2);
+    ASSERT_EQ(difference.z, -14);
+
+    auto scaled = 10. * v1;
+    ASSERT_EQ(scaled.x, 150);
+    ASSERT_EQ(scaled.y, 100);
+    ASSERT_EQ(scaled.z, -40);
+}
+
 int main(int argc, char** argv)
 {
     testing::InitGoogleTest(&argc, argv);

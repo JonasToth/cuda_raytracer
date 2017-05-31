@@ -21,6 +21,8 @@ public:
     triangle(triangle&&) = default;
     triangle& operator=(triangle&&) = default;
 
+
+
 private:
     std::array<coord, 3> points;
 };
