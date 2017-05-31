@@ -25,6 +25,7 @@ find_package(OpenGL REQUIRED)
 # ----------------------------------------------------------------------------------------
 #                         ===== Compiler Configuration =====
 add_definitions("--std=c++11 -Wall -pedantic")
+include_directories(src)
 set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} --std=c++11 -O3 -Wno-deprecated-gpu-targets")
 
 # optimize in release
