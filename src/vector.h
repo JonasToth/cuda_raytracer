@@ -17,7 +17,6 @@ struct coord
     coord(coord&&) = default;
     coord& operator=(coord&&) = default;
 
-
     float x = 0;
     float y = 0;
     float z = 0;
@@ -81,5 +80,19 @@ coord operator*(float s, const coord& rhs) noexcept {
     };
 }
 
+
+/// Compare for equality of two coordinates, with epsilon
+bool operator==(const coord& c1, const coord& c2) noexcept
+{
+    return norm(c2 - c1) < 0.00001;
+}
+
+bool operator!=(const coord& c1, const coord& c2) noexcept { return !(c1 == c2); }
+
+
+/// Three points can span an area, if they are all different
+bool spans_area(const coord& p0, const coord& p1, const coord& p2) noexcept {
+    return (p0 != p1) && (p0 != p2) && (p1 != p2);
+}
 
 #endif /* end of include guard: VECTOR_H_SWTQE942 */

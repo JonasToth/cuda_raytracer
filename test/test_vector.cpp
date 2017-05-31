@@ -72,6 +72,15 @@ TEST(vector, math_operators)
     ASSERT_EQ(scaled.z, -40);
 }
 
+TEST(vector, utility)
+{
+    const coord v1{0, 0, 0}, v2{0, 0, 0}, v3{0, 0, 0};
+    ASSERT_EQ(spans_area(v1, v2, v3), false);
+
+    const coord v4{1, 0, 0}, v5{0, 1, 0}, v6{0, 0, 1};
+    ASSERT_EQ(spans_area(v4, v5, v6), true);
+}
+
 int main(int argc, char** argv)
 {
     testing::InitGoogleTest(&argc, argv);
