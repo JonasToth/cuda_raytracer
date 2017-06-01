@@ -26,7 +26,7 @@ TEST(triangle_test, construction)
 TEST(triangle_test, validity)
 {
     const coord P0{0, 0, 0}, P1{0, 0, 0}, P2{0, 0, 0};
-    ASSERT_THROW(triangle(P0, P1, P2), std::invalid_argument);
+    ASSERT(triangle(P0, P1, P2).isValid(), false);
 }
 
 

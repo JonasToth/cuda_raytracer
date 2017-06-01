@@ -2,6 +2,7 @@
 #define RAY_H_COAY6AFS
 
 #include <utility>
+#include <thrust/pair.h>
 
 #include "macros.h"
 #include "triangle.h"
@@ -20,7 +21,7 @@ struct intersect {
 };
 
 struct ray {
-    std::pair<bool, intersect> intersects(const triangle& tri) const noexcept {
+    LIB::pair<bool, intersect> intersects(const triangle& tri) const noexcept {
         const auto t_normal = tri.normal();
 
         // plane equation: Ax + By + Cz + D = 0, compute D
@@ -31,7 +32,7 @@ struct ray {
 
         // rays are parallel, so no intersection
         if(std::abs(divisor) < 0.0001)
-            return std::make_pair(false, intersect{});
+            return LIB::make_pair(false, intersect{});
         
         const float t = -(dot(t_normal, origin) + D) / divisor;
         const coord hit = origin + t * direction;
@@ -39,9 +40,9 @@ struct ray {
         const coord hit_normal(hit);
 
         if(t > 0.f)
-            return std::make_pair(true, intersect{t, hit, hit_normal});
+            return LIB::make_pair(true, intersect{t, hit, hit_normal});
         else
-            return std::make_pair(false, intersect{t, hit, hit_normal});
+            return LIB::make_pair(false, intersect{t, hit, hit_normal});
     }
 
     coord origin;

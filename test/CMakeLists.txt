@@ -11,10 +11,19 @@ target_link_libraries(test_obj_io.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 add_executable(test_vector.x test_vector.cpp)
 target_link_libraries(test_vector.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
+cuda_add_executable(test_cuda_vector.x test_cuda_vector.cu)
+target_link_libraries(test_vector.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
+
 add_executable(test_triangle.x test_triangle.cpp)
 target_link_libraries(test_triangle.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
+cuda_add_executable(test_cuda_triangle.x test_cuda_triangle.cu)
+target_link_libraries(test_triangle.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
+
 add_executable(test_ray.x test_ray.cpp)
+target_link_libraries(test_ray.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
+
+cuda_add_executable(test_cuda_ray.x test_cuda_ray.cu)
 target_link_libraries(test_ray.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 add_executable(test_glfw.x test_glfw.cpp)
