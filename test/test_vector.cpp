@@ -4,81 +4,81 @@
 TEST(vector, construction)
 {
     // default
-    coord c1;
-    ASSERT_EQ(c1.x, 0.);
-    ASSERT_EQ(c1.y, 0.);
-    ASSERT_EQ(c1.z, 0.);
-    ASSERT_EQ(c1.w, 1.);
+    coord C1;
+    ASSERT_EQ(C1.x, 0.);
+    ASSERT_EQ(C1.y, 0.);
+    ASSERT_EQ(C1.z, 0.);
+    ASSERT_EQ(C1.w, 1.);
 
-    coord c2{1., 2., 3.};
-    ASSERT_EQ(c2.x, 1.);
-    ASSERT_EQ(c2.y, 2.);
-    ASSERT_EQ(c2.z, 3.);
-    ASSERT_EQ(c2.w, 1.);
+    coord C2{1., 2., 3.};
+    ASSERT_EQ(C2.x, 1.);
+    ASSERT_EQ(C2.y, 2.);
+    ASSERT_EQ(C2.z, 3.);
+    ASSERT_EQ(C2.w, 1.);
 }
 
 TEST(vector, products)
 {
-    coord v1{1, 0, 0}, v2{0,1,0}, v3{0,0,1};
+    coord V1{1, 0, 0}, V2{0,1,0}, V3{0,0,1};
 
     // DOT Product will be zero if vectors are perpendicular
-    ASSERT_EQ(dot(v1,v2), 0);
-    ASSERT_EQ(dot(v2,v3), 0);
-    ASSERT_EQ(dot(v1,v3), 0);
+    ASSERT_EQ(dot(V1,V2), 0);
+    ASSERT_EQ(dot(V2,V3), 0);
+    ASSERT_EQ(dot(V1,V3), 0);
 
     // Basic check if the result is sane
-    ASSERT_EQ(dot(v1,v1), 1);
-    ASSERT_EQ(dot(v2,v2), 1);
-    ASSERT_EQ(dot(v3,v3), 1);
+    ASSERT_EQ(dot(V1,V1), 1);
+    ASSERT_EQ(dot(V2,V2), 1);
+    ASSERT_EQ(dot(V3,V3), 1);
 
     // Crossproduct results in perpendicular vector
-    auto e3 = cross(v1,v2);
-    ASSERT_EQ(e3.x, 0);
-    ASSERT_EQ(e3.y, 0);
-    ASSERT_EQ(e3.z, 1);
+    auto E3 = cross(V1,V2);
+    ASSERT_EQ(E3.x, 0);
+    ASSERT_EQ(E3.y, 0);
+    ASSERT_EQ(E3.z, 1);
 }
 
 TEST(vector, norm)
 {
-    coord v1{10, 0, 0}, v2{0, 10, 0}, v3{0, 0, 10}, v4{4, -2, 10};
+    coord V1{10, 0, 0}, V2{0, 10, 0}, V3{0, 0, 10}, V4{4, -2, 10};
 
-    ASSERT_EQ(norm(v1), 10);
-    ASSERT_EQ(norm(v2), 10);
-    ASSERT_EQ(norm(v3), 10);
-    ASSERT_NEAR(norm(v4), 10.9545, 0.001);
+    ASSERT_EQ(norm(V1), 10);
+    ASSERT_EQ(norm(V2), 10);
+    ASSERT_EQ(norm(V3), 10);
+    ASSERT_NEAR(norm(V4), 10.9545, 0.001);
 
-    ASSERT_FLOAT_EQ(normalize(v1).x, 1);
-    ASSERT_FLOAT_EQ(normalize(v2).y, 1);
-    ASSERT_FLOAT_EQ(normalize(v3).z, 1);
+    ASSERT_FLOAT_EQ(normalize(V1).x, 1);
+    ASSERT_FLOAT_EQ(normalize(V2).y, 1);
+    ASSERT_FLOAT_EQ(normalize(V3).z, 1);
 }
 
 TEST(vector, math_operators)
 {
-    coord v1{15, 10, -4}, v2{-5, 12, 10};
+    coord V1{15, 10, -4}, V2{-5, 12, 10};
 
-    auto sum = v1 + v2;
-    ASSERT_EQ(sum.x, 10);
-    ASSERT_EQ(sum.y, 22);
-    ASSERT_EQ(sum.z, 6);
+    auto Sum = V1 + V2;
+    ASSERT_EQ(Sum.x, 10);
+    ASSERT_EQ(Sum.y, 22);
+    ASSERT_EQ(Sum.z, 6);
 
-    auto difference = v1 - v2;
-    ASSERT_EQ(difference.x, 20);
-    ASSERT_EQ(difference.y, -2);
-    ASSERT_EQ(difference.z, -14);
+    auto Difference = V1 - V2;
+    ASSERT_EQ(Difference.x, 20);
+    ASSERT_EQ(Difference.y, -2);
+    ASSERT_EQ(Difference.z, -14);
 
-    auto scaled = 10. * v1;
-    ASSERT_EQ(scaled.x, 150);
-    ASSERT_EQ(scaled.y, 100);
-    ASSERT_EQ(scaled.z, -40);
+    auto Scaled = 10. * V1;
+    ASSERT_EQ(Scaled.x, 150);
+    ASSERT_EQ(Scaled.y, 100);
+    ASSERT_EQ(Scaled.z, -40);
 }
 
 TEST(vector, utility)
 {
-    const coord v1{0, 0, 0}, v2{0, 0, 0}, v3{0, 0, 0};
-    ASSERT_EQ(spans_area(v1, v2, v3), false);
+    const coord V1{0, 0, 0}, V2{0, 0, 0}, V3{0, 0, 0};
+    ASSERT_EQ(spans_area(V1, V2, V3), false);
 
-    const coord v4{1, 0, 0}, v5{0, 1, 0}, v6{0, 0, 1};
-    ASSERT_EQ(spans_area(v4, v5, v6), true);
+    const coord V4{1, 0, 0}, V5{0, 1, 0}, V6{0, 0, 1};
+    ASSERT_EQ(spans_area(V4, V5, V6), true);
 }
 
 int main(int argc, char** argv)
