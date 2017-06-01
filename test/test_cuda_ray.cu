@@ -25,6 +25,7 @@ TEST(ray, intersection)
     LIB::tie(DoesIntersect, I) = R.intersects(T);
 
     ASSERT_EQ(DoesIntersect, true);
+    ASSERT_EQ(I.depth, 10.);
 
     std::cout << I.depth << std::endl;
     std::cout << "(" << I.hit.x << "," << I.hit.y << "," << I.hit.z << ")" << std::endl;

@@ -22,6 +22,17 @@ struct intersect {
 };
 
 struct ray {
+    ray() = default;
+    ray(const coord& origin, const coord& direction) 
+        : origin{origin}
+        , direction{normalize(direction)} {}
+    ray(const ray&) = default;
+    ray(ray&&) = default;
+    ray& operator=(const ray&) = default;
+    ray& operator=(ray&&) = default;
+    ~ray() = default;
+
+
     LIB::pair<bool, intersect> intersects(const triangle& Tri) const noexcept {
         const auto TNormal = Tri.normal();
 
@@ -32,13 +43,16 @@ struct ray {
         // ray-tracing-rendering-a-triangle/ray-triangle-intersection-geometric-solution
 
         // ray equation: P = O + t * R, solve for t and P
-        float Divisor = -dot(TNormal, direction);
+        //std::cout << TNormal.x << " " << TNormal.y << " " << TNormal.z << std::endl;
+        //std::cout << direction.x << " " << direction.y << " " << direction.z 
+                  //<< std::endl << std::endl;
+        float Divisor = dot(TNormal, direction);
 
         // rays are parallel, so no intersection
-        if(Divisor < 0.0001 && Divisor > 0.0001)
+        if(Divisor < 0.0001 && Divisor > -0.0001)
             return LIB::make_pair(false, intersect{});
         
-        const float T = -(dot(TNormal, origin) + D) / Divisor;
+        const float T = (dot(TNormal, origin) + D) / Divisor;
         const coord Hit = origin + T * direction;
 
         // calculate the hit normal
