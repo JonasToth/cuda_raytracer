@@ -12,19 +12,19 @@ add_executable(test_vector.x test_vector.cpp)
 target_link_libraries(test_vector.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 cuda_add_executable(test_cuda_vector.x test_cuda_vector.cu)
-target_link_libraries(test_vector.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
+target_link_libraries(test_cuda_vector.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 add_executable(test_triangle.x test_triangle.cpp)
 target_link_libraries(test_triangle.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 cuda_add_executable(test_cuda_triangle.x test_cuda_triangle.cu)
-target_link_libraries(test_triangle.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
+target_link_libraries(test_cuda_triangle.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 add_executable(test_ray.x test_ray.cpp)
 target_link_libraries(test_ray.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 cuda_add_executable(test_cuda_ray.x test_cuda_ray.cu)
-target_link_libraries(test_ray.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
+target_link_libraries(test_cuda_ray.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 add_executable(test_glfw.x test_glfw.cpp)
 target_link_libraries(test_glfw.x ${GTEST_MAIN} ${GTEST_LIBRARIES} glfw ${OPENGL_gl_LIBRARY} pthread)
@@ -39,8 +39,11 @@ target_link_libraries(test_build_cuda.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread
 
 add_test(test_obj_io test_obj_io.x)
 add_test(test_build_cuda test_build_cuda.x)
+add_test(test_cuda_vector test_cuda_vector.x)
 add_test(test_vector test_vector.x)
+add_test(test_cuda_triangle test_cuda_triangle.x)
 add_test(test_triangle test_triangle.x)
+add_test(test_cuda_ray test_cuda_ray.x)
 add_test(test_ray test_ray.x)
 
 #set_tests_properties(test_build_cuda)

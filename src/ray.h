@@ -31,15 +31,15 @@ struct ray {
         float Divisor = dot(TNormal, direction);
 
         // rays are parallel, so no intersection
-        if(std::abs(divisor) < 0.0001)
+        if(Divisor < 0.0001 && Divisor > 0.0001)
             return LIB::make_pair(false, intersect{});
         
-        const float T = -(dot(TNormal, origin) + D) / divisor;
+        const float T = -(dot(TNormal, origin) + D) / Divisor;
         const coord Hit = origin + T * direction;
 
         const coord HitNormal(Hit);
 
-        if(t > 0.f)
+        if(T > 0.f)
             return LIB::make_pair(true, intersect{T, Hit, HitNormal});
         else
             return LIB::make_pair(false, intersect{T, Hit, HitNormal});

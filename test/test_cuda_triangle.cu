@@ -26,7 +26,7 @@ TEST(triangle_test, construction)
 TEST(triangle_test, validity)
 {
     const coord P0{0, 0, 0}, P1{0, 0, 0}, P2{0, 0, 0};
-    ASSERT(triangle(P0, P1, P2).isValid(), false);
+    ASSERT_EQ(triangle(P0, P1, P2).isValid(), false);
 }
 
 

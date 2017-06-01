@@ -1,4 +1,7 @@
 #include "gtest/gtest.h"
+#include <cuda.h>
+#include <cuda_runtime.h>
+
 #include "ray.h"
 
 TEST(cuda_ray, init)
