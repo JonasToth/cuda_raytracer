@@ -32,11 +32,11 @@ CUCALL float norm(const coord& v) noexcept { return std::sqrt(v.x*v.x + v.y*v.y 
 
 /// Normalize the vector.
 CUCALL coord normalize(const coord& v) noexcept {
-    auto n = norm(v);
+    auto N = norm(v);
     return coord{
-        v.x / n,
-        v.y / n,
-        v.z / n
+        v.x / N,
+        v.y / N,
+        v.z / N
     };
 }
 
