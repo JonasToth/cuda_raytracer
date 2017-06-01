@@ -22,27 +22,27 @@ struct intersect {
 
 struct ray {
     LIB::pair<bool, intersect> intersects(const triangle& tri) const noexcept {
-        const auto t_normal = tri.normal();
+        const auto TNormal = tri.normal();
 
         // plane equation: Ax + By + Cz + D = 0, compute D
-        const float D = dot(t_normal, tri.p0());
+        const float D = dot(TNormal, tri.p0());
 
         // ray equation: P = O + t * R, solve for t and P
-        float divisor = dot(t_normal, direction);
+        float Divisor = dot(TNormal, direction);
 
         // rays are parallel, so no intersection
         if(std::abs(divisor) < 0.0001)
             return LIB::make_pair(false, intersect{});
         
-        const float t = -(dot(t_normal, origin) + D) / divisor;
-        const coord hit = origin + t * direction;
+        const float T = -(dot(TNormal, origin) + D) / divisor;
+        const coord Hit = origin + T * direction;
 
-        const coord hit_normal(hit);
+        const coord HitNormal(Hit);
 
         if(t > 0.f)
-            return LIB::make_pair(true, intersect{t, hit, hit_normal});
+            return LIB::make_pair(true, intersect{T, Hit, HitNormal});
         else
-            return LIB::make_pair(false, intersect{t, hit, hit_normal});
+            return LIB::make_pair(false, intersect{T, Hit, HitNormal});
     }
 
     coord origin;
