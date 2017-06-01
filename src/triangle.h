@@ -24,6 +24,8 @@ public:
     CUCALL triangle(triangle&&) = default;
     CUCALL triangle& operator=(triangle&&) = default;
 
+    CUCALL ~triangle() = default;
+
     CUCALL const coord& p0() const noexcept { return *__points[0]; }
     CUCALL const coord& p1() const noexcept { return *__points[1]; }
     CUCALL const coord& p2() const noexcept { return *__points[2]; }
@@ -56,7 +58,7 @@ public:
                dot(N, cross(E2, C2)) > 0;
     }
 
-    bool isValid() const noexcept { return spansArea(*__points[0], *__points[1], *__points[2]); }
+    CUCALL bool isValid() const noexcept { return spansArea(*__points[0], *__points[1], *__points[2]); }
 
 private:
     const coord* __points[3]; //< optimization, triangles can share vertices

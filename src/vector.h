@@ -19,6 +19,8 @@ struct coord
     CUCALL coord(coord&&) = default;
     CUCALL coord& operator=(coord&&) = default;
 
+    CUCALL ~coord() = default;
+
     float x = 0;
     float y = 0;
     float z = 0;
