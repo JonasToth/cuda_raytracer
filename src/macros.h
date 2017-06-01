@@ -11,6 +11,6 @@
 #define LIB std
 #endif
 
-
+#define OUT ::std::cout
 
 #endif /* end of include guard: MACROS_H_5JXBGRAD */

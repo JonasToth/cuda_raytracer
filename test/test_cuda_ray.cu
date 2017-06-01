@@ -3,6 +3,7 @@
 #include <cuda_runtime.h>
 #include <thrust/transform.h>
 #include <thrust/device_vector.h>
+#include <utility>
 
 #include "ray.h"
 
@@ -68,7 +69,13 @@ traceTriangle(const triangle& T, const thrust::device_vector<ray>& AllRays)
 std::string bwOutput(const thrust::device_vector<LIB::pair<bool, intersect>>& Result, 
                      std::size_t SquareDim)
 {
-    const thrust::host_vector<LIB::pair<bool, intersect>> HostResult(Result);
+#if 0
+    std::vector<std::pair<bool, intersect>> HostResult(Result.size());
+    thrust::transform(Result.begin(), Result.end(), HostResult.begin(),
+                      [] (const thrust::pair<bool, intersect>& R) {
+                          return std::make_pair(R.first, R.second);
+                      });
+    OUT << "Data copied back" << std::endl;
 
     // output the data as "black white"
     std::size_t Index = 0;
@@ -79,13 +86,18 @@ std::string bwOutput(const thrust::device_vector<LIB::pair<bool, intersect>>& Re
         {
             bool DidHit;
             intersect I;
-            LIB::tie(DidHit, I) = HostResult[Index];
+            std::tie(DidHit, I) = HostResult[Index];
             SS << (DidHit ? "*" : ".");
             ++Index;
         }
         SS << "\n";
     }
+
+    OUT << "Done" << std::endl;
     return SS.str();
+#else
+    return "";
+#endif
 }
 
 TEST(ray, trace_many_successfull)
@@ -95,10 +107,15 @@ TEST(ray, trace_many_successfull)
     
     const coord Origin{0, 0, 0};
 
-    const auto AllRays = generateRays(Origin, SquareDim);
-    const auto Result = traceTriangle(T, AllRays);
+    OUT << "Triangle and tracer origin created" << std::endl;
 
-    std::cout << bwOutput(Result, SquareDim) << std::endl;
+    const auto AllRays = generateRays(Origin, SquareDim);
+    OUT << "Rays generated" << std::endl;
+    const auto Result = traceTriangle(T, AllRays);
+    OUT << "Raytracing" << std::endl;
+
+    //std::cout << bwOutput(Result, SquareDim) << std::endl;
+    OUT << "BW output done" << std::endl;
 }
 
 TEST(ray, trace_many_failing)
@@ -111,7 +128,7 @@ TEST(ray, trace_many_failing)
     const auto AllRays = generateRays(Origin, SquareDim);
     const auto Result = traceTriangle(T, AllRays);
     
-    std::cout << bwOutput(Result, SquareDim) << std::endl;
+    //std::cout << bwOutput(Result, SquareDim) << std::endl;
 }
 
 int main(int argc, char** argv) {

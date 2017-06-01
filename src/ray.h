@@ -37,8 +37,10 @@ struct ray {
 
     CUCALL ray(const ray&) = default;
     CUCALL ray(ray&&) = default;
+
     CUCALL ray& operator=(const ray&) = default;
     CUCALL ray& operator=(ray&&) = default;
+
     CUCALL ~ray() = default;
 
     /// Calculate if the ray truly intersects the triangle, and give intersection information.
