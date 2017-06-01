@@ -31,10 +31,35 @@ public:
     /// Surface normal of the triangle, not normalized
     CUCALL coord normal() const noexcept { return cross(p1() - p0(), p2() - p1()); }
 
+    CUCALL bool contains(const coord& P) const noexcept {
+        const auto E0 = p1() - p0();
+        const auto E1 = p2() - p1();
+        const auto E2 = p0() - p2();
+
+        const auto C0 = P - p0();
+        const auto C1 = P - p1();
+        const auto C2 = P - p2();
+
+        const auto N = cross(E0, E1);
+
+#if 0
+        const float D = dot(N, p0());
+        const auto PlaneEquation = dot(N,P) + D;
+        //std::cout << D << "  -  " << PlaneEquation << std::endl;
+
+        if(!(PlaneEquation < 0.001 && PlaneEquation > -0.001))
+            return false;
+#endif
+
+        return dot(N, cross(E0, C0)) > 0 &&
+               dot(N, cross(E1, C1)) > 0 &&
+               dot(N, cross(E2, C2)) > 0;
+    }
+
     bool isValid() const noexcept { return spansArea(*__points[0], *__points[1], *__points[2]); }
 
 private:
-    const coord* __points[3];
+    const coord* __points[3]; //< optimization, triangles can share vertices
 };
 
 

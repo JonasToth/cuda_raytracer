@@ -26,40 +26,42 @@ struct ray {
     ray(const coord& origin, const coord& direction) 
         : origin{origin}
         , direction{normalize(direction)} {}
+
     ray(const ray&) = default;
     ray(ray&&) = default;
     ray& operator=(const ray&) = default;
     ray& operator=(ray&&) = default;
     ~ray() = default;
 
-
+    /// Calculate if the ray truly intersects the triangle, and give intersection information.
     LIB::pair<bool, intersect> intersects(const triangle& Tri) const noexcept {
         const auto TNormal = Tri.normal();
-
-        // plane equation: Ax + By + Cz + D = 0, compute D
-        const float D = dot(TNormal, Tri.p0());
 
         // https://www.scratchapixel.com/lessons/3d-basic-rendering/
         // ray-tracing-rendering-a-triangle/ray-triangle-intersection-geometric-solution
 
-        // ray equation: P = O + t * R, solve for t and P
         //std::cout << TNormal.x << " " << TNormal.y << " " << TNormal.z << std::endl;
         //std::cout << direction.x << " " << direction.y << " " << direction.z 
                   //<< std::endl << std::endl;
+                  
+        // ray equation: P = O + t * R, solve for t and P
         float Divisor = dot(TNormal, direction);
 
         // rays are parallel, so no intersection
-        if(Divisor < 0.0001 && Divisor > -0.0001)
+        if(Divisor < 0.000001 && Divisor > -0.000001)
             return LIB::make_pair(false, intersect{});
+
+        // plane equation: Ax + By + Cz + D = 0, compute D
+        const float D = dot(TNormal, Tri.p0());
         
         const float T = (dot(TNormal, origin) + D) / Divisor;
         const coord Hit = origin + T * direction;
 
-        // calculate the hit normal
+        // calculate the hit normal, DUMMY
         const coord HitNormal(Hit);
 
         if(T > 0.f)
-            return LIB::make_pair(true, intersect{T, Hit, HitNormal});
+            return LIB::make_pair(Tri.contains(Hit), intersect{T, Hit, HitNormal});
         else
             return LIB::make_pair(false, intersect{T, Hit, HitNormal});
     }

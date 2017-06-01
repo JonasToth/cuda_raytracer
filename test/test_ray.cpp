@@ -1,6 +1,8 @@
 #include "gtest/gtest.h"
 #include "ray.h"
 
+constexpr std::size_t SquareDim = 10;
+
 TEST(ray, init)
 {
     ray R;
@@ -17,11 +19,11 @@ TEST(ray, intersection)
     const coord P0{0, -10, 10}, P1{-10, 10, 10}, P2{10, 10, 10};
     triangle T{P0, P1, P2};
 
-    auto DoesIntersect = false;
+    bool DoesIntersect;
     intersect I;
     LIB::tie(DoesIntersect, I) = R.intersects(T);
 
-    ASSERT_EQ(DoesIntersect, true) << I.depth;
+    ASSERT_EQ(DoesIntersect, true) << "depth=" << I.depth;
     ASSERT_EQ(I.depth, 10.) << "(" << I.hit.x << "," << I.hit.y << "," << I.hit.z << ")\n" 
                             << "(" << I.normal.x << "," << I.normal.y << "," << I.normal.z << ")";
 }
@@ -70,7 +72,7 @@ std::string bwOutput(const std::vector<LIB::pair<bool, intersect>>& Result,
         {
             bool DidHit; intersect HitResult;
             LIB::tie(DidHit, HitResult) = Result.at(Index);
-            SS << (DidHit ? "1" : "0");
+            SS << (DidHit ? "*" : ".");
             ++Index;
         }
         SS << "\n";
@@ -84,7 +86,6 @@ TEST(ray, trace_many_successfull)
     triangle T{P0, P1, P2};
     
     const coord Origin{0, 0, 0};
-    constexpr std::size_t SquareDim = 10;
 
     const auto AllRays = generateRays(Origin, SquareDim);
     const auto Result = traceTriangle(T, AllRays);
@@ -93,12 +94,19 @@ TEST(ray, trace_many_successfull)
                              [](const LIB::pair<bool, intersect>& r) { return r.first; });
     ASSERT_EQ(ContainsHit, true) << bwOutput(Result, SquareDim);
 
+    const auto GoodDepth = LIB::all_of(LIB::begin(Result), LIB::end(Result), 
+                           [](const LIB::pair<bool, intersect>& r) 
+                           { return !r.first || (r.second.depth >= 1.f); });
+    ASSERT_EQ(GoodDepth, true) << bwOutput(Result, SquareDim);
+
     const auto HitCount = LIB::count_if(LIB::begin(Result), LIB::end(Result), 
                           [](const LIB::pair<bool, intersect>& r) { return r.first; });
     ASSERT_GT(HitCount, 0.3 * SquareDim * SquareDim) << bwOutput(Result, SquareDim) +
                                                         "More hits are expected\n";
     ASSERT_LT(HitCount, 0.8 * SquareDim * SquareDim) << bwOutput(Result, SquareDim) +
                                                         "Less hits are expected\n";
+
+    std::cout << bwOutput(Result, SquareDim) << std::endl;
 }
 
 TEST(ray, trace_many_failing)
@@ -107,7 +115,6 @@ TEST(ray, trace_many_failing)
     triangle T{P0, P1, P2};
     
     const coord Origin{0, 0, 2};
-    constexpr std::size_t SquareDim = 10;
 
     const auto AllRays = generateRays(Origin, SquareDim);
     const auto Result = traceTriangle(T, AllRays);
