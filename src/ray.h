@@ -3,6 +3,7 @@
 
 #include <utility>
 #include <thrust/pair.h>
+#include <thrust/tuple.h>
 
 #include "macros.h"
 #include "triangle.h"
@@ -27,8 +28,11 @@ struct ray {
         // plane equation: Ax + By + Cz + D = 0, compute D
         const float D = dot(TNormal, Tri.p0());
 
+        // https://www.scratchapixel.com/lessons/3d-basic-rendering/
+        // ray-tracing-rendering-a-triangle/ray-triangle-intersection-geometric-solution
+
         // ray equation: P = O + t * R, solve for t and P
-        float Divisor = dot(TNormal, direction);
+        float Divisor = -dot(TNormal, direction);
 
         // rays are parallel, so no intersection
         if(Divisor < 0.0001 && Divisor > 0.0001)
@@ -37,6 +41,7 @@ struct ray {
         const float T = -(dot(TNormal, origin) + D) / Divisor;
         const coord Hit = origin + T * direction;
 
+        // calculate the hit normal
         const coord HitNormal(Hit);
 
         if(T > 0.f)
