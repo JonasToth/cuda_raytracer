@@ -21,11 +21,11 @@ struct intersect {
 };
 
 struct ray {
-    LIB::pair<bool, intersect> intersects(const triangle& tri) const noexcept {
-        const auto TNormal = tri.normal();
+    LIB::pair<bool, intersect> intersects(const triangle& Tri) const noexcept {
+        const auto TNormal = Tri.normal();
 
         // plane equation: Ax + By + Cz + D = 0, compute D
-        const float D = dot(TNormal, tri.p0());
+        const float D = dot(TNormal, Tri.p0());
 
         // ray equation: P = O + t * R, solve for t and P
         float Divisor = dot(TNormal, direction);
