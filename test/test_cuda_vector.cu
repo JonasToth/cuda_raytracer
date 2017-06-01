@@ -75,10 +75,10 @@ TEST(vector, math_operators)
 TEST(vector, utility)
 {
     const coord V1{0, 0, 0}, V2{0, 0, 0}, V3{0, 0, 0};
-    ASSERT_EQ(spans_area(V1, V2, V3), false);
+    ASSERT_EQ(spansArea(V1, V2, V3), false);
 
     const coord V4{1, 0, 0}, V5{0, 1, 0}, V6{0, 0, 1};
-    ASSERT_EQ(spans_area(V4, V5, V6), true);
+    ASSERT_EQ(spansArea(V4, V5, V6), true);
 }
 
 int main(int argc, char** argv)

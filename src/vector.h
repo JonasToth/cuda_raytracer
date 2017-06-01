@@ -92,8 +92,8 @@ CUCALL bool operator==(const coord& c1, const coord& c2) noexcept
 CUCALL bool operator!=(const coord& c1, const coord& c2) noexcept { return !(c1 == c2); }
 
 
-/// Three points can span an area, if they are all different
-CUCALL bool spans_area(const coord& p0, const coord& p1, const coord& p2) noexcept {
+/// Three __points can span an area, if they are all different
+CUCALL bool spansArea(const coord& p0, const coord& p1, const coord& p2) noexcept {
     return (p0 != p1) && (p0 != p2) && (p1 != p2);
 }
 
