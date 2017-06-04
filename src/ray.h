@@ -67,13 +67,10 @@ struct ray {
         const float T = (dot(TNormal, origin) + D) / Divisor;
         const coord Hit = origin + T * direction;
 
-        // calculate the hit normal, DUMMY
-        const coord HitNormal(Hit);
-
         if(T > 0.f)
-            return LIB::make_pair(Tri.contains(Hit), intersect{T, Hit, HitNormal});
+            return LIB::make_pair(Tri.contains(Hit), intersect{T, Hit, TNormal});
         else
-            return LIB::make_pair(false, intersect{T, Hit, HitNormal});
+            return LIB::make_pair(false, intersect{T, Hit, TNormal});
     }
 
     coord origin;
