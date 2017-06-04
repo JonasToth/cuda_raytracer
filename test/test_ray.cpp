@@ -35,9 +35,9 @@ std::vector<ray> generateRays(const coord& Origin, std::size_t SquareDim) {
 
     std::vector<ray> AllRays(SquareDim * SquareDim);
     std::size_t Index = 0;
-    for(float Y = 1.f; Y > -1.f; Y-= DY)
+    for(float Y = 1.f; Y > -1.f; Y-= DY) // NOLINT
     {
-        for(float X = -1.f; X < 1.f; X+= DX)
+        for(float X = -1.f; X < 1.f; X+= DX) // NOLINT
         {
             const coord Dir{X, Y, 1.f};
             AllRays.at(Index) = ray{Origin, Dir};
@@ -66,9 +66,9 @@ std::string bwOutput(const std::vector<LIB::pair<bool, intersect>>& Result,
     // output the data as "black white"
     std::size_t Index = 0;
     std::stringstream SS;
-    for(std::size_t i = 0; i < SquareDim; ++i)
+    for(std::size_t I = 0; I < SquareDim; ++I)
     {
-        for(std::size_t j = 0; j < SquareDim; ++j)
+        for(std::size_t J = 0; J < SquareDim; ++J)
         {
             bool DidHit; intersect HitResult;
             LIB::tie(DidHit, HitResult) = Result.at(Index);
