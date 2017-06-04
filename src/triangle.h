@@ -27,14 +27,14 @@ public:
 
     CUCALL ~triangle() = default;
 
-    CUCALL const coord& p0() const noexcept { return *__points[0]; }
-    CUCALL const coord& p1() const noexcept { return *__points[1]; }
-    CUCALL const coord& p2() const noexcept { return *__points[2]; }
+    CUCALL coord p0() const noexcept { return *__points[0]; }
+    CUCALL coord p1() const noexcept { return *__points[1]; }
+    CUCALL coord p2() const noexcept { return *__points[2]; }
 
     /// Surface normal of the triangle, not normalized
     CUCALL coord normal() const noexcept { return cross(p1() - p0(), p2() - p1()); }
 
-    CUCALL bool contains(const coord& P) const noexcept {
+    CUCALL bool contains(const coord P) const noexcept {
         const auto E0 = p1() - p0();
         const auto E1 = p2() - p1();
         const auto E2 = p0() - p2();

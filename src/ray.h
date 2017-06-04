@@ -11,7 +11,7 @@
 
 struct intersect {
     CUCALL intersect() = default;
-    CUCALL intersect(float depth, const coord& hit, const coord& n) 
+    CUCALL intersect(float depth, const coord hit, const coord n) 
         : depth{depth}
         , hit{hit}
         , normal{n} {}
@@ -31,7 +31,7 @@ struct intersect {
 
 struct ray {
     CUCALL ray() = default;
-    CUCALL ray(const coord& origin, const coord& direction) 
+    CUCALL ray(const coord origin, const coord direction) 
         : origin{origin}
         , direction{normalize(direction)} {}
 
@@ -44,7 +44,7 @@ struct ray {
     CUCALL ~ray() = default;
 
     /// Calculate if the ray truly intersects the triangle, and give intersection information.
-    CUCALL LIB::pair<bool, intersect> intersects(const triangle& Tri) const noexcept {
+    CUCALL LIB::pair<bool, intersect> intersects(const triangle Tri) const noexcept {
         const auto TNormal = Tri.normal();
 
         // https://www.scratchapixel.com/lessons/3d-basic-rendering/

@@ -30,10 +30,10 @@ struct coord
 // ===== MATH FUNCTIONS =====
 
 /// Euclid norm.
-CUCALL float norm(const coord& v) noexcept { return std::sqrt(v.x*v.x + v.y*v.y + v.z*v.z); }
+CUCALL float norm(const coord v) noexcept { return std::sqrt(v.x*v.x + v.y*v.y + v.z*v.z); }
 
 /// Normalize the vector.
-CUCALL coord normalize(const coord& v) noexcept {
+CUCALL coord normalize(const coord v) noexcept {
     auto N = norm(v);
     return coord{
         v.x / N,
@@ -43,12 +43,12 @@ CUCALL coord normalize(const coord& v) noexcept {
 }
 
 /// Dot product of 2 vectors 3d.
-CUCALL float dot(const coord& lhs, const coord& rhs) noexcept { 
+CUCALL float dot(const coord lhs, const coord rhs) noexcept { 
     return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
 }
 
 /// Implements cross product.
-CUCALL coord cross(const coord& lhs, const coord& rhs) noexcept {
+CUCALL coord cross(const coord lhs, const coord rhs) noexcept {
     return coord{
         lhs.y * rhs.z - lhs.z * rhs.y,
         lhs.z * rhs.x - lhs.x * rhs.z,
@@ -58,7 +58,7 @@ CUCALL coord cross(const coord& lhs, const coord& rhs) noexcept {
 
 
 /// Vector subtraction
-CUCALL coord operator-(const coord& lhs, const coord& rhs) noexcept {
+CUCALL coord operator-(const coord lhs, const coord rhs) noexcept {
     return coord{
         lhs.x - rhs.x,
         lhs.y - rhs.y,
@@ -67,7 +67,7 @@ CUCALL coord operator-(const coord& lhs, const coord& rhs) noexcept {
 }
 
 /// Vector addition
-CUCALL coord operator+(const coord& lhs, const coord& rhs) noexcept {
+CUCALL coord operator+(const coord lhs, const coord rhs) noexcept {
     return coord{
         lhs.x + rhs.x,
         lhs.y + rhs.y,
@@ -76,7 +76,7 @@ CUCALL coord operator+(const coord& lhs, const coord& rhs) noexcept {
 }
 
 /// Scalar - Vector multiplication
-CUCALL coord operator*(float s, const coord& rhs) noexcept {
+CUCALL coord operator*(float s, const coord rhs) noexcept {
     return coord{
         s * rhs.x,
         s * rhs.y,
@@ -86,16 +86,16 @@ CUCALL coord operator*(float s, const coord& rhs) noexcept {
 
 
 /// Compare for equality of two coordinates, with epsilon
-CUCALL bool operator==(const coord& c1, const coord& c2) noexcept
+CUCALL bool operator==(const coord c1, const coord c2) noexcept
 {
     return norm(c2 - c1) < 0.00001;
 }
 
-CUCALL bool operator!=(const coord& c1, const coord& c2) noexcept { return !(c1 == c2); }
+CUCALL bool operator!=(const coord c1, const coord c2) noexcept { return !(c1 == c2); }
 
 
 /// Three __points can span an area, if they are all different
-CUCALL bool spansArea(const coord& p0, const coord& p1, const coord& p2) noexcept {
+CUCALL bool spansArea(const coord p0, const coord p1, const coord p2) noexcept {
     return (p0 != p1) && (p0 != p2) && (p1 != p2);
 }
 
