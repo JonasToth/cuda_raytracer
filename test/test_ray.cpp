@@ -114,7 +114,7 @@ TEST(ray, trace_many_failing)
     const coord P0{0, -1, 1}, P1{-1, 1, 1}, P2{1, 1, 1};
     triangle T{P0, P1, P2};
     
-    const coord Origin{0, 0, 2};
+    const coord Origin{0, 0, 10};
 
     const auto AllRays = generateRays(Origin, SquareDim);
     const auto Result = traceTriangle(T, AllRays);
