@@ -16,6 +16,7 @@
 /// A triangle is a set of 3 __points, the order of the __points defines the orientation.
 class triangle {
 public:
+    CUCALL triangle() = default;
     CUCALL triangle(const coord& p0, const coord& p1, const coord& p2) : __points{&p0, &p1, &p2} {}
 
     CUCALL triangle(const triangle&) = default;
