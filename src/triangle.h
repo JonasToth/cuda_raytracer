@@ -17,7 +17,7 @@
 class triangle {
 public:
     CUCALL triangle() = default;
-    CUCALL triangle(const coord& p0, const coord& p1, const coord& p2) : __points{&p0, &p1, &p2} {}
+    CUCALL triangle(const coord* p0, const coord* p1, const coord* p2) : __points{p0, p1, p2} {}
 
     CUCALL triangle(const triangle&) = default;
     CUCALL triangle& operator=(const triangle&) = default;

@@ -4,7 +4,7 @@
 TEST(triangle_test, construction)
 {
     const coord P0{0, 0, 0}, P1{1, 0, 0}, P2{0, 1, 0};
-    triangle T{P0, P1, P2};
+    triangle T{&P0, &P1, &P2};
 
     ASSERT_EQ(T.p0().x, 0);
     ASSERT_EQ(T.p0().y, 0);
@@ -27,13 +27,13 @@ TEST(triangle_test, construction)
 TEST(triangle_test, validity)
 {
     const coord P0{0, 0, 0}, P1{0, 0, 0}, P2{0, 0, 0};
-    ASSERT_EQ(triangle(P0, P1, P2).isValid(), false);
+    ASSERT_EQ(triangle(&P0, &P1, &P2).isValid(), false);
 }
 
 TEST(triangle_test, contains_point)
 {
     const coord P0{0, 0, 0}, P1{1, 0, 0}, P2{0, 1, 0};
-    triangle T{P0, P1, P2};
+    triangle T{&P0, &P1, &P2};
 
     // Edges and vertices seem not to match
     //EXPECT_EQ(T.contains(P0), true) << "P0";

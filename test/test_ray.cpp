@@ -17,7 +17,7 @@ TEST(ray, intersection)
     R.direction = coord{0, 0, 1};
 
     const coord P0{0, -10, 10}, P1{-10, 10, 10}, P2{10, 10, 10};
-    triangle T{P0, P1, P2};
+    triangle T{&P0, &P1, &P2};
 
     bool DoesIntersect;
     intersect I;
@@ -83,7 +83,7 @@ std::string bwOutput(const std::vector<LIB::pair<bool, intersect>>& Result,
 TEST(ray, trace_many_successfull)
 {
     const coord P0{0, -1, 1}, P1{-1, 1, 1}, P2{1, 1, 1};
-    triangle T{P0, P1, P2};
+    triangle T{&P0, &P1, &P2};
     
     const coord Origin{0, 0, 0};
 
@@ -112,7 +112,7 @@ TEST(ray, trace_many_successfull)
 TEST(ray, trace_many_failing)
 {
     const coord P0{0, -1, 1}, P1{-1, 1, 1}, P2{1, 1, 1};
-    triangle T{P0, P1, P2};
+    triangle T{&P0, &P1, &P2};
     
     const coord Origin{0, 0, 10};
 

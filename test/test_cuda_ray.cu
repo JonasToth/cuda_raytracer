@@ -47,7 +47,7 @@ TEST(ray, intersection)
     R.direction = coord{0, 0, 1};
 
     const coord P0{0, -10, 10}, P1{-10, 10, 10}, P2{10, 10, 10};
-    triangle T{P0, P1, P2};
+    triangle T{&P0, &P1, &P2};
 
     bool DoesIntersect;
     intersect I;
@@ -58,7 +58,7 @@ TEST(ray, intersection)
                             << "(" << I.normal.x << "," << I.normal.y << "," << I.normal.z << ")";
 }
 
-thrust::device_vector<ray> generateRays(const coord& Origin, std::size_t SquareDim) {
+thrust::device_vector<ray> generateRays(const thrust::device_ptr<coord> Origin, std::size_t SquareDim) {
     // create multiple rays from the origin, 10x10 grid
     const float DY = 2.f / (SquareDim - 1);
     const float DX = 2.f / (SquareDim - 1);
@@ -70,7 +70,7 @@ thrust::device_vector<ray> generateRays(const coord& Origin, std::size_t SquareD
         for(float X = -1.f; X < 1.f; X+= DX)
         {
             const coord Dir{X, Y, 1.f};
-            AllRays[Index] = ray{Origin, Dir};
+            AllRays[Index] = ray{*Origin.get(), Dir};
             ++Index;
         }
     }
@@ -133,14 +133,13 @@ TEST(ray, trace_many_successfull)
     Vertices[1] = {-1,1,1};
     Vertices[2] = {1,1,1};
     Vertices[3] = {0,0,2};
-    const auto& P0 = Vertices[0];
-    const auto& P1 = Vertices[1];
-    const auto& P2 = Vertices[2];
-    const auto& Origin = Vertices[3];
+    const thrust::device_ptr<coord> P0 = &Vertices[0];
+    const thrust::device_ptr<coord> P1 = &Vertices[1];
+    const thrust::device_ptr<coord> P2 = &Vertices[2];
+    const thrust::device_ptr<coord> Origin = &Vertices[3];
 
-    triangle T{P0, P1, P2};
     const auto triangle_void = thrust::device_malloc(sizeof(triangle));
-    const auto triangle_ptr = thrust::device_new(triangle_void, T);
+    const auto triangle_ptr = thrust::device_new(triangle_void, triangle{P0.get(), P1.get(), P2.get()});
 
     OUT << "Triangle and tracer origin created" << std::endl;
 
