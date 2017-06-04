@@ -8,7 +8,6 @@
 #include <thrust/device_vector.h>
 #include <thrust/execution_policy.h>
 #include <thrust/logical.h>
-#include <thrust/transform.h>
 #include <utility>
 
 #include "ray.h"
@@ -23,9 +22,9 @@ struct has_good_depth {
     { return !r.first || (r.second.depth >= 1.f); };
 };
 
-struct fire_ray {
-    CUCALL fire_ray(const thrust::device_ptr<triangle> T) : T{T} {}
-    CUCALL ~fire_ray() = default;
+struct fire_ray_at {
+    CUCALL fire_ray_at(const thrust::device_ptr<triangle> T) : T{T} {}
+    CUCALL ~fire_ray_at() = default;
 
     CUCALL LIB::pair<bool, intersect> operator()(const ray& Ray) 
     { return Ray.intersects(*T); }
@@ -58,7 +57,7 @@ TEST(ray, intersection)
                             << "(" << I.normal.x << "," << I.normal.y << "," << I.normal.z << ")";
 }
 
-thrust::device_vector<ray> generateRays(const thrust::device_ptr<coord> Origin, std::size_t SquareDim) {
+thrust::device_vector<ray> generateRays(const coord* Origin, std::size_t SquareDim) {
     // create multiple rays from the origin, 10x10 grid
     const float DY = 2.f / (SquareDim - 1);
     const float DX = 2.f / (SquareDim - 1);
@@ -69,8 +68,10 @@ thrust::device_vector<ray> generateRays(const thrust::device_ptr<coord> Origin, 
     {
         for(float X = -1.f; X < 1.f; X+= DX)
         {
-            const coord Dir{X, Y, 1.f};
-            AllRays[Index] = ray{*Origin.get(), Dir};
+            //const coord Dir{X, Y, 1.f};
+            thrust::device_new(AllRays.data() + Index, ray{*Origin, {X, Y, 1.f}});
+            //AllRays[Index].origin = *Origin;
+            //AllRays[Index].direction = coord{X, Y, 1.f};
             ++Index;
         }
     }
@@ -86,7 +87,7 @@ traceTriangle(const thrust::device_ptr<triangle> T, const thrust::device_vector<
     OUT << "Space for result allocated" << std::endl;
 
     LIB::transform(AllRays.begin(), AllRays.end(), 
-                   Result.begin(), fire_ray{T});
+                   Result.begin(), fire_ray_at{T});
 
     OUT << "Done tracing" << std::endl;
     return Result;
@@ -95,12 +96,7 @@ traceTriangle(const thrust::device_ptr<triangle> T, const thrust::device_vector<
 std::string bwOutput(const thrust::device_vector<LIB::pair<bool, intersect>>& Result, 
                      std::size_t SquareDim)
 {
-#if 0
-    std::vector<std::pair<bool, intersect>> HostResult(Result.size());
-    thrust::transform(Result.begin(), Result.end(), HostResult.begin(),
-                      [] (const thrust::pair<bool, intersect>& R) {
-                          return std::make_pair(R.first, R.second);
-                      });
+    thrust::host_vector<LIB::pair<bool, intersect>> HostResult(Result.begin(), Result.end());
     OUT << "Data copied back" << std::endl;
 
     // output the data as "black white"
@@ -110,10 +106,7 @@ std::string bwOutput(const thrust::device_vector<LIB::pair<bool, intersect>>& Re
     {
         for(std::size_t j = 0; j < SquareDim; ++j)
         {
-            bool DidHit;
-            intersect I;
-            std::tie(DidHit, I) = HostResult[Index];
-            SS << (DidHit ? "*" : ".");
+            SS << (HostResult[Index].first ? "*" : ".");
             ++Index;
         }
         SS << "\n";
@@ -121,29 +114,26 @@ std::string bwOutput(const thrust::device_vector<LIB::pair<bool, intersect>>& Re
 
     OUT << "Done" << std::endl;
     return SS.str();
-#else
-    return "";
-#endif
 }
 
 TEST(ray, trace_many_successfull)
 {
-    thrust::device_vector<coord> Vertices(4);
+    thrust::device_vector<coord> Vertices(3);
     Vertices[0] = {0,-1,1}; 
     Vertices[1] = {-1,1,1};
     Vertices[2] = {1,1,1};
-    Vertices[3] = {0,0,2};
     const thrust::device_ptr<coord> P0 = &Vertices[0];
     const thrust::device_ptr<coord> P1 = &Vertices[1];
     const thrust::device_ptr<coord> P2 = &Vertices[2];
-    const thrust::device_ptr<coord> Origin = &Vertices[3];
+
+    const coord Origin{0, 0, 0};
 
     const auto triangle_void = thrust::device_malloc(sizeof(triangle));
     const auto triangle_ptr = thrust::device_new(triangle_void, triangle{P0.get(), P1.get(), P2.get()});
 
     OUT << "Triangle and tracer origin created" << std::endl;
 
-    const auto AllRays = generateRays(Origin, SquareDim);
+    const auto AllRays = generateRays(&Origin, SquareDim);
     ASSERT_EQ(AllRays.size(), SquareDim * SquareDim);
     OUT << "Rays generated" << std::endl;
     const auto Result = traceTriangle(triangle_ptr, AllRays);
@@ -166,33 +156,32 @@ TEST(ray, trace_many_successfull)
                                                         "Less hits are expected\n";
 
 
-    //std::cout << bwOutput(Result, SquareDim) << std::endl;
+    std::cout << bwOutput(Result, SquareDim) << std::endl;
     OUT << "BW output done" << std::endl;
 }
 
-/*
 TEST(ray, trace_many_failing)
 {
-    thrust::device_vector<coord> Vertices(4);
+    thrust::device_vector<coord> Vertices(3);
     Vertices[0] = {0,-1,1}; 
     Vertices[1] = {-1,1,1};
     Vertices[2] = {1,1,1};
-    Vertices[3] = {0,0,2};
-    const auto& P0 = Vertices[0];
-    const auto& P1 = Vertices[1];
-    const auto& P2 = Vertices[2];
-    const auto& Origin = Vertices[3];
+    const thrust::device_ptr<coord> P0 = &Vertices[0];
+    const thrust::device_ptr<coord> P1 = &Vertices[1];
+    const thrust::device_ptr<coord> P2 = &Vertices[2];
 
-    triangle T{P0, P1, P2};
+    const coord Origin{0, 0, 10};
 
-    const auto AllRays = generateRays(Origin, SquareDim);
+    const auto triangle_void = thrust::device_malloc(sizeof(triangle));
+    const auto T = thrust::device_new(triangle_void, triangle{P0.get(), P1.get(), P2.get()});
+
+    const auto AllRays = generateRays(&Origin, SquareDim);
     const auto Result = traceTriangle(T, AllRays);
     
-    //std::cout << bwOutput(Result, SquareDim) << std::endl;
+    std::cout << bwOutput(Result, SquareDim) << std::endl;
     const auto ContainsHit = LIB::any_of(Result.begin(), Result.end(), does_intersect{});
     ASSERT_EQ(ContainsHit, false) << bwOutput(Result, SquareDim);
 }
-*/
 
 int main(int argc, char** argv) {
     testing::InitGoogleTest(&argc, argv);

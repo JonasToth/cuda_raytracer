@@ -9,9 +9,9 @@
 struct coord
 {
     /// Constructor will 3d coordinates
-    CUCALL coord(float x, float y, float z) : x{x}, y{y}, z{z} {}
+    CUCALL coord(float x, float y, float z) : x{x}, y{y}, z{z}, w{1} {}
 
-    CUCALL coord() = default;
+    CUCALL coord() : x{0}, y{0}, z{0}, w{1} {}
 
     CUCALL coord(const coord&) = default;
     CUCALL coord& operator=(const coord&) = default;
