@@ -11,7 +11,7 @@
 #include <gsl/gsl>
 #include <thrust/execution_policy.h>
 #include <thrust/fill.h>
-#include <vector_types.h>
+#include <utility>
 
 static void quit_with_q(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -43,14 +43,101 @@ TEST(cuda_draw, window_and_context_creation) {
     glfwTerminate();
 }
 
+/// https://stackoverflow.com/questions/19244191/cuda-opengl-interop-draw-to-opengl-texture-with-cuda
+std::pair<GLuint, cudaGraphicsResource_t> initialize_texture() {
+    GLuint Texture;
+    cudaGraphicsResource_t CudaResource;
+
+    glEnable(GL_TEXTURE_2D);
+    glGenTextures(1, &Texture);
+
+    glBindTexture(GL_TEXTURE_2D, Texture);
+    { // beauty stuff for opengl, maybe skip?
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 640, 480, 0, GL_RGBA, GL_UNSIGNED_BYTE, 
+                     nullptr);
+    }
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    /*auto E = */cudaGraphicsGLRegisterImage(&CudaResource, Texture, GL_TEXTURE_2D, 
+                                             cudaGraphicsRegisterFlagsWriteDiscard);
+
+    // Memory mapping
+    cudaGraphicsMapResources(1, &CudaResource); 
+
+    return std::make_pair(Texture, CudaResource);
+}
+
+__global__ void grayKernel(cudaSurfaceObject_t Surface, int width, int height)
+{
+    auto x = blockIdx.x * blockDim.x + threadIdx.x;
+    auto y = blockIdx.y * blockDim.y + threadIdx.y;
+
+    if(x < width && y < height)
+    {
+        uchar4 Color;
+        Color.x = 127;
+        Color.y = 127;
+        Color.z = 127;
+        Color.w = 255;
+        surf2Dwrite(Color, Surface, x * 4, y);
+    }
+}
+
+void invokeRenderingKernel(const cudaSurfaceObject_t& Surface)
+{
+    dim3 dimBlock(16,16);
+    dim3 dimGrid((640 + dimBlock.x - 1) / dimBlock.x,
+                 (480 + dimBlock.y - 1) / dimBlock.y);
+    grayKernel<<<dimGrid, dimBlock>>>(Surface, 640, 480);
+}
+
+/// Write pixel data with cuda.
+void render_cuda(cudaGraphicsResource_t& GraphicsResource) {
+    // Stuff
+    cudaArray_t CudaArray;
+    cudaGraphicsSubResourceGetMappedArray(&CudaArray, GraphicsResource, 0, 0);
+
+    // More Stuff
+    cudaResourceDesc CudaArrayResourceDesc;
+    CudaArrayResourceDesc.resType = cudaResourceTypeArray;
+    CudaArrayResourceDesc.res.array.array = CudaArray;
+
+    // Surface creation
+    cudaSurfaceObject_t CudaSurfaceObject;
+    cudaCreateSurfaceObject(&CudaSurfaceObject, &CudaArrayResourceDesc); 
+
+    // Rendering
+    invokeRenderingKernel(CudaSurfaceObject);
+
+    // Lulu
+    cudaDestroySurfaceObject(CudaSurfaceObject);
+}
+
+/// Plain render the texture to the screen, with no transformation or anything
+void render_opengl(GLuint Texture) {
+    glBindTexture(GL_TEXTURE_2D, Texture);
+    {
+        glBegin(GL_QUADS);
+        {
+			glTexCoord2f(0.0f, 0.0f); glVertex2f(-1.0f, -1.0f);
+            glTexCoord2f(1.0f, 0.0f); glVertex2f(+1.0f, -1.0f);
+            glTexCoord2f(1.0f, 1.0f); glVertex2f(+1.0f, +1.0f);
+            glTexCoord2f(0.0f, 1.0f); glVertex2f(-1.0f, +1.0f); 
+        }
+        glEnd();
+    }
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glFinish();
+}
+
 TEST(cuda_draw, basic_drawing) {
     auto InitVal = glfwInit();
     ASSERT_NE(InitVal, 0) << "Could not initialize GLFW";
 
-    auto GlewStatus = glewInit();
-    ASSERT_EQ(GlewStatus, GLEW_OK) << "Could not init glew";
-
-    gsl::owner<GLFWwindow*> Window = glfwCreateWindow(640, 480, "Test CUDA drawing", nullptr, nullptr);
+    gsl::owner<GLFWwindow*> Window = glfwCreateWindow(640, 480, "Test CUDA drawing", 
+                                                      nullptr, nullptr);
     ASSERT_NE(Window, nullptr) << "Window not created";
 
     OUT << "Close window and test with q" << std::endl;
@@ -62,34 +149,30 @@ TEST(cuda_draw, basic_drawing) {
     glfwMakeContextCurrent(Window);
 
     // register a glTexture, that can be filled black ...
-    GLuint Texture = 0;
-    glGenBuffers(1, &Texture);
+    GLuint Texture;
+    cudaGraphicsResource_t GraphicsResource;
+    std::tie(Texture, GraphicsResource) = initialize_texture();
     ASSERT_NE(Texture, 0) << "Could not create gl buffer";
-
-    std::size_t BufferSize = 640 * 480 * sizeof(float3);
-    glBufferData(GL_ARRAY_BUFFER, BufferSize, 0, GL_DYNAMIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    auto e = cudaGLRegisterBufferObject(Texture);
-    ASSERT_EQ(e, cudaSuccess) << "Could not register buffer object";
 
     while(!glfwWindowShouldClose(Window)) {
         glClear(GL_COLOR_BUFFER_BIT);
+
+        render_cuda(GraphicsResource);
 
         // Write the Texture with Cuda
         //thrust::fill(thrust::device, TexturePointer, TexturePointer + 30, 1.f);
 
         // Render that texture with OpenGL
         // https://stackoverflow.com/questions/19244191/cuda-opengl-interop-draw-to-opengl-texture-with-cuda
+        render_opengl(Texture);
+
         glfwSwapBuffers(Window);
         glfwPollEvents();
     }
 
     // Clean up the cuda memory mapping
-    ASSERT_EQ(e, cudaSuccess) << "Could not unmap the resource";
-
-    // Delete opengl texture
-    glDeleteBuffers(1, &Texture);
+    cudaGraphicsUnmapResources(1, &GraphicsResource);
+    //ASSERT_EQ(e, cudaSuccess) << "Could not unmap the resource";
 
     glfwDestroyWindow(Window);
     glfwTerminate();
