@@ -4,20 +4,18 @@
 
 TEST(GLFW, init) {
     auto InitVal = glfwInit();
+    auto _ = gsl::finally([](){ glfwTerminate(); });
     ASSERT_NE(InitVal, 0) << "Could not initialize GLFW";
-    glfwTerminate();
 }
 
 TEST(GLFW, window) {
     auto InitVal = glfwInit();
+    auto _ = gsl::finally([](){ glfwTerminate(); });
     ASSERT_NE(InitVal, 0) << "Could not initialize GLFW";
 
     gsl::owner<GLFWwindow*> Window = glfwCreateWindow(640, 480, "Test", nullptr, nullptr);
+    auto __ = gsl::finally([Window](){ glfwDestroyWindow(Window); });
     ASSERT_NE(Window, nullptr) << "Window not created";
-    
-    // cleanup
-    glfwDestroyWindow(Window);
-    glfwTerminate();
 }
 
 int main(int argc, char** argv)
