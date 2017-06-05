@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include <gsl/gsl>
 #include <cuda.h>
 #include <cuda_runtime.h>
 
@@ -76,23 +77,21 @@ TEST(CUDA, thrust_with_object) {
     const auto vptr = thrust::device_malloc<SimpleClass>(100);
     const auto sptr = thrust::device_new(vptr, SimpleClass{csptr.get()}, 100);
 
+    auto _ = gsl::finally([&cvptr,&vptr]() { thrust::device_free(cvptr); thrust::device_free(vptr); });
+
     thrust::fill(sptr, sptr + 100, SimpleClass{15, csptr.get()});
     thrust::transform(sptr, sptr + 100, sptr, Square{});
-
-    thrust::device_free(vptr);
-    thrust::device_free(cvptr);
 }
 
 TEST(CUDA, thrust_with_vector) {
     const auto cvptr= thrust::device_malloc<ASimpleClass>(1);
     const auto csptr= thrust::device_new(cvptr, ASimpleClass{42});
+    auto _ = gsl::finally([&cvptr]() { thrust::device_free(cvptr); });
 
     thrust::device_vector<SimpleClass> vec(100, SimpleClass{15, csptr.get()});
 
     thrust::fill(vec.begin(), vec.end(), SimpleClass{30, csptr.get()});
     thrust::transform(vec.begin(), vec.end(), vec.begin(), Square{});
-
-    thrust::device_free(cvptr);
 }
 int main(int argc, char** argv)
 {

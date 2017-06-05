@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include <gsl/gsl>
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <thrust/count.h>
@@ -68,10 +69,8 @@ thrust::device_vector<ray> generateRays(const coord* Origin, std::size_t SquareD
     {
         for(float X = -1.f; X < 1.f; X+= DX)
         {
-            //const coord Dir{X, Y, 1.f};
+            // placement new, origin and direction
             thrust::device_new(AllRays.data() + Index, ray{*Origin, {X, Y, 1.f}});
-            //AllRays[Index].origin = *Origin;
-            //AllRays[Index].direction = coord{X, Y, 1.f};
             ++Index;
         }
     }
@@ -129,6 +128,7 @@ TEST(ray, trace_many_successfull)
     const coord Origin{0, 0, 0};
 
     const auto triangle_void = thrust::device_malloc(sizeof(triangle));
+    auto _ = gsl::finally([&triangle_void]() { thrust::device_free(triangle_void); });
     const auto triangle_ptr = thrust::device_new(triangle_void, triangle{P0.get(), P1.get(), P2.get()});
 
     OUT << "Triangle and tracer origin created" << std::endl;
@@ -173,6 +173,7 @@ TEST(ray, trace_many_failing)
     const coord Origin{0, 0, 10};
 
     const auto triangle_void = thrust::device_malloc(sizeof(triangle));
+    auto _ = gsl::finally([&triangle_void]() { thrust::device_free(triangle_void); });
     const auto T = thrust::device_new(triangle_void, triangle{P0.get(), P1.get(), P2.get()});
 
     const auto AllRays = generateRays(&Origin, SquareDim);

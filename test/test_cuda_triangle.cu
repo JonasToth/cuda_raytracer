@@ -1,55 +1,121 @@
+#include <cuda.h>
+#include <cuda_runtime.h>
 #include "gtest/gtest.h"
+#include <gsl/gsl>
 #include "triangle.h"
+#include <thrust/device_malloc.h>
+#include <thrust/device_free.h>
+#include <thrust/device_new.h>
+#include <thrust/device_vector.h>
+#include <thrust/execution_policy.h>
+#include <thrust/logical.h>
+
+struct incorrect_triangle {
+    CUCALL bool operator()(const triangle& T) {
+        auto result = true;
+
+        result&= T.isValid();
+
+        result&= T.p0().x == 0;
+        result&= T.p0().y == 0;
+        result&= T.p0().z == 0;
+
+        result&= T.p1().x == 1;
+        result&= T.p1().y == 0;
+        result&= T.p1().z == 0;
+
+        result&= T.p2().x == 0;
+        result&= T.p2().y == 1;
+        result&= T.p2().z == 0;
+
+        const auto N = T.normal();
+        result&= N.x == 0;
+        result&= N.y == 0;
+        result&= N.z == 1;
+
+        return !result;
+    }
+};
 
 TEST(triangle_test, construction)
 {
-    const coord P0{0, 0, 0}, P1{1, 0, 0}, P2{0, 1, 0};
-    triangle T{&P0, &P1, &P2};
-    ASSERT_EQ(T.p0().x, 0);
-    ASSERT_EQ(T.p0().y, 0);
-    ASSERT_EQ(T.p0().z, 0);
+    thrust::device_vector<coord> Vertices(3);
+    Vertices[0] = {0,0,0}; 
+    Vertices[1] = {1,0,0};
+    Vertices[2] = {0,1,0};
+    const thrust::device_ptr<coord> P0 = &Vertices[0];
+    const thrust::device_ptr<coord> P1 = &Vertices[1];
+    const thrust::device_ptr<coord> P2 = &Vertices[2];
 
-    ASSERT_EQ(T.p1().x, 1);
-    ASSERT_EQ(T.p1().y, 0);
-    ASSERT_EQ(T.p1().z, 0);
+    thrust::device_vector<triangle> Triangles(1, {P0.get(), P1.get(), P2.get()});
 
-    ASSERT_EQ(T.p2().x, 0);
-    ASSERT_EQ(T.p2().y, 1);
-    ASSERT_EQ(T.p2().z, 0);
+    OUT << "Constructed" << std::endl;
 
-    const auto N = T.normal();
-    ASSERT_EQ(N.x, 0);
-    ASSERT_EQ(N.y, 0);
-    ASSERT_EQ(N.z, 1);
+    ASSERT_EQ(thrust::none_of(thrust::device, Triangles.begin(), Triangles.end(),
+                              incorrect_triangle{}), 
+              true) << "Problematic triangle exists";
 }
 
 TEST(triangle_test, validity)
 {
-    const coord P0{0, 0, 0}, P1{0, 0, 0}, P2{0, 0, 0};
-    ASSERT_EQ(triangle(&P0, &P1, &P2).isValid(), false);
+    thrust::device_vector<coord> Vertices(3, coord{0,0,0});
+    const thrust::device_ptr<coord> P0 = &Vertices[0];
+    const thrust::device_ptr<coord> P1 = &Vertices[1];
+    const thrust::device_ptr<coord> P2 = &Vertices[2];
+
+    const auto triangle_void = thrust::device_malloc(sizeof(triangle));
+    auto _ = gsl::finally([&triangle_void]() { thrust::device_free(triangle_void); });
+    const auto T = thrust::device_new(triangle_void, triangle{P0.get(), P1.get(), P2.get()});
+
+    OUT << "Data constructed and on the device" << std::endl;
+
+    ASSERT_EQ(thrust::none_of(thrust::device, T, T+1,
+                              incorrect_triangle{}), 
+              false) << "Problematic triangle not detected";
 }
+
+struct does_contain_correct_points {
+    CUCALL bool operator()(const triangle& T) {
+        auto result = true;
+        //T.contains(P0), true) << "P0";
+        //T.contains(P1), true) << "P1";
+        //T.contains(P2), true) << "P2";
+
+        result&= T.contains({0.5, 0.5, 0});
+        result&= T.contains({0.5, 0.0, 0});
+
+        result&= !T.contains({0.5, 0.5, 1});
+        result&= !T.contains({0.5, -0.5, 0});
+        result&= !T.contains({-0.5, -0.5, 0});
+        result&= !T.contains({-0.5, 0.5, 0});
+
+        result&= !T.contains({-1, 0, 0});
+        result&= !T.contains({2, 0, 0});
+        result&= !T.contains({0.5, -1, 0});
+        result&= !T.contains({0.5, 2, 0});
+
+        return result;
+    }
+};
 
 TEST(triangle_test, contains_point)
 {
-    const coord P0{0, 0, 0}, P1{1, 0, 0}, P2{0, 1, 0};
-    triangle T{&P0, &P1, &P2};
+    thrust::device_vector<coord> Vertices(3, coord{0,0,0});
+    Vertices[0] = {0,0,0}; 
+    Vertices[1] = {1,0,0};
+    Vertices[2] = {0,1,0};
+    const thrust::device_ptr<coord> P0 = &Vertices[0];
+    const thrust::device_ptr<coord> P1 = &Vertices[1];
+    const thrust::device_ptr<coord> P2 = &Vertices[2];
 
-    //EXPECT_EQ(T.contains(P0), true) << "P0";
-    //EXPECT_EQ(T.contains(P1), true) << "P1";
-    //EXPECT_EQ(T.contains(P2), true) << "P2";
+    const auto triangle_void = thrust::device_malloc(sizeof(triangle));
+    auto _ = gsl::finally([&triangle_void]() { thrust::device_free(triangle_void); });
 
-    //EXPECT_EQ(T.contains({0.5, 0.5, 0}), true) << "0.5 0.5 0";
-    //EXPECT_EQ(T.contains({0.5, 0.0, 0}), true) << "0.5 0 0";
+    const auto T = thrust::device_new(triangle_void, triangle{P0.get(), P1.get(), P2.get()});
 
-    EXPECT_EQ(T.contains({0.5, 0.5, 1}), false) << "0.5 0.5 1";
-    EXPECT_EQ(T.contains({0.5, -0.5, 0}), false) << "0.5 -0.5 0";
-    EXPECT_EQ(T.contains({-0.5, -0.5, 0}), false) << "-0.5 -0.5 0";
-    EXPECT_EQ(T.contains({-0.5, 0.5, 0}), false) << "-0.5 0.5 0";
-
-    EXPECT_EQ(T.contains({-1, 0, 0}), false) << "-1 0 0";
-    EXPECT_EQ(T.contains({2, 0, 0}), false) << "2 0 0";
-    EXPECT_EQ(T.contains({0.5, -1, 0}), false) << "0.5 -1 0";
-    EXPECT_EQ(T.contains({0.5, 2, 0}), false) << "0.5 2 0";
+    ASSERT_EQ(thrust::none_of(thrust::device, T, T + 1,
+                              does_contain_correct_points{}), 
+              true) << "Triangles do not recognize containing points correctly";
 }
 
 int main(int argc, char** argv)
