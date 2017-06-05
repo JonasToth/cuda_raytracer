@@ -77,9 +77,9 @@ __global__ void grayKernel(cudaSurfaceObject_t Surface, int width, int height)
     if(x < width && y < height)
     {
         uchar4 Color;
-        Color.x = 127;
-        Color.y = 127;
-        Color.z = 127;
+        Color.x = x;
+        Color.y = y;
+        Color.z = 0;
         Color.w = 255;
         surf2Dwrite(Color, Surface, x * 4, y);
     }
@@ -87,7 +87,7 @@ __global__ void grayKernel(cudaSurfaceObject_t Surface, int width, int height)
 
 void invokeRenderingKernel(const cudaSurfaceObject_t& Surface)
 {
-    dim3 dimBlock(16,16);
+    dim3 dimBlock(32,32);
     dim3 dimGrid((640 + dimBlock.x - 1) / dimBlock.x,
                  (480 + dimBlock.y - 1) / dimBlock.y);
     grayKernel<<<dimGrid, dimBlock>>>(Surface, 640, 480);
@@ -110,6 +110,32 @@ void render_cuda(cudaGraphicsResource_t& GraphicsResource) {
 
     // Rendering
     invokeRenderingKernel(CudaSurfaceObject);
+
+    // raytracing should be something like that:
+    // thrust::for_each(thrust::device, PrimaryRays.begin(), PrimaryRays.end(),
+    // CUCALL [&CudaSurfaceObject,&Geometry](const ray& R) {
+    //    // Determine all Intersections for that ray.
+    //    thrust::device_vector<intersect> Hits;
+    //    thrust::for_each(Geometry.begin(), Geometry.end(),
+    //        [R,&Hits] (const triangle& T) {
+    //            auto Test = R.intersects(T);
+    //            if(Test.first) { Hits.push_back(Test.second); }
+    //    });
+    //    if(Hits.empty()) { 
+    //        surf2Dwrite(BGColor, CudaSurfaceObject, R.u * 4, R.v);
+    //    } 
+    //    else {
+    //        surf2Dwrite(FGColor, CudaSurfaceObject, R.u * 4, R.v);
+    //    }
+    // });
+
+
+    //         // Determine the closest intersection of all Rays.
+    //         auto Closest = *thrust::min_element(thrust::device, Hits.begin(), Hits.end(),
+    //                         [](const intersect& I1, const intersect& I2) 
+    //                         { return I1.deepth < I2.depth; });
+    //         }
+    //     });
 
     // Lulu
     cudaDestroySurfaceObject(CudaSurfaceObject);
@@ -155,13 +181,7 @@ TEST(cuda_draw, basic_drawing) {
     ASSERT_NE(Texture, 0) << "Could not create gl buffer";
 
     while(!glfwWindowShouldClose(Window)) {
-        glClear(GL_COLOR_BUFFER_BIT);
-
         render_cuda(GraphicsResource);
-
-        // Write the Texture with Cuda
-        //thrust::fill(thrust::device, TexturePointer, TexturePointer + 30, 1.f);
-
         // Render that texture with OpenGL
         // https://stackoverflow.com/questions/19244191/cuda-opengl-interop-draw-to-opengl-texture-with-cuda
         render_opengl(Texture);
