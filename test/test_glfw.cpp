@@ -10,11 +10,11 @@ TEST(GLFW, init) {
 
 TEST(GLFW, window) {
     auto InitVal = glfwInit();
-    auto _ = gsl::finally([](){ glfwTerminate(); });
+    auto A = gsl::finally([](){ glfwTerminate(); });
     ASSERT_NE(InitVal, 0) << "Could not initialize GLFW";
 
     gsl::owner<GLFWwindow*> Window = glfwCreateWindow(640, 480, "Test", nullptr, nullptr);
-    auto __ = gsl::finally([Window](){ glfwDestroyWindow(Window); });
+    auto B = gsl::finally([Window](){ glfwDestroyWindow(Window); });
     ASSERT_NE(Window, nullptr) << "Window not created";
 }
 
