@@ -46,12 +46,14 @@ void world_geometry::load(const std::string& file_name) {
 
     Expects(v.size() % 3 == 0);
 
+    thrust::host_vector<coord> vertices;
     // transform the data into local represenation
-    __vertices.reserve(v.size() / 3); // per vertex 3 floats
+    vertices.reserve(v.size() / 3); // per vertex 3 floats
     
     for(std::size_t i = 0; i < data.attrib.vertices.size(); i+= 3)
-        __vertices.push_back({v[i], v[i+1], v[i+2]});
+        vertices.push_back({v[i], v[i+1], v[i+2]});
 
+    __vertices = vertices;
     __shape_count = s.size();
 
     // all shapes
