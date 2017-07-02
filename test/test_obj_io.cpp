@@ -9,6 +9,9 @@
 TEST(obj_io, loading_simple) {
     WorldGeometry w;
     w.load("shapes.obj");
+
+    EXPECT_EQ(w.vertex_count(), 122) << "Bad Number of Vertices";
+    EXPECT_EQ(w.triangle_count(), 228) << "Bad Number of Triangles";
 }
 
 int main(int argc, char** argv)

@@ -36,11 +36,9 @@ public:
     std::size_t triangle_count() const noexcept { return __triangles.size(); }
 
 private:
-    //thrust::device_vector<coord> __vertices;        ///< all vertices in the world
-    //thrust::device_vector<triangle> __triangles;    ///< references the __vertices
+    thrust::device_vector<coord> __vertices;        ///< all vertices in the world
+    thrust::device_vector<triangle> __triangles;    ///< references the __vertices
     
-    thrust::host_vector<coord> __vertices;
-    thrust::host_vector<triangle> __triangles;
 };
 
 
