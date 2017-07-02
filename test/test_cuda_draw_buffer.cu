@@ -2,7 +2,7 @@
 #include "macros.h"
 #include "triangle.h"
 #include "ray.h"
-#include "visualization.h"
+#include "surface_raii.h"
 
 #include <GLFW/glfw3.h>
 #include <gsl/gsl>

@@ -3,13 +3,13 @@
 #include <cuda_gl_interop.h>
 #include <cuda_runtime.h>
 
-#include "visualization.h"
+#include "surface_raii.h"
 
 
-TEST(visualization, basic_starting)
-{
-    visualization vis(640, 480);
-}
+//TEST(visualization, basic_starting)
+//{
+    //vis(640, 480);
+//}
 
 
 int main(int argc, char** argv)

@@ -36,14 +36,14 @@ target_link_libraries(test_cuda_ray.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 add_executable(test_glfw.x test_glfw.cpp)
 target_link_libraries(test_glfw.x ${GTEST_MAIN} ${GTEST_LIBRARIES} glfw ${OPENGL_gl_LIBRARY} pthread)
 
-cuda_add_executable(test_cuda_draw_buffer.x test_cuda_draw_buffer.cu ${PROJECT_SOURCE_DIR}/src/visualization.cu)
+cuda_add_executable(test_cuda_draw_buffer.x test_cuda_draw_buffer.cu ${PROJECT_SOURCE_DIR}/src/surface_raii.cu)
 target_link_libraries(test_cuda_draw_buffer.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread glfw ${OPENGL_gl_LIBRARY})
 
 cuda_add_executable(test_build_cuda.x test_build_cuda.cu ${cudafiles})
 target_link_libraries(test_build_cuda.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
-cuda_add_executable(test_visualization.x test_visualization.cu ${cudafiles} ${PROJECT_SOURCE_DIR}/src/visualization.cu)
-target_link_libraries(test_visualization.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread glfw ${OPENGL_gl_LIBRARY})
+cuda_add_executable(test_surface_raii.x test_surface_raii.cu ${cudafiles} ${PROJECT_SOURCE_DIR}/src/surface_raii.cu)
+target_link_libraries(test_surface_raii.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread glfw ${OPENGL_gl_LIBRARY})
 
 # ----------------------------------------------------------------------------------------
 #                               ===== Testing =====
@@ -56,6 +56,7 @@ add_test(test_cuda_triangle test_cuda_triangle.x)
 add_test(test_triangle test_triangle.x)
 add_test(test_cuda_ray test_cuda_ray.x)
 add_test(test_ray test_ray.x)
+#add_test(test_surface_raii test_surface_raii.x)
 
 #set_tests_properties(test_build_cuda)
 #PROPERTIES

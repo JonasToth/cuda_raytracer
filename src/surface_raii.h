@@ -18,6 +18,9 @@ private:
     void __initialize_texture();
     void __initialize_cuda_surface();
 
+    int __width;
+    int __height;
+
     GLuint __texture;
     cudaGraphicsResource_t __cuda_resource;
 
