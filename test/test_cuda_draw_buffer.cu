@@ -270,8 +270,10 @@ TEST(cuda_draw, drawing_less_surfaces) {
 
 
 __global__ void trace_kernel(cudaSurfaceObject_t Surface, triangle* T, int Width, int Height) {
-    auto x = blockIdx.x * blockDim.x + threadIdx.x;
-    auto y = blockIdx.y * blockDim.y + threadIdx.y;
+    const auto x = blockIdx.x * blockDim.x + threadIdx.x;
+    const auto y = blockIdx.y * blockDim.y + threadIdx.y;
+
+    const float focal_length = 2.f;
 
     if(x < Width && y < Height)
     {
@@ -279,7 +281,7 @@ __global__ void trace_kernel(cudaSurfaceObject_t Surface, triangle* T, int Width
         R.origin    = coord{0., 0., 0.};
         float DX = 2.f / ((float) Width  - 1);
         float DY = 2.f / ((float) Height - 1);
-        R.direction = coord{x * DX - 1.f, y * DY - 1.f, 1.f};
+        R.direction = coord{x * DX - 1.f, y * DY - 1.f, focal_length};
 
         uchar4 FGColor;
         FGColor.x = 255;

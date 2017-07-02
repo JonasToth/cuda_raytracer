@@ -1,11 +1,13 @@
 #include "gtest/gtest.h"
 
+#include "obj_io.h"
+
 /** @file test/test_obj_io.cpp
  * Test if .obj - Files for geometry are correctly loaded and saved.
  */
 
-TEST(ci_test, basic_build) {
-    ASSERT_EQ(0,0) << "Basic Testcase succeeds";
+TEST(obj_io, loading_simple) {
+
 }
 
 int main(int argc, char** argv)

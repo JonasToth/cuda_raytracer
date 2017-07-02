@@ -1,12 +1,16 @@
-
 enable_testing()
+
+add_custom_target(example_files
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/shapes.obj ${PROJECT_BINARY_DIR}/test
+)
 
 # google test as testing framework must be available
 find_package(GTest REQUIRED) 
 include_directories(${GTEST_INCLUDE_DIRS}) 
 # unit tests
-add_executable(test_obj_io.x test_obj_io.cpp)
+add_executable(test_obj_io.x test_obj_io.cpp ${PROJECT_SOURCE_DIR}/src/obj_io.cpp)
 target_link_libraries(test_obj_io.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
+add_dependencies(test_obj_io.x example_files)
 
 add_executable(test_vector.x test_vector.cpp)
 target_link_libraries(test_vector.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
@@ -31,7 +35,6 @@ target_link_libraries(test_glfw.x ${GTEST_MAIN} ${GTEST_LIBRARIES} glfw ${OPENGL
 
 cuda_add_executable(test_cuda_draw_buffer.x test_cuda_draw_buffer.cu)
 target_link_libraries(test_cuda_draw_buffer.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread glfw ${OPENGL_gl_LIBRARY})
-
 
 cuda_add_executable(test_build_cuda.x test_build_cuda.cu ${cudafiles})
 target_link_libraries(test_build_cuda.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
