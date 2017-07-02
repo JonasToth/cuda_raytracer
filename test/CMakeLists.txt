@@ -8,7 +8,7 @@ add_custom_target(example_files
 find_package(GTest REQUIRED) 
 include_directories(${GTEST_INCLUDE_DIRS}) 
 # unit tests
-cuda_add_executable(test_obj_io.x test_obj_io.cpp ${PROJECT_SOURCE_DIR}/src/obj_io.cpp)
+cuda_add_executable(test_obj_io.x test_obj_io.cu ${PROJECT_SOURCE_DIR}/src/obj_io.cu)
 target_link_libraries(test_obj_io.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 add_dependencies(test_obj_io.x example_files)
 
