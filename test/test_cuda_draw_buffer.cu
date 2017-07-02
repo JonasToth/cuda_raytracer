@@ -23,7 +23,7 @@ static void quit_with_q(GLFWwindow* w, int key, int scancode, int action, int mo
 }
 
 
-__global__ void grayKernel(cudaSurfaceObject_t& Surface, int width, int height, float t)
+__global__ void grayKernel(cudaSurfaceObject_t Surface, int width, int height, float t)
 {
     auto x = blockIdx.x * blockDim.x + threadIdx.x;
     auto y = blockIdx.y * blockDim.y + threadIdx.y;

@@ -6,8 +6,13 @@
 
 
 surface_raii::surface_raii(int width, int height)
-    : __width(width)
-    , __height(height)
+    : __width{width}
+    , __height{height}
+    , __texture{0}
+    , __cuda_array{}
+    , __cuda_array_resource_desc{}
+    , __cuda_resource{}
+    , __cuda_surface{}
 {
     __initialize_texture();
     __initialize_cuda_surface();
@@ -42,11 +47,10 @@ void surface_raii::__initialize_texture() {
     }
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    /*const auto E = */cudaGraphicsGLRegisterImage(&__cuda_resource, __texture, GL_TEXTURE_2D, 
+    const auto E = cudaGraphicsGLRegisterImage(&__cuda_resource, __texture, GL_TEXTURE_2D, 
                                                cudaGraphicsRegisterFlagsWriteDiscard);
 
     // error checking on the cuda call
-    /*
     switch (E) {
         case cudaErrorInvalidDevice: throw std::runtime_error{"Cuda bind texture: invalid device"};
         case cudaErrorInvalidValue: throw std::runtime_error{"Cuda bind texture: invalid value"};
@@ -54,7 +58,6 @@ void surface_raii::__initialize_texture() {
         case cudaErrorUnknown: throw std::runtime_error{"Cuda bind texture: unknown error"};
         default: break;
     }
-    */
 
     // Memory mapping
     cudaGraphicsMapResources(1, &__cuda_resource); 
@@ -64,15 +67,13 @@ void surface_raii::__initialize_cuda_surface()
 {
     // source: Internet :)
     // https://stackoverflow.com/questions/19244191/cuda-opengl-interop-draw-to-opengl-texture-with-cuda
-    cudaArray_t __cuda_array;
     cudaGraphicsSubResourceGetMappedArray(&__cuda_array, __cuda_resource, 0, 0);
 
-    cudaResourceDesc cuda_array_resource_desc;
-    cuda_array_resource_desc.resType = cudaResourceTypeArray;
-    cuda_array_resource_desc.res.array.array = __cuda_array;
+    __cuda_array_resource_desc.resType = cudaResourceTypeArray;
+    __cuda_array_resource_desc.res.array.array = __cuda_array;
 
     // Surface creation
-    cudaCreateSurfaceObject(&__cuda_surface, &cuda_array_resource_desc); 
+    cudaCreateSurfaceObject(&__cuda_surface, &__cuda_array_resource_desc); 
 }
 
 void surface_raii::render_gl_texture() noexcept

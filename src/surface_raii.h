@@ -23,6 +23,8 @@ private:
 
     GLuint __texture;
 
+    cudaArray_t __cuda_array;
+    cudaResourceDesc __cuda_array_resource_desc;
     cudaGraphicsResource_t __cuda_resource;
 
     cudaSurfaceObject_t __cuda_surface;
