@@ -56,7 +56,6 @@ add_test(test_cuda_triangle test_cuda_triangle.x)
 add_test(test_triangle test_triangle.x)
 add_test(test_cuda_ray test_cuda_ray.x)
 add_test(test_ray test_ray.x)
-add_test(test_visualization test_visualization.x)
 
 #set_tests_properties(test_build_cuda)
 #PROPERTIES
