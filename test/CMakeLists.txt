@@ -42,6 +42,8 @@ target_link_libraries(test_cuda_draw_buffer.x ${GTEST_MAIN} ${GTEST_LIBRARIES} p
 cuda_add_executable(test_build_cuda.x test_build_cuda.cu ${cudafiles})
 target_link_libraries(test_build_cuda.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
+cuda_add_executable(test_visualization.x test_visualization.cu ${cudafiles} ${PROJECT_SOURCE_DIR}/src/visualization.cu)
+target_link_libraries(test_visualization.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 # ----------------------------------------------------------------------------------------
 #                               ===== Testing =====
@@ -54,6 +56,7 @@ add_test(test_cuda_triangle test_cuda_triangle.x)
 add_test(test_triangle test_triangle.x)
 add_test(test_cuda_ray test_cuda_ray.x)
 add_test(test_ray test_ray.x)
+add_test(test_visualization test_visualization.x)
 
 #set_tests_properties(test_build_cuda)
 #PROPERTIES
