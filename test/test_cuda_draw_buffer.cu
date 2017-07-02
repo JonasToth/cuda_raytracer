@@ -276,7 +276,7 @@ __global__ void trace_kernel(cudaSurfaceObject_t Surface, triangle* T, int Width
     if(x < Width && y < Height)
     {
         ray R;
-        R.origin    = coord{0., 0., -2.};
+        R.origin    = coord{0., 0., 0.};
         float DX = 2.f / ((float) Width  - 1);
         float DY = 2.f / ((float) Height - 1);
         R.direction = coord{x * DX - 1.f, y * DY - 1.f, 1.f};
@@ -327,56 +327,60 @@ TEST(cuda_draw, drawing_traced_triangle)
 
     // opengl context for drawing
     glfwMakeContextCurrent(Window);
+    {
+        // register a glTexture, that can be filled black ...
+        GLuint Texture;
+        cudaGraphicsResource_t GraphicsResource;
+        std::tie(Texture, GraphicsResource) = initialize_texture();
+        ASSERT_NE(Texture, 0) << "Could not create gl buffer";
 
-    // register a glTexture, that can be filled black ...
-    GLuint Texture;
-    cudaGraphicsResource_t GraphicsResource;
-    std::tie(Texture, GraphicsResource) = initialize_texture();
-    ASSERT_NE(Texture, 0) << "Could not create gl buffer";
+        // Maybe surface creation must be done only once?
+        // Stuff
+        cudaArray_t CudaArray;
+        cudaGraphicsSubResourceGetMappedArray(&CudaArray, GraphicsResource, 0, 0);
 
-    // Maybe surface creation must be done only once?
-    // Stuff
-    cudaArray_t CudaArray;
-    cudaGraphicsSubResourceGetMappedArray(&CudaArray, GraphicsResource, 0, 0);
+        // More Stuff
+        cudaResourceDesc CudaArrayResourceDesc;
+        CudaArrayResourceDesc.resType = cudaResourceTypeArray;
+        CudaArrayResourceDesc.res.array.array = CudaArray;
 
-    // More Stuff
-    cudaResourceDesc CudaArrayResourceDesc;
-    CudaArrayResourceDesc.resType = cudaResourceTypeArray;
-    CudaArrayResourceDesc.res.array.array = CudaArray;
+        // Surface creation
+        cudaSurfaceObject_t CudaSurfaceObject;
+        cudaCreateSurfaceObject(&CudaSurfaceObject, &CudaArrayResourceDesc); 
+        // Clean up the cuda memory mapping
+        auto __ = gsl::finally([&CudaSurfaceObject, &GraphicsResource]() 
+                    {
+                        cudaDestroySurfaceObject(CudaSurfaceObject);
+                        cudaGraphicsUnmapResources(1, &GraphicsResource);
+                    });
 
-    // Surface creation
-    cudaSurfaceObject_t CudaSurfaceObject;
-    cudaCreateSurfaceObject(&CudaSurfaceObject, &CudaArrayResourceDesc); 
+        // Create the Triangle and Coordinates on the device
+        thrust::device_vector<coord> Vertices(3);
+        //Vertices[0] = {.5f,-1,1}; 
+        //Vertices[1] = {-1,.5f,1};
+        //Vertices[2] = {1,1,1};
+        Vertices[0] = {0,-1,1}; 
+        Vertices[1] = {-1,1,1};
+        Vertices[2] = {1,1,1};
 
-    // Create the Triangle and Coordinates on the device
-    thrust::device_vector<coord> Vertices(3);
-    Vertices[0] = {.5f,-1,1}; 
-    Vertices[1] = {-1,.5f,1};
-    Vertices[2] = {1,1,1};
-    //Vertices[0] = {0,-1,2}; 
-    //Vertices[1] = {-1,1,2};
-    //Vertices[2] = {1,1,2};
-    const thrust::device_ptr<coord> P0 = &Vertices[0];
-    const thrust::device_ptr<coord> P1 = &Vertices[1];
-    const thrust::device_ptr<coord> P2 = &Vertices[2];
+        const thrust::device_ptr<coord> P0 = &Vertices[0];
+        const thrust::device_ptr<coord> P1 = &Vertices[1];
+        const thrust::device_ptr<coord> P2 = &Vertices[2];
 
-    const auto triangle_void = thrust::device_malloc(sizeof(triangle));
-    auto _ = gsl::finally([&triangle_void]() { thrust::device_free(triangle_void); });
-    const auto triangle_ptr = thrust::device_new(triangle_void, 
-                                                 triangle{P0.get(), P1.get(), P2.get()});
+        const auto triangle_void = thrust::device_malloc(sizeof(triangle));
+        auto _ = gsl::finally([&triangle_void]() { thrust::device_free(triangle_void); });
+        const auto triangle_ptr = thrust::device_new(triangle_void, 
+                                                     triangle{P0.get(), P1.get(), P2.get()});
 
-    while(!glfwWindowShouldClose(Window)) {
-        raytrace_cuda(CudaSurfaceObject, triangle_ptr.get());
-        render_opengl(Texture);
+        while(!glfwWindowShouldClose(Window)) {
+            raytrace_cuda(CudaSurfaceObject, triangle_ptr.get());
+            render_opengl(Texture);
 
-        glfwSwapBuffers(Window);
-        glfwPollEvents();
+            glfwSwapBuffers(Window);
+            glfwPollEvents();
+        }
+
     }
-    cudaDestroySurfaceObject(CudaSurfaceObject);
-
-    // Clean up the cuda memory mapping
-    cudaGraphicsUnmapResources(1, &GraphicsResource);
-    //ASSERT_EQ(e, cudaSuccess) << "Could not unmap the resource";
 
     glfwDestroyWindow(Window);
     glfwTerminate();

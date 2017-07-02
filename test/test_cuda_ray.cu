@@ -136,6 +136,7 @@ TEST(ray, trace_many_successfull)
     const auto AllRays = generateRays(&Origin, SquareDim);
     ASSERT_EQ(AllRays.size(), SquareDim * SquareDim);
     OUT << "Rays generated" << std::endl;
+
     const auto Result = traceTriangle(triangle_ptr, AllRays);
     ASSERT_EQ(Result.size(), SquareDim * SquareDim);
     OUT << "Raytracing done" << std::endl;
