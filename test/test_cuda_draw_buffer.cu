@@ -2,13 +2,8 @@
 #include "macros.h"
 #include "triangle.h"
 #include "ray.h"
+#include "visualization.h"
 
-
-#include <cuda.h>
-#include <cuda_gl_interop.h>
-#include <cuda_runtime.h>
-#include <GLFW/glfw3.h>
-#include <gsl/gsl>
 #include <iostream>
 #include <thrust/device_free.h>
 #include <thrust/device_malloc.h>
@@ -18,80 +13,8 @@
 #include <thrust/fill.h>
 #include <utility>
 
-static void quit_with_q(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-    if(key == GLFW_KEY_Q && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
-}
 
-
-TEST(cuda_draw, window_and_context_creation) {
-    auto InitVal = glfwInit();
-    ASSERT_NE(InitVal, 0) << "Could not initialize GLFW";
-
-    gsl::owner<GLFWwindow*> Window = glfwCreateWindow(640, 480, "Test CUDA drawing", nullptr, nullptr);
-    ASSERT_NE(Window, nullptr) << "Window not created";
-
-    OUT << "Close window and test with q" << std::endl;
-    
-    // window shall be closed when q is pressed
-    glfwSetKeyCallback(Window, quit_with_q);
-
-    // opengl context for drawing
-    glfwMakeContextCurrent(Window);
-
-    while(!glfwWindowShouldClose(Window)) {
-        glfwPollEvents();
-    }
-
-    glfwDestroyWindow(Window);
-    glfwTerminate();
-}
-
-/// https://stackoverflow.com/questions/19244191/cuda-opengl-interop-draw-to-opengl-texture-with-cuda
-std::pair<GLuint, cudaGraphicsResource_t> initialize_texture() {
-    GLuint Texture;
-    cudaGraphicsResource_t CudaResource;
-
-    glEnable(GL_TEXTURE_2D);
-    glGenTextures(1, &Texture);
-
-    glBindTexture(GL_TEXTURE_2D, Texture);
-    { // beauty stuff for opengl, maybe skip?
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 640, 480, 0, GL_RGBA, GL_UNSIGNED_BYTE, 
-                     nullptr);
-    }
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    /*auto E = */cudaGraphicsGLRegisterImage(&CudaResource, Texture, GL_TEXTURE_2D, 
-                                             cudaGraphicsRegisterFlagsWriteDiscard);
-
-    // Memory mapping
-    cudaGraphicsMapResources(1, &CudaResource); 
-
-    return std::make_pair(Texture, CudaResource);
-}
-
-/// Plain render the texture to the screen, with no transformation or anything
-void render_opengl(GLuint Texture) {
-    glBindTexture(GL_TEXTURE_2D, Texture);
-    {
-        glBegin(GL_QUADS);
-        {
-			glTexCoord2f(0.0f, 0.0f); glVertex2f(-1.0f, -1.0f);
-            glTexCoord2f(1.0f, 0.0f); glVertex2f(+1.0f, -1.0f);
-            glTexCoord2f(1.0f, 1.0f); glVertex2f(+1.0f, +1.0f);
-            glTexCoord2f(0.0f, 1.0f); glVertex2f(-1.0f, +1.0f); 
-        }
-        glEnd();
-    }
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glFinish();
-}
-
-__global__ void grayKernel(cudaSurfaceObject_t Surface, int width, int height, float t)
+__global__ void grayKernel(cudaSurfaceObject_t& Surface, int width, int height, float t)
 {
     auto x = blockIdx.x * blockDim.x + threadIdx.x;
     auto y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -108,7 +31,7 @@ __global__ void grayKernel(cudaSurfaceObject_t Surface, int width, int height, f
     }
 }
 
-void invokeRenderingKernel(const cudaSurfaceObject_t& Surface, float t)
+void invokeRenderingKernel(cudaSurfaceObject_t& Surface, float t)
 {
     //std::cout << "Rendering new image " << char{t} << std::endl;
     dim3 dimBlock(32,32);
@@ -118,22 +41,9 @@ void invokeRenderingKernel(const cudaSurfaceObject_t& Surface, float t)
 }
 
 /// Write pixel data with cuda.
-void render_cuda(cudaGraphicsResource_t& GraphicsResource, float t) {
-    // Stuff
-    cudaArray_t CudaArray;
-    cudaGraphicsSubResourceGetMappedArray(&CudaArray, GraphicsResource, 0, 0);
-
-    // More Stuff
-    cudaResourceDesc CudaArrayResourceDesc;
-    CudaArrayResourceDesc.resType = cudaResourceTypeArray;
-    CudaArrayResourceDesc.res.array.array = CudaArray;
-
-    // Surface creation
-    cudaSurfaceObject_t CudaSurfaceObject;
-    cudaCreateSurfaceObject(&CudaSurfaceObject, &CudaArrayResourceDesc); 
-
+void render_cuda(cudaSurfaceObject_t& Surface, float t) {
     // Rendering
-    invokeRenderingKernel(CudaSurfaceObject, t);
+    invokeRenderingKernel(Surface, t);
 
     // raytracing should be something like that:
     // thrust::for_each(thrust::device, PrimaryRays.begin(), PrimaryRays.end(),
@@ -162,49 +72,16 @@ void render_cuda(cudaGraphicsResource_t& GraphicsResource, float t) {
     //     });
 
     // Lulu
-    cudaDestroySurfaceObject(CudaSurfaceObject);
 }
 
 TEST(cuda_draw, basic_drawing) {
-    auto InitVal = glfwInit();
-    ASSERT_NE(InitVal, 0) << "Could not initialize GLFW";
-
-    gsl::owner<GLFWwindow*> Window = glfwCreateWindow(640, 480, "Test CUDA drawing", 
-                                                      nullptr, nullptr);
-    ASSERT_NE(Window, nullptr) << "Window not created";
-
-    OUT << "Close window and test with q" << std::endl;
-    
-    // window shall be closed when q is pressed
-    glfwSetKeyCallback(Window, quit_with_q);
-
-    // opengl context for drawing
-    glfwMakeContextCurrent(Window);
-
-    // register a glTexture, that can be filled black ...
-    GLuint Texture;
-    cudaGraphicsResource_t GraphicsResource;
-    std::tie(Texture, GraphicsResource) = initialize_texture();
-    ASSERT_NE(Texture, 0) << "Could not create gl buffer";
+    visualization vis(640, 480);
 
     float t = 0.f;
-    while(!glfwWindowShouldClose(Window)) {
+    while(vis.looping()) {
         t += 0.1f;
-        render_cuda(GraphicsResource, t);
-        // Render that texture with OpenGL
-        // https://stackoverflow.com/questions/19244191/cuda-opengl-interop-draw-to-opengl-texture-with-cuda
-        render_opengl(Texture);
-
-        glfwSwapBuffers(Window);
-        glfwPollEvents();
+        render_cuda(vis.getSurface(), t);
     }
-
-    // Clean up the cuda memory mapping
-    cudaGraphicsUnmapResources(1, &GraphicsResource);
-    //ASSERT_EQ(e, cudaSuccess) << "Could not unmap the resource";
-
-    glfwDestroyWindow(Window);
-    glfwTerminate();
 }
 
 /// Write pixel data with cuda.
@@ -214,58 +91,13 @@ void render_cuda2(cudaSurfaceObject_t& Surface, float t) {
 }
 
 TEST(cuda_draw, drawing_less_surfaces) {
-    auto InitVal = glfwInit();
-    ASSERT_NE(InitVal, 0) << "Could not initialize GLFW";
-
-    gsl::owner<GLFWwindow*> Window = glfwCreateWindow(640, 480, "Test CUDA drawing", 
-                                                      nullptr, nullptr);
-    ASSERT_NE(Window, nullptr) << "Window not created";
-
-    OUT << "Close window and test with q" << std::endl;
-    
-    // window shall be closed when q is pressed
-    glfwSetKeyCallback(Window, quit_with_q);
-
-    // opengl context for drawing
-    glfwMakeContextCurrent(Window);
-
-    // register a glTexture, that can be filled black ...
-    GLuint Texture;
-    cudaGraphicsResource_t GraphicsResource;
-    std::tie(Texture, GraphicsResource) = initialize_texture();
-    ASSERT_NE(Texture, 0) << "Could not create gl buffer";
-
-    // Maybe surface creation must be done only once?
-    // Stuff
-    cudaArray_t CudaArray;
-    cudaGraphicsSubResourceGetMappedArray(&CudaArray, GraphicsResource, 0, 0);
-
-    // More Stuff
-    cudaResourceDesc CudaArrayResourceDesc;
-    CudaArrayResourceDesc.resType = cudaResourceTypeArray;
-    CudaArrayResourceDesc.res.array.array = CudaArray;
-
-    // Surface creation
-    cudaSurfaceObject_t CudaSurfaceObject;
-    cudaCreateSurfaceObject(&CudaSurfaceObject, &CudaArrayResourceDesc); 
+    visualization vis(640, 480);
 
     float t = 0.f;
-    while(!glfwWindowShouldClose(Window)) {
+    while(vis.looping()) {
         t += 0.1f;
-        render_cuda2(CudaSurfaceObject, t);
-        render_opengl(Texture);
-
-        glfwSwapBuffers(Window);
-        glfwPollEvents();
+        render_cuda2(vis.getSurface(), t);
     }
-    cudaDestroySurfaceObject(CudaSurfaceObject);
-
-    // Clean up the cuda memory mapping
-    cudaGraphicsUnmapResources(1, &GraphicsResource);
-    //ASSERT_EQ(e, cudaSuccess) << "Could not unmap the resource";
-
-    glfwDestroyWindow(Window);
-    glfwTerminate();
 }
 
 
@@ -315,77 +147,29 @@ void raytrace_cuda(cudaSurfaceObject_t& Surface, triangle* T) {
 
 TEST(cuda_draw, drawing_traced_triangle) 
 {
-    auto InitVal = glfwInit();
-    ASSERT_NE(InitVal, 0) << "Could not initialize GLFW";
+    visualization vis(640, 480);
 
-    gsl::owner<GLFWwindow*> Window = glfwCreateWindow(640, 480, "Test CUDA triangle", 
-                                                      nullptr, nullptr);
-    ASSERT_NE(Window, nullptr) << "Window not created";
+    // Create the Triangle and Coordinates on the device
+    thrust::device_vector<coord> Vertices(3);
+    //Vertices[0] = {.5f,-1,1}; 
+    //Vertices[1] = {-1,.5f,1};
+    //Vertices[2] = {1,1,1};
+    Vertices[0] = {0,-1,1}; 
+    Vertices[1] = {-1,1,1};
+    Vertices[2] = {1,1,1};
 
-    OUT << "Close window and test with q" << std::endl;
-    
-    // window shall be closed when q is pressed
-    glfwSetKeyCallback(Window, quit_with_q);
+    const thrust::device_ptr<coord> P0 = &Vertices[0];
+    const thrust::device_ptr<coord> P1 = &Vertices[1];
+    const thrust::device_ptr<coord> P2 = &Vertices[2];
 
-    // opengl context for drawing
-    glfwMakeContextCurrent(Window);
-    {
-        // register a glTexture, that can be filled black ...
-        GLuint Texture;
-        cudaGraphicsResource_t GraphicsResource;
-        std::tie(Texture, GraphicsResource) = initialize_texture();
-        ASSERT_NE(Texture, 0) << "Could not create gl buffer";
+    const auto triangle_void = thrust::device_malloc(sizeof(triangle));
+    auto _ = gsl::finally([&triangle_void]() { thrust::device_free(triangle_void); });
+    const auto triangle_ptr = thrust::device_new(triangle_void, 
+                                                 triangle{P0.get(), P1.get(), P2.get()});
 
-        // Maybe surface creation must be done only once?
-        // Stuff
-        cudaArray_t CudaArray;
-        cudaGraphicsSubResourceGetMappedArray(&CudaArray, GraphicsResource, 0, 0);
-
-        // More Stuff
-        cudaResourceDesc CudaArrayResourceDesc;
-        CudaArrayResourceDesc.resType = cudaResourceTypeArray;
-        CudaArrayResourceDesc.res.array.array = CudaArray;
-
-        // Surface creation
-        cudaSurfaceObject_t CudaSurfaceObject;
-        cudaCreateSurfaceObject(&CudaSurfaceObject, &CudaArrayResourceDesc); 
-        // Clean up the cuda memory mapping
-        auto __ = gsl::finally([&CudaSurfaceObject, &GraphicsResource]() 
-                    {
-                        cudaDestroySurfaceObject(CudaSurfaceObject);
-                        cudaGraphicsUnmapResources(1, &GraphicsResource);
-                    });
-
-        // Create the Triangle and Coordinates on the device
-        thrust::device_vector<coord> Vertices(3);
-        //Vertices[0] = {.5f,-1,1}; 
-        //Vertices[1] = {-1,.5f,1};
-        //Vertices[2] = {1,1,1};
-        Vertices[0] = {0,-1,1}; 
-        Vertices[1] = {-1,1,1};
-        Vertices[2] = {1,1,1};
-
-        const thrust::device_ptr<coord> P0 = &Vertices[0];
-        const thrust::device_ptr<coord> P1 = &Vertices[1];
-        const thrust::device_ptr<coord> P2 = &Vertices[2];
-
-        const auto triangle_void = thrust::device_malloc(sizeof(triangle));
-        auto _ = gsl::finally([&triangle_void]() { thrust::device_free(triangle_void); });
-        const auto triangle_ptr = thrust::device_new(triangle_void, 
-                                                     triangle{P0.get(), P1.get(), P2.get()});
-
-        while(!glfwWindowShouldClose(Window)) {
-            raytrace_cuda(CudaSurfaceObject, triangle_ptr.get());
-            render_opengl(Texture);
-
-            glfwSwapBuffers(Window);
-            glfwPollEvents();
-        }
-
+    while(vis.looping()) {
+        raytrace_cuda(vis.getSurface(), triangle_ptr.get());
     }
-
-    glfwDestroyWindow(Window);
-    glfwTerminate();
 }
 
 int main(int argc, char** argv)

@@ -3,6 +3,8 @@
 #include <cuda_gl_interop.h>
 #include <cuda_runtime.h>
 
+#include "visualization.h"
+
 
 TEST(visualization, basic_starting)
 {

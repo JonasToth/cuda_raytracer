@@ -36,14 +36,14 @@ target_link_libraries(test_cuda_ray.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 add_executable(test_glfw.x test_glfw.cpp)
 target_link_libraries(test_glfw.x ${GTEST_MAIN} ${GTEST_LIBRARIES} glfw ${OPENGL_gl_LIBRARY} pthread)
 
-cuda_add_executable(test_cuda_draw_buffer.x test_cuda_draw_buffer.cu)
+cuda_add_executable(test_cuda_draw_buffer.x test_cuda_draw_buffer.cu ${PROJECT_SOURCE_DIR}/src/visualization.cu)
 target_link_libraries(test_cuda_draw_buffer.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread glfw ${OPENGL_gl_LIBRARY})
 
 cuda_add_executable(test_build_cuda.x test_build_cuda.cu ${cudafiles})
 target_link_libraries(test_build_cuda.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 cuda_add_executable(test_visualization.x test_visualization.cu ${cudafiles} ${PROJECT_SOURCE_DIR}/src/visualization.cu)
-target_link_libraries(test_visualization.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
+target_link_libraries(test_visualization.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread glfw ${OPENGL_gl_LIBRARY})
 
 # ----------------------------------------------------------------------------------------
 #                               ===== Testing =====
