@@ -3,6 +3,7 @@
 #include "triangle.h"
 #include "ray.h"
 #include "surface_raii.h"
+#include "window.h"
 
 #include <GLFW/glfw3.h>
 #include <gsl/gsl>
@@ -51,10 +52,9 @@ void invokeRenderingKernel(cudaSurfaceObject_t& Surface, float t)
 }
 
 TEST(cuda_draw, basic_drawing) {
-    auto Initialized = glfwInit();
-    ASSERT_NE(Initialized, 0) << "Could not init glfw";
+    window win(640, 480, "Cuda Raytracer");
+    auto w = win.getWindow();
 
-    gsl::owner<GLFWwindow*> w = glfwCreateWindow(640, 480, "Cuda Raytracer", nullptr, nullptr);
     glfwSetKeyCallback(w, quit_with_q);
     glfwMakeContextCurrent(w);
 
@@ -75,8 +75,6 @@ TEST(cuda_draw, basic_drawing) {
     }
 
     std::clog << "Done" << std::endl;
-    glfwDestroyWindow(w);
-    glfwTerminate();
 }
 
 /// Write pixel data with cuda.
@@ -86,10 +84,9 @@ void render_cuda2(cudaSurfaceObject_t& Surface, float t) {
 }
 
 TEST(cuda_draw, drawing_less_surfaces) {
-    auto Initialized = glfwInit();
-    ASSERT_NE(Initialized, 0) << "Could not init glfw";
+    window win(640, 480, "Cuda Raytracer");
+    auto w = win.getWindow();
 
-    gsl::owner<GLFWwindow*> w = glfwCreateWindow(640, 480, "Cuda Raytracer", nullptr, nullptr);
     glfwSetKeyCallback(w, quit_with_q);
     glfwMakeContextCurrent(w);
 
@@ -106,8 +103,6 @@ TEST(cuda_draw, drawing_less_surfaces) {
         glfwWaitEvents();
     }
     std::clog << "Done" << std::endl;
-    glfwDestroyWindow(w);
-    glfwTerminate();
 }
 
 __global__ void black_kernel(cudaSurfaceObject_t Surface, int Width, int Height) {
@@ -165,10 +160,9 @@ void raytrace_cuda(cudaSurfaceObject_t& Surface, triangle* T) {
 
 TEST(cuda_draw, drawing_traced_triangle) 
 {
-    auto Initialized = glfwInit();
-    ASSERT_NE(Initialized, 0) << "Could not init glfw";
+    window win(640, 480, "Cuda Raytracer");
+    auto w = win.getWindow();
 
-    gsl::owner<GLFWwindow*> w = glfwCreateWindow(640, 480, "Cuda Raytracer", nullptr, nullptr);
     glfwSetKeyCallback(w, quit_with_q);
     glfwMakeContextCurrent(w);
 
@@ -221,8 +215,6 @@ TEST(cuda_draw, drawing_traced_triangle)
         glfwWaitEvents();
     } 
     std::clog << "Done" << std::endl;
-    glfwDestroyWindow(w);
-    glfwTerminate();
 }
 
 int main(int argc, char** argv)
