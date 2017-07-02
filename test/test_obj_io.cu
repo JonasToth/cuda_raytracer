@@ -15,12 +15,19 @@ TEST(obj_io, loading_simple) {
     EXPECT_EQ(w.shape_count(), 4) << "Bad number of Shapes";
 }
 
+TEST(obj_io, test_bad_input) {
+    WorldGeometry w;
+
+    w.load("bad.obj");
+    //ASSERT_THROW(w.load("bad.obj"), std::invalid_argument) << "Did not notice the quad";
+}
+
 TEST(obj_io, loading_complex) {
     WorldGeometry w;
     w.load("mini_cooper.obj");
 
-    EXPECT_EQ(w.vertex_count(), 304135) << "Bad Number of Vertices";
-    EXPECT_EQ(w.triangle_count(), 234435) << "Bad Number of Triangles";
+    EXPECT_EQ(w.vertex_count(), 234435) << "Bad Number of Vertices";
+    EXPECT_EQ(w.triangle_count(),304135) << "Bad Number of Triangles";
     EXPECT_EQ(w.shape_count(), 49) << "Bad number of Shapes";
 }
 

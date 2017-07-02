@@ -61,7 +61,8 @@ void WorldGeometry::load(const std::string& file_name) {
         for(std::size_t f = 0; f < shape.mesh.num_face_vertices.size(); ++f)
         {
             const auto fv = shape.mesh.num_face_vertices[f];
-            Expects(fv == 3);
+            if(fv != 3) 
+                throw std::invalid_argument{"Found a polygon, need triangles only"};
 
             // all indices of the face
             const auto idx0 = shape.mesh.indices[index_offset + 0].vertex_index;
