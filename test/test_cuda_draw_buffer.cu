@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "macros.h"
+#include "obj_io.h"
 #include "triangle.h"
 #include "ray.h"
 #include "surface_raii.h"
@@ -119,7 +120,7 @@ __global__ void black_kernel(cudaSurfaceObject_t Surface, int Width, int Height)
         surf2Dwrite(BGColor, Surface, x * 4, y);
 }
 
-__global__ void trace_kernel(cudaSurfaceObject_t Surface, triangle* T, int Width, int Height) {
+__global__ void trace_kernel(cudaSurfaceObject_t Surface, const triangle* T, int Width, int Height) {
     const auto x = blockIdx.x * blockDim.x + threadIdx.x;
     const auto y = blockIdx.y * blockDim.y + threadIdx.y;
 
@@ -128,7 +129,7 @@ __global__ void trace_kernel(cudaSurfaceObject_t Surface, triangle* T, int Width
     if(x < Width && y < Height)
     {
         ray R;
-        R.origin    = coord{0., 0., 2.};
+        R.origin    = coord{0., 0., -10.};
         float DX = 2.f / ((float) Width  - 1);
         float DY = 2.f / ((float) Height - 1);
         R.direction = coord{x * DX - 1.f, y * DY - 1.f, focal_length};
@@ -151,7 +152,7 @@ __global__ void trace_kernel(cudaSurfaceObject_t Surface, triangle* T, int Width
     }
 }
 
-void raytrace_cuda(cudaSurfaceObject_t& Surface, triangle* T) {
+void raytrace_cuda(cudaSurfaceObject_t& Surface, const triangle* T) {
     dim3 dimBlock(32,32);
     dim3 dimGrid((640 + dimBlock.x) / dimBlock.x,
                  (480 + dimBlock.y) / dimBlock.y);
@@ -216,6 +217,43 @@ TEST(cuda_draw, drawing_traced_triangle)
     } 
     std::clog << "Done" << std::endl;
 }
+
+TEST(cuda_draw, draw_loaded_geometry)
+{
+    window win(640, 480, "Cuda Raytracer");
+    auto w = win.getWindow();
+
+    glfwSetKeyCallback(w, quit_with_q);
+    glfwMakeContextCurrent(w);
+
+    surface_raii vis(640, 480);
+
+    world_geometry world("mini_cooper.obj");
+    std::clog << "initialized" << std::endl;
+
+    const auto& Triangles = world.triangles();
+
+    while(!glfwWindowShouldClose(w)) {
+        dim3 dimBlock(32,32);
+        dim3 dimGrid((640 + dimBlock.x) / dimBlock.x,
+                     (480 + dimBlock.y) / dimBlock.y);
+        black_kernel<<<dimGrid, dimBlock>>>(vis.getSurface(), 640, 480);
+
+        for(std::size_t i = 0; i < Triangles.size(); ++i)
+        {
+            const thrust::device_ptr<const triangle> T = &Triangles[i];
+            raytrace_cuda(vis.getSurface(), T.get());
+        }
+
+        vis.render_gl_texture();
+
+        glfwSwapBuffers(w);
+        glfwWaitEvents();
+    } 
+    std::clog << "Done" << std::endl;
+
+}
+
 
 int main(int argc, char** argv)
 {

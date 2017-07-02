@@ -8,7 +8,8 @@
 #include <stdexcept>
 
 
-WorldGeometry::WorldGeometry() = default;
+world_geometry::world_geometry() = default;
+world_geometry::world_geometry(const std::string& file_name) { load(file_name); }
 
 // Wrap the tiny_obj library
 namespace {
@@ -37,7 +38,7 @@ namespace {
     }
 }
 
-void WorldGeometry::load(const std::string& file_name) {
+void world_geometry::load(const std::string& file_name) {
     // Load with the library
     const auto data = __load(file_name.c_str());
     const auto& v = data.attrib.vertices;

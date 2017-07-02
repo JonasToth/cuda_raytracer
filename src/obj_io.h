@@ -16,17 +16,18 @@
 ///
 /// Textures and Normales currently not supported
 /// Tight coupling between loading and geometry, might be removed later.
-class WorldGeometry {
+class world_geometry {
 public:
     /// Will leave everything empty, manually load with `load`
-    WorldGeometry();
+    world_geometry();
+    world_geometry(const std::string& file_name);
 
     // Copy and move operations currently forbidden, might be allowed later.
-    WorldGeometry(const WorldGeometry&) = delete;
-    WorldGeometry& operator=(const WorldGeometry&) = delete;
+    world_geometry(const world_geometry&) = delete;
+    world_geometry& operator=(const world_geometry&) = delete;
 
-    WorldGeometry(WorldGeometry&&) = delete;
-    WorldGeometry& operator=(WorldGeometry&&) = delete;
+    world_geometry(world_geometry&&) = delete;
+    world_geometry& operator=(world_geometry&&) = delete;
 
 
     /// Load data from disk and upload to thrust::device, throws exception on data error.
@@ -35,6 +36,8 @@ public:
     std::size_t vertex_count() const noexcept { return __vertices.size(); }
     std::size_t triangle_count() const noexcept { return __triangles.size(); }
     std::size_t shape_count() const noexcept { return __shape_count; }
+
+    const thrust::device_vector<triangle>& triangles() const noexcept { return __triangles; }
 
 private:
     thrust::device_vector<coord> __vertices;        ///< all vertices in the world

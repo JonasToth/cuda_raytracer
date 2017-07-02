@@ -7,7 +7,7 @@
  */
 
 TEST(obj_io, loading_simple) {
-    WorldGeometry w;
+    world_geometry w;
     w.load("shapes.obj");
 
     EXPECT_EQ(w.vertex_count(), 122) << "Bad Number of Vertices";
@@ -16,14 +16,14 @@ TEST(obj_io, loading_simple) {
 }
 
 TEST(obj_io, test_bad_input) {
-    WorldGeometry w;
+    world_geometry w;
 
     w.load("bad.obj");
     //ASSERT_THROW(w.load("bad.obj"), std::invalid_argument) << "Did not notice the quad";
 }
 
 TEST(obj_io, loading_complex) {
-    WorldGeometry w;
+    world_geometry w;
     w.load("mini_cooper.obj");
 
     EXPECT_EQ(w.vertex_count(), 234435) << "Bad Number of Vertices";
