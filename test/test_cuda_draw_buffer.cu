@@ -4,6 +4,8 @@
 #include "ray.h"
 #include "visualization.h"
 
+#include <GLFW/glfw3.h>
+#include <gsl/gsl>
 #include <iostream>
 #include <thrust/device_free.h>
 #include <thrust/device_malloc.h>
@@ -33,7 +35,7 @@ __global__ void grayKernel(cudaSurfaceObject_t& Surface, int width, int height, 
 
 void invokeRenderingKernel(cudaSurfaceObject_t& Surface, float t)
 {
-    //std::cout << "Rendering new image " << char{t} << std::endl;
+    //std::clog << "Rendering new image " << char{t} << std::endl;
     dim3 dimBlock(32,32);
     dim3 dimGrid((640 + dimBlock.x) / dimBlock.x,
                  (480 + dimBlock.y) / dimBlock.y);
@@ -75,13 +77,29 @@ void render_cuda(cudaSurfaceObject_t& Surface, float t) {
 }
 
 TEST(cuda_draw, basic_drawing) {
-    visualization vis(640, 480);
+    auto Initialized = glfwInit();
+    ASSERT_NE(Initialized, 0) << "Could not init glfw";
 
+    gsl::owner<GLFWwindow*> w = glfwCreateWindow(640, 480, "Cuda Raytracer", nullptr, nullptr);
+    glfwMakeContextCurrent(w);
+
+    surface_raii vis(640, 480);
+
+    std::clog << "Init" << std::endl;
     float t = 0.f;
-    while(vis.looping()) {
+    while(!glfwWindowShouldClose(w)) {
+        std::clog << "Loop" << std::endl;
         t += 0.1f;
         render_cuda(vis.getSurface(), t);
+
+        glfwSwapBuffers(w);
+        glfwPollEvents();
+        std::clog << "Loop end" << std::endl;
     }
+
+    std::clog << "Done" << std::endl;
+    glfwDestroyWindow(w);
+    glfwTerminate();
 }
 
 /// Write pixel data with cuda.
@@ -91,13 +109,25 @@ void render_cuda2(cudaSurfaceObject_t& Surface, float t) {
 }
 
 TEST(cuda_draw, drawing_less_surfaces) {
-    visualization vis(640, 480);
+    auto Initialized = glfwInit();
+    ASSERT_NE(Initialized, 0) << "Could not init glfw";
+
+    gsl::owner<GLFWwindow*> w = glfwCreateWindow(640, 480, "Cuda Raytracer", nullptr, nullptr);
+    glfwMakeContextCurrent(w);
+
+    surface_raii vis(640, 480);
 
     float t = 0.f;
-    while(vis.looping()) {
+    while(!glfwWindowShouldClose(w)) {
         t += 0.1f;
         render_cuda2(vis.getSurface(), t);
+
+        glfwSwapBuffers(w);
+        glfwWaitEvents();
     }
+    std::clog << "Done" << std::endl;
+    glfwDestroyWindow(w);
+    glfwTerminate();
 }
 
 
@@ -147,29 +177,54 @@ void raytrace_cuda(cudaSurfaceObject_t& Surface, triangle* T) {
 
 TEST(cuda_draw, drawing_traced_triangle) 
 {
-    visualization vis(640, 480);
+    auto Initialized = glfwInit();
+    ASSERT_NE(Initialized, 0) << "Could not init glfw";
+
+    gsl::owner<GLFWwindow*> w = glfwCreateWindow(640, 480, "Cuda Raytracer", nullptr, nullptr);
+    glfwMakeContextCurrent(w);
+
+    surface_raii vis(640, 480);
+    
+    std::clog << "init" << std::endl;
 
     // Create the Triangle and Coordinates on the device
-    thrust::device_vector<coord> Vertices(3);
+    thrust::device_vector<coord> Vertices(5);
     //Vertices[0] = {.5f,-1,1}; 
     //Vertices[1] = {-1,.5f,1};
     //Vertices[2] = {1,1,1};
     Vertices[0] = {0,-1,1}; 
     Vertices[1] = {-1,1,1};
     Vertices[2] = {1,1,1};
+    Vertices[3] = {0.8,-1,1};
+    Vertices[4] = {-0.8,-1,1};
 
     const thrust::device_ptr<coord> P0 = &Vertices[0];
     const thrust::device_ptr<coord> P1 = &Vertices[1];
     const thrust::device_ptr<coord> P2 = &Vertices[2];
+    const thrust::device_ptr<coord> P3 = &Vertices[3];
+    const thrust::device_ptr<coord> P4 = &Vertices[4];
 
-    const auto triangle_void = thrust::device_malloc(sizeof(triangle));
-    auto _ = gsl::finally([&triangle_void]() { thrust::device_free(triangle_void); });
-    const auto triangle_ptr = thrust::device_new(triangle_void, 
-                                                 triangle{P0.get(), P1.get(), P2.get()});
+    thrust::device_vector<triangle> Triangles(3);
+    Triangles[0] = {P0.get(), P1.get(), P2.get()};
+    Triangles[1] = {P3.get(), P1.get(), P0.get()};
+    Triangles[2] = {P0.get(), P2.get(), P4.get()};
+    std::clog << "triangles done" << std::endl;
 
-    while(vis.looping()) {
-        raytrace_cuda(vis.getSurface(), triangle_ptr.get());
-    }
+    while(!glfwWindowShouldClose(w)) {
+        std::clog << "loop" << std::endl;
+        for(std::size_t i = 0; i < Triangles.size(); ++i)
+        {
+            std::clog << "trace" << std::endl;
+            const thrust::device_ptr<triangle> T = &Triangles[i];
+            raytrace_cuda(vis.getSurface(), T.get());
+        }
+
+        glfwSwapBuffers(w);
+        glfwWaitEvents();
+    } 
+    std::clog << "Done" << std::endl;
+    glfwDestroyWindow(w);
+    glfwTerminate();
 }
 
 int main(int argc, char** argv)

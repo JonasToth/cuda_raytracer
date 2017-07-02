@@ -1,68 +1,27 @@
-#include "visualization.h"
+#include "surface_raii.h"
+#include <chrono>
+#include <iostream>
 #include <stdexcept>
+#include <thread>
 
 
-namespace {
-void quit_with_q(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-    if(key == GLFW_KEY_Q && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
-}
-}
-
-visualization::visualization(int width, int height)
+surface_raii::surface_raii(int width, int height)
     : __width(width)
     , __height(height)
 {
-    auto init_value = glfwInit();
-
-    if(init_value == 0)
-        throw std::runtime_error{"Could not initialize glfw"};
-
-    __window = glfwCreateWindow(__width, __height, "Cuda Raytracer", nullptr, nullptr);
-
-    if(__window == nullptr)
-    {
-        glfwTerminate();
-        throw std::runtime_error{"Could not create window"};
-    }
-
-    glfwSetKeyCallback(__window, quit_with_q);
-    glfwMakeContextCurrent(__window);
-
     __initialize_texture();
     __initialize_cuda_surface();
-
-    while(!glfwWindowShouldClose(__window)) {
-        glfwSwapBuffers(__window);
-        glfwPollEvents();
-    }
 }
 
-visualization::~visualization() 
+surface_raii::~surface_raii() 
 {
     // Destroy all cuda and opengl connections
     cudaGraphicsUnmapResources(1, &__cuda_resource);
     cudaDestroySurfaceObject(__cuda_surface);
-
-    // Destroy the window and opengl context
-    glfwDestroyWindow(__window);
-    glfwTerminate();
 }
-
-bool visualization::looping() 
-{
-    __render_gl_texture();
-
-    glfwSwapBuffers(__window);
-    glfwPollEvents();
-
-    return !glfwWindowShouldClose(__window);
-}
-
 
 // https://stackoverflow.com/questions/19244191/cuda-opengl-interop-draw-to-opengl-texture-with-cuda
-void visualization::__initialize_texture() {
+void surface_raii::__initialize_texture() {
     glEnable(GL_TEXTURE_2D);
     glGenTextures(1, &__texture);
 
@@ -94,7 +53,7 @@ void visualization::__initialize_texture() {
     cudaGraphicsMapResources(1, &__cuda_resource); 
 }
 
-void visualization::__initialize_cuda_surface()
+void surface_raii::__initialize_cuda_surface()
 {
     // source: Internet :)
     // https://stackoverflow.com/questions/19244191/cuda-opengl-interop-draw-to-opengl-texture-with-cuda
@@ -109,8 +68,7 @@ void visualization::__initialize_cuda_surface()
     cudaCreateSurfaceObject(&__cuda_surface, &cuda_array_resource_desc); 
 }
 
-
-void visualization::__render_gl_texture()
+void surface_raii::render_gl_texture() noexcept
 {
     glBindTexture(GL_TEXTURE_2D, __texture);
     {
