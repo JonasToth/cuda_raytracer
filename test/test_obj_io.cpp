@@ -7,7 +7,8 @@
  */
 
 TEST(obj_io, loading_simple) {
-
+    WorldGeometry w;
+    w.load("shapes.obj");
 }
 
 int main(int argc, char** argv)
