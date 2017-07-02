@@ -51,6 +51,8 @@ void WorldGeometry::load(const std::string& file_name) {
     for(std::size_t i = 0; i < data.attrib.vertices.size(); i+= 3)
         __vertices.push_back({v[i], v[i+1], v[i+2]});
 
+    __shape_count = s.size();
+
     // all shapes
     for(const auto& shape: s)
     {
@@ -78,16 +80,5 @@ void WorldGeometry::load(const std::string& file_name) {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
 
 

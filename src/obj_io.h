@@ -34,11 +34,13 @@ public:
 
     std::size_t vertex_count() const noexcept { return __vertices.size(); }
     std::size_t triangle_count() const noexcept { return __triangles.size(); }
+    std::size_t shape_count() const noexcept { return __shape_count; }
 
 private:
     thrust::device_vector<coord> __vertices;        ///< all vertices in the world
     thrust::device_vector<triangle> __triangles;    ///< references the __vertices
-    
+
+    std::size_t __shape_count;                      ///< number of shapes(objects) in scene
 };
 
 
