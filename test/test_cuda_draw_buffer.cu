@@ -16,6 +16,13 @@
 #include <utility>
 
 
+static void quit_with_q(GLFWwindow* w, int key, int scancode, int action, int mods)
+{
+    if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(w, GLFW_TRUE);
+}
+
+
 __global__ void grayKernel(cudaSurfaceObject_t& Surface, int width, int height, float t)
 {
     auto x = blockIdx.x * blockDim.x + threadIdx.x;
@@ -39,41 +46,8 @@ void invokeRenderingKernel(cudaSurfaceObject_t& Surface, float t)
     dim3 dimBlock(32,32);
     dim3 dimGrid((640 + dimBlock.x) / dimBlock.x,
                  (480 + dimBlock.y) / dimBlock.y);
+    std::clog << "Render : " << t << std::endl;
     grayKernel<<<dimGrid, dimBlock>>>(Surface, 640, 480, t);
-}
-
-/// Write pixel data with cuda.
-void render_cuda(cudaSurfaceObject_t& Surface, float t) {
-    // Rendering
-    invokeRenderingKernel(Surface, t);
-
-    // raytracing should be something like that:
-    // thrust::for_each(thrust::device, PrimaryRays.begin(), PrimaryRays.end(),
-    // CUCALL [&CudaSurfaceObject,&Geometry](const ray& R) {
-    //    // Determine all Intersections for that ray.
-    //    thrust::device_vector<intersect> Hits;
-    //    thrust::for_each(Geometry.begin(), Geometry.end(),
-    //        [R,&Hits] (const triangle& T) {
-    //            auto Test = R.intersects(T);
-    //            if(Test.first) { Hits.push_back(Test.second); }
-    //    });
-    //    if(Hits.empty()) { 
-    //        surf2Dwrite(BGColor, CudaSurfaceObject, R.u * 4, R.v);
-    //    } 
-    //    else {
-    //        surf2Dwrite(FGColor, CudaSurfaceObject, R.u * 4, R.v);
-    //    }
-    // });
-
-
-    //         // Determine the closest intersection of all Rays.
-    //         auto Closest = *thrust::min_element(thrust::device, Hits.begin(), Hits.end(),
-    //                         [](const intersect& I1, const intersect& I2) 
-    //                         { return I1.deepth < I2.depth; });
-    //         }
-    //     });
-
-    // Lulu
 }
 
 TEST(cuda_draw, basic_drawing) {
@@ -81,6 +55,7 @@ TEST(cuda_draw, basic_drawing) {
     ASSERT_NE(Initialized, 0) << "Could not init glfw";
 
     gsl::owner<GLFWwindow*> w = glfwCreateWindow(640, 480, "Cuda Raytracer", nullptr, nullptr);
+    glfwSetKeyCallback(w, quit_with_q);
     glfwMakeContextCurrent(w);
 
     surface_raii vis(640, 480);
@@ -90,7 +65,9 @@ TEST(cuda_draw, basic_drawing) {
     while(!glfwWindowShouldClose(w)) {
         std::clog << "Loop" << std::endl;
         t += 0.1f;
-        render_cuda(vis.getSurface(), t);
+        invokeRenderingKernel(vis.getSurface(), t);
+
+        vis.render_gl_texture();
 
         glfwSwapBuffers(w);
         glfwPollEvents();
@@ -113,6 +90,7 @@ TEST(cuda_draw, drawing_less_surfaces) {
     ASSERT_NE(Initialized, 0) << "Could not init glfw";
 
     gsl::owner<GLFWwindow*> w = glfwCreateWindow(640, 480, "Cuda Raytracer", nullptr, nullptr);
+    glfwSetKeyCallback(w, quit_with_q);
     glfwMakeContextCurrent(w);
 
     surface_raii vis(640, 480);
@@ -122,6 +100,8 @@ TEST(cuda_draw, drawing_less_surfaces) {
         t += 0.1f;
         render_cuda2(vis.getSurface(), t);
 
+        vis.render_gl_texture();
+
         glfwSwapBuffers(w);
         glfwWaitEvents();
     }
@@ -130,17 +110,30 @@ TEST(cuda_draw, drawing_less_surfaces) {
     glfwTerminate();
 }
 
+__global__ void black_kernel(cudaSurfaceObject_t Surface, int Width, int Height) {
+    const auto x = blockIdx.x * blockDim.x + threadIdx.x;
+    const auto y = blockIdx.y * blockDim.y + threadIdx.y;
+
+    uchar4 BGColor;
+    BGColor.x = 0;
+    BGColor.y = 0;
+    BGColor.z = 0;
+    BGColor.w = 255;
+
+    if(x < Width && y < Height)
+        surf2Dwrite(BGColor, Surface, x * 4, y);
+}
 
 __global__ void trace_kernel(cudaSurfaceObject_t Surface, triangle* T, int Width, int Height) {
     const auto x = blockIdx.x * blockDim.x + threadIdx.x;
     const auto y = blockIdx.y * blockDim.y + threadIdx.y;
 
-    const float focal_length = 2.f;
+    const float focal_length = .5f;
 
     if(x < Width && y < Height)
     {
         ray R;
-        R.origin    = coord{0., 0., 0.};
+        R.origin    = coord{0., 0., 2.};
         float DX = 2.f / ((float) Width  - 1);
         float DY = 2.f / ((float) Height - 1);
         R.direction = coord{x * DX - 1.f, y * DY - 1.f, focal_length};
@@ -151,20 +144,15 @@ __global__ void trace_kernel(cudaSurfaceObject_t Surface, triangle* T, int Width
         FGColor.z = 255;
         FGColor.w = 255;
 
-        uchar4 BGColor;
-        BGColor.x = 0;
-        BGColor.y = 0;
-        BGColor.z = 0;
-        BGColor.w = 255;
         
         const auto Traced = R.intersects(*T);
 
         if(Traced.first) {
             surf2Dwrite(FGColor, Surface, x * 4, y);
         }
-        else {
-            surf2Dwrite(BGColor, Surface, x * 4, y);
-        }
+        //else {
+            //surf2Dwrite(BGColor, Surface, x * 4, y);
+        //}
     }
 }
 
@@ -181,7 +169,10 @@ TEST(cuda_draw, drawing_traced_triangle)
     ASSERT_NE(Initialized, 0) << "Could not init glfw";
 
     gsl::owner<GLFWwindow*> w = glfwCreateWindow(640, 480, "Cuda Raytracer", nullptr, nullptr);
+    glfwSetKeyCallback(w, quit_with_q);
     glfwMakeContextCurrent(w);
+
+    std::clog << "before surface creation" << std::endl;
 
     surface_raii vis(640, 480);
     
@@ -195,8 +186,8 @@ TEST(cuda_draw, drawing_traced_triangle)
     Vertices[0] = {0,-1,1}; 
     Vertices[1] = {-1,1,1};
     Vertices[2] = {1,1,1};
-    Vertices[3] = {0.8,-1,1};
-    Vertices[4] = {-0.8,-1,1};
+    Vertices[3] = {1,-0.8,1};
+    Vertices[4] = {-1,0.8,1};
 
     const thrust::device_ptr<coord> P0 = &Vertices[0];
     const thrust::device_ptr<coord> P1 = &Vertices[1];
@@ -206,11 +197,16 @@ TEST(cuda_draw, drawing_traced_triangle)
 
     thrust::device_vector<triangle> Triangles(3);
     Triangles[0] = {P0.get(), P1.get(), P2.get()};
-    Triangles[1] = {P3.get(), P1.get(), P0.get()};
-    Triangles[2] = {P0.get(), P2.get(), P4.get()};
+    Triangles[1] = {P0.get(), P1.get(), P3.get()};
+    Triangles[2] = {P4.get(), P2.get(), P0.get()};
     std::clog << "triangles done" << std::endl;
 
     while(!glfwWindowShouldClose(w)) {
+        dim3 dimBlock(32,32);
+        dim3 dimGrid((640 + dimBlock.x) / dimBlock.x,
+                     (480 + dimBlock.y) / dimBlock.y);
+        black_kernel<<<dimGrid, dimBlock>>>(vis.getSurface(), 640, 480);
+
         std::clog << "loop" << std::endl;
         for(std::size_t i = 0; i < Triangles.size(); ++i)
         {
@@ -218,6 +214,8 @@ TEST(cuda_draw, drawing_traced_triangle)
             const thrust::device_ptr<triangle> T = &Triangles[i];
             raytrace_cuda(vis.getSurface(), T.get());
         }
+
+        vis.render_gl_texture();
 
         glfwSwapBuffers(w);
         glfwWaitEvents();

@@ -22,6 +22,7 @@ private:
     int __height;
 
     GLuint __texture;
+
     cudaGraphicsResource_t __cuda_resource;
 
     cudaSurfaceObject_t __cuda_surface;

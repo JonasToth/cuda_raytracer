@@ -15,9 +15,14 @@ surface_raii::surface_raii(int width, int height)
 
 surface_raii::~surface_raii() 
 {
+    std::clog << "Destroying the surface and texture" << std::endl;
+    // Destroy the opengl texture
+    glDeleteTextures(1, &__texture);
+
     // Destroy all cuda and opengl connections
-    cudaGraphicsUnmapResources(1, &__cuda_resource);
     cudaDestroySurfaceObject(__cuda_surface);
+    cudaGraphicsUnmapResources(1, &__cuda_resource);
+
 }
 
 // https://stackoverflow.com/questions/19244191/cuda-opengl-interop-draw-to-opengl-texture-with-cuda
@@ -37,10 +42,11 @@ void surface_raii::__initialize_texture() {
     }
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    const auto E = cudaGraphicsGLRegisterImage(&__cuda_resource, __texture, GL_TEXTURE_2D, 
+    /*const auto E = */cudaGraphicsGLRegisterImage(&__cuda_resource, __texture, GL_TEXTURE_2D, 
                                                cudaGraphicsRegisterFlagsWriteDiscard);
 
     // error checking on the cuda call
+    /*
     switch (E) {
         case cudaErrorInvalidDevice: throw std::runtime_error{"Cuda bind texture: invalid device"};
         case cudaErrorInvalidValue: throw std::runtime_error{"Cuda bind texture: invalid value"};
@@ -48,6 +54,7 @@ void surface_raii::__initialize_texture() {
         case cudaErrorUnknown: throw std::runtime_error{"Cuda bind texture: unknown error"};
         default: break;
     }
+    */
 
     // Memory mapping
     cudaGraphicsMapResources(1, &__cuda_resource); 
