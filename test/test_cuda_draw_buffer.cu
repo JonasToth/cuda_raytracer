@@ -159,15 +159,14 @@ __global__ void trace_many_kernel(cudaSurfaceObject_t Surface,
     const auto x = blockIdx.x * blockDim.x + threadIdx.x;
     const auto y = blockIdx.y * blockDim.y + threadIdx.y;
 
-    const float focal_length = 0.2f;
-
     if(x < Width && y < Height)
     {
+        float DX = 4.f / ((float) Width  - 1);
+        float DY = 4.f / ((float) Height - 1);
+
         ray R;
-        R.origin = coord{15, 15, 15};
-        float DX = 2.f / ((float) Width  - 1);
-        float DY = 2.f / ((float) Height - 1);
-        R.direction = coord{x * DX - 1.f, y * DY - 1.f, focal_length};
+        R.origin = coord{x * DX - 2.5f, y * DY - 2.5f, 10.f};
+        R.direction = coord{0.1f, 0.1f, 1.f};
 
         uchar4 FGColor;
         FGColor.x = 255;
@@ -201,6 +200,9 @@ __global__ void trace_many_kernel(cudaSurfaceObject_t Surface,
         }
 
         if(NearestTriangle != nullptr) {
+            FGColor.x = NearestIntersect.depth * 10.f;
+            FGColor.y = NearestIntersect.depth * 10.f;
+            FGColor.z = NearestIntersect.depth * 10.f;
             surf2Dwrite(FGColor, Surface, x * 4, y);
         }
         else {
@@ -293,7 +295,7 @@ TEST(cuda_draw, draw_loaded_geometry)
 
     surface_raii vis(640, 480);
 
-    world_geometry world("shapes.obj");
+    world_geometry world("cube.obj");
     std::clog << "initialized" << std::endl;
 
     const auto& Triangles = world.triangles();

@@ -31,13 +31,19 @@ TEST(obj_io, detail_load)
     EXPECT_EQ(h_triangles[0].p1(), h_vertices[3])   << "Bad Triangle v 0";
     EXPECT_EQ(h_triangles[0].p2(), h_vertices[0])   << "Bad Triangle v 0";
 
+    std::clog << h_triangles[0].normal() << std::endl;
+
     EXPECT_EQ(h_triangles[1].p0(), h_vertices[7])   << "Bad Triangle v 1";
     EXPECT_EQ(h_triangles[1].p1(), h_vertices[5])   << "Bad Triangle v 1";
     EXPECT_EQ(h_triangles[1].p2(), h_vertices[4])   << "Bad Triangle v 1";
 
+    std::clog << h_triangles[1].normal() << std::endl;
+
     EXPECT_EQ(h_triangles[2].p0(), h_vertices[4])   << "Bad Triangle v 2";
     EXPECT_EQ(h_triangles[2].p1(), h_vertices[1])   << "Bad Triangle v 2";
     EXPECT_EQ(h_triangles[2].p2(), h_vertices[0])   << "Bad Triangle v 2";
+
+    std::clog << h_triangles[2].normal() << std::endl;
 }
 
 TEST(obj_io, load_cube) {

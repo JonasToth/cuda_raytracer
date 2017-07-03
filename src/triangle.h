@@ -32,7 +32,7 @@ public:
     CUCALL coord p2() const noexcept { return __points[2]; }
 
     /// Surface normal of the triangle, not normalized
-    CUCALL coord normal() const noexcept { return cross(p1() - p0(), p2() - p1()); }
+    CUCALL coord normal() const noexcept { return normalize(cross(p1() - p0(), p2() - p1())); }
 
     CUCALL bool contains(const coord P) const noexcept {
         const auto E0 = p1() - p0();
@@ -45,14 +45,11 @@ public:
 
         const auto N = cross(E0, E1);
 
-#if 0
-        const float D = dot(N, p0());
-        const auto PlaneEquation = dot(N,P) + D;
-        //std::cout << D << "  -  " << PlaneEquation << std::endl;
+        //const float D = dot(N, p0());
+        //const auto PlaneEquation = dot(N,P) + D;
 
-        if(!(PlaneEquation < 0.001 && PlaneEquation > -0.001))
-            return false;
-#endif
+        //if(!(PlaneEquation < 0.001 && PlaneEquation > -0.001))
+            //return false;
 
         return dot(N, cross(E0, C0)) > 0 &&
                dot(N, cross(E1, C1)) > 0 &&
