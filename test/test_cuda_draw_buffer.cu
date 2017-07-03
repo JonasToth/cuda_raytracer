@@ -9,6 +9,7 @@
 #include <GLFW/glfw3.h>
 #include <gsl/gsl>
 #include <iostream>
+#include <limits>
 #include <thrust/device_free.h>
 #include <thrust/device_malloc.h>
 #include <thrust/device_new.h>
@@ -129,7 +130,7 @@ __global__ void trace_kernel(cudaSurfaceObject_t Surface, const triangle* T, int
     if(x < Width && y < Height)
     {
         ray R;
-        R.origin    = coord{0., 0., 0.};
+        R.origin    = coord{1.5, 1.5, 1.5};
         float DX = 2.f / ((float) Width  - 1);
         float DY = 2.f / ((float) Height - 1);
         R.direction = coord{x * DX - 1.f, y * DY - 1.f, focal_length};
@@ -151,11 +152,78 @@ __global__ void trace_kernel(cudaSurfaceObject_t Surface, const triangle* T, int
     }
 }
 
+__global__ void trace_many_kernel(cudaSurfaceObject_t Surface, 
+                                  const triangle* Triangles, int TriangleCount,
+                                  int Width, int Height)
+{
+    const auto x = blockIdx.x * blockDim.x + threadIdx.x;
+    const auto y = blockIdx.y * blockDim.y + threadIdx.y;
+
+    const float focal_length = 0.2f;
+
+    if(x < Width && y < Height)
+    {
+        ray R;
+        R.origin = coord{15, 15, 15};
+        float DX = 2.f / ((float) Width  - 1);
+        float DY = 2.f / ((float) Height - 1);
+        R.direction = coord{x * DX - 1.f, y * DY - 1.f, focal_length};
+
+        uchar4 FGColor;
+        FGColor.x = 255;
+        FGColor.y = 255;
+        FGColor.z = 255;
+        FGColor.w = 255;
+
+        uchar4 BGColor;
+        BGColor.x = 0;
+        BGColor.y = 0;
+        BGColor.z = 0;
+        BGColor.w = 255;
+
+        triangle const* NearestTriangle = nullptr;
+        intersect NearestIntersect;
+        //NearestIntersect.depth = std::numeric_limits<float>::max;
+        NearestIntersect.depth = 10000.f;
+
+        // Find out the closes triangle
+        for(std::size_t i = 0; i < TriangleCount; ++i)
+        {
+            const auto Traced = R.intersects(Triangles[i]);
+            if(Traced.first)
+            {
+                if(Traced.second.depth < NearestIntersect.depth)
+                {
+                    NearestTriangle = &Triangles[i];
+                    NearestIntersect = Traced.second;
+                }
+            }
+        }
+
+        if(NearestTriangle != nullptr) {
+            surf2Dwrite(FGColor, Surface, x * 4, y);
+        }
+        else {
+            surf2Dwrite(BGColor, Surface, x * 4, y);
+        }
+    }
+
+}
+
 void raytrace_cuda(cudaSurfaceObject_t& Surface, const triangle* T) {
     dim3 dimBlock(32,32);
     dim3 dimGrid((640 + dimBlock.x) / dimBlock.x,
                  (480 + dimBlock.y) / dimBlock.y);
     trace_kernel<<<dimGrid, dimBlock>>>(Surface, T, 640, 480);
+}
+
+void raytrace_many_cuda(cudaSurfaceObject_t& Surface, 
+                        const triangle* Triangles,
+                        int TriangleCount) {
+    dim3 dimBlock(32,32);
+    dim3 dimGrid((640 + dimBlock.x) / dimBlock.x,
+                 (480 + dimBlock.y) / dimBlock.y);
+    trace_many_kernel<<<dimGrid, dimBlock>>>(Surface, Triangles, TriangleCount, 640, 480);
 }
 
 TEST(cuda_draw, drawing_traced_triangle) 
@@ -201,10 +269,8 @@ TEST(cuda_draw, drawing_traced_triangle)
                      (480 + dimBlock.y) / dimBlock.y);
         black_kernel<<<dimGrid, dimBlock>>>(vis.getSurface(), 640, 480);
 
-        std::clog << "loop" << std::endl;
         for(std::size_t i = 0; i < Triangles.size(); ++i)
         {
-            std::clog << "trace" << std::endl;
             const thrust::device_ptr<triangle> T = &Triangles[i];
             raytrace_cuda(vis.getSurface(), T.get());
         }
@@ -238,11 +304,7 @@ TEST(cuda_draw, draw_loaded_geometry)
                      (480 + dimBlock.y) / dimBlock.y);
         black_kernel<<<dimGrid, dimBlock>>>(vis.getSurface(), 640, 480);
 
-        for(std::size_t i = 0; i < Triangles.size(); ++i)
-        {
-            const thrust::device_ptr<const triangle> T = &Triangles[i];
-            raytrace_cuda(vis.getSurface(), T.get());
-        }
+        raytrace_many_cuda(vis.getSurface(), Triangles.data().get(), Triangles.size());
 
         vis.render_gl_texture();
 

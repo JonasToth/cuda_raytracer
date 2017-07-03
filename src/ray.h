@@ -44,7 +44,7 @@ struct ray {
     CUCALL ~ray() = default;
 
     /// Calculate if the ray truly intersects the triangle, and give intersection information.
-    CUCALL LIB::pair<bool, intersect> intersects(const triangle Tri) const noexcept {
+    CUCALL LIB::pair<bool, intersect> intersects(const triangle& Tri) const noexcept {
         const auto TNormal = Tri.normal();
 
         // https://www.scratchapixel.com/lessons/3d-basic-rendering/
