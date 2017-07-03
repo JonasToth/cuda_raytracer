@@ -38,6 +38,7 @@ public:
     std::size_t shape_count() const noexcept { return __shape_count; }
 
     const thrust::device_vector<triangle>& triangles() const noexcept { return __triangles; }
+    const thrust::device_vector<coord>& vertices() const noexcept { return __vertices; }
 
 private:
     thrust::device_vector<coord> __vertices;        ///< all vertices in the world
