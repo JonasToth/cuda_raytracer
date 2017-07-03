@@ -11,6 +11,8 @@ public:
 
     CUCALL ray rayAt(int u, int v) const noexcept;
 
+    CUCALL void move(coord translation) noexcept { __origin = __origin + translation; }
+
     CUCALL int width() const noexcept { return __width; }
     CUCALL int height() const noexcept { return __height; }
 

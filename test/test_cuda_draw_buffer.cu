@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include "camera.h"
 #include "macros.h"
 #include "obj_io.h"
 #include "triangle.h"
@@ -153,6 +154,7 @@ __global__ void trace_kernel(cudaSurfaceObject_t Surface, const triangle* T, int
 }
 
 __global__ void trace_many_kernel(cudaSurfaceObject_t Surface, 
+                                  camera c,
                                   const triangle* Triangles, int TriangleCount,
                                   int Width, int Height)
 {
@@ -161,12 +163,7 @@ __global__ void trace_many_kernel(cudaSurfaceObject_t Surface,
 
     if(x < Width && y < Height)
     {
-        float DX = 4.f / ((float) Width  - 1);
-        float DY = 4.f / ((float) Height - 1);
-
-        ray R;
-        R.origin = coord{x * DX - 2.5f, y * DY - 2.5f, 10.f};
-        R.direction = coord{0.1f, 0.1f, 1.f};
+        ray R = c.rayAt(x, y);
 
         uchar4 FGColor;
         FGColor.x = 255;
@@ -220,12 +217,14 @@ void raytrace_cuda(cudaSurfaceObject_t& Surface, const triangle* T) {
 }
 
 void raytrace_many_cuda(cudaSurfaceObject_t& Surface, 
+                        const camera& c,
                         const triangle* Triangles,
                         int TriangleCount) {
     dim3 dimBlock(32,32);
     dim3 dimGrid((640 + dimBlock.x) / dimBlock.x,
                  (480 + dimBlock.y) / dimBlock.y);
-    trace_many_kernel<<<dimGrid, dimBlock>>>(Surface, Triangles, TriangleCount, 640, 480);
+    trace_many_kernel<<<dimGrid, dimBlock>>>(Surface, c, Triangles, TriangleCount, 
+                                             640, 480);
 }
 
 TEST(cuda_draw, drawing_traced_triangle) 
@@ -294,6 +293,7 @@ TEST(cuda_draw, draw_loaded_geometry)
     glfwMakeContextCurrent(w);
 
     surface_raii vis(640, 480);
+    camera c(640, 480, {2.f, 2.f, 2.f}, {-2.f, -2.f, -2.f});
 
     world_geometry world("cube.obj");
     std::clog << "initialized" << std::endl;
@@ -306,7 +306,8 @@ TEST(cuda_draw, draw_loaded_geometry)
                      (480 + dimBlock.y) / dimBlock.y);
         black_kernel<<<dimGrid, dimBlock>>>(vis.getSurface(), 640, 480);
 
-        raytrace_many_cuda(vis.getSurface(), Triangles.data().get(), Triangles.size());
+        raytrace_many_cuda(vis.getSurface(), c, 
+                           Triangles.data().get(), Triangles.size());
 
         vis.render_gl_texture();
 

@@ -40,6 +40,7 @@ target_link_libraries(test_glfw.x ${GTEST_MAIN} ${GTEST_LIBRARIES} glfw ${OPENGL
 cuda_add_executable(test_cuda_draw_buffer.x test_cuda_draw_buffer.cu 
                     ${PROJECT_SOURCE_DIR}/src/surface_raii.cu 
                     ${PROJECT_SOURCE_DIR}/src/window.cpp 
+                    ${PROJECT_SOURCE_DIR}/src/camera.cpp 
                     ${PROJECT_SOURCE_DIR}/src/obj_io.cu)
 target_link_libraries(test_cuda_draw_buffer.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread glfw ${OPENGL_gl_LIBRARY})
 
