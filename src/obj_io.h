@@ -51,7 +51,7 @@ private:
 namespace __detail 
 {
 /// For better testing, will be called internally
-void deserialize_geomety(const std::string& file_name,
+void deserialize_geometry(const std::string& file_name,
                          thrust::host_vector<coord>& vertices,
                          thrust::host_vector<triangle>& triangles,
                          std::size_t& shape_count);

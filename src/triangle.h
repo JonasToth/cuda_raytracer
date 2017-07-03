@@ -65,5 +65,4 @@ private:
     coord __points[3]; //< optimization, triangles can share vertices
 };
 
-
 #endif /* end of include guard: TRIANGLE_H_ESIZ1HBQ */

@@ -42,14 +42,14 @@ void world_geometry::load(const std::string& file_name) {
     thrust::host_vector<coord> vertices;
     thrust::host_vector<triangle> triangles;
 
-    __detail::deserialize_geomety(file_name, vertices, triangles, __shape_count);
+    __detail::deserialize_geometry(file_name, vertices, triangles, __shape_count);
 
     __vertices = vertices;
     __triangles = triangles;
 }
 
 namespace __detail {
-void deserialize_geomety(const std::string& file_name,
+void deserialize_geometry(const std::string& file_name,
                          thrust::host_vector<coord>& vertices,
                          thrust::host_vector<triangle>& triangles,
                          std::size_t& shape_count) {

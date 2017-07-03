@@ -2,6 +2,7 @@
 #define VECTOR_H_SWTQE942
 
 #include <cmath>
+#include <iostream>
 
 #include "macros.h"
 
@@ -97,6 +98,13 @@ inline CUCALL bool operator!=(const coord c1, const coord c2) noexcept { return 
 /// Three __points can span an area, if they are all different
 inline CUCALL bool spansArea(const coord p0, const coord p1, const coord p2) noexcept {
     return (p0 != p1) && (p0 != p2) && (p1 != p2);
+}
+
+
+inline std::ostream& operator<<(std::ostream& os, const coord& c)
+{
+    os << '(' << c.x << ',' << c.y << ',' << c.z << ',' << c.w << ')';
+    return os;
 }
 
 #endif /* end of include guard: VECTOR_H_SWTQE942 */
