@@ -39,6 +39,20 @@ namespace {
 }
 
 void world_geometry::load(const std::string& file_name) {
+    thrust::host_vector<coord> vertices;
+    thrust::host_vector<triangle> triangles;
+
+    __detail::deserialize_geomety(file_name, vertices, triangles, __shape_count);
+
+    __vertices = vertices;
+    __triangles = triangles;
+}
+
+namespace __detail {
+void deserialize_geomety(const std::string& file_name,
+                         thrust::host_vector<coord>& vertices,
+                         thrust::host_vector<triangle>& triangles,
+                         std::size_t& shape_count) {
     // Load with the library
     const auto data = __load(file_name.c_str());
     const auto& v = data.attrib.vertices;
@@ -46,15 +60,13 @@ void world_geometry::load(const std::string& file_name) {
 
     Expects(v.size() % 3 == 0);
 
-    thrust::host_vector<coord> vertices;
+    shape_count = data.shapes.size();
+
     // transform the data into local represenation
     vertices.reserve(v.size() / 3); // per vertex 3 floats
     
     for(std::size_t i = 0; i < data.attrib.vertices.size(); i+= 3)
         vertices.push_back({v[i], v[i+1], v[i+2]});
-
-    __vertices = vertices;
-    __shape_count = s.size();
 
     // all shapes
     for(const auto& shape: s)
@@ -72,15 +84,15 @@ void world_geometry::load(const std::string& file_name) {
             const auto idx1 = shape.mesh.indices[index_offset + 1].vertex_index;
             const auto idx2 = shape.mesh.indices[index_offset + 2].vertex_index;
 
-            const auto P0 = __vertices[idx0];
-            const auto P1 = __vertices[idx1];
-            const auto P2 = __vertices[idx2];
+            const auto P0 = vertices[idx0];
+            const auto P1 = vertices[idx1];
+            const auto P2 = vertices[idx2];
 
-            __triangles.push_back(triangle{P0, P1, P2});
+            triangles.push_back(triangle{P0, P1, P2});
                 
             index_offset+= fv;
         }
     }
 }
 
-
+}
