@@ -65,7 +65,7 @@ TEST(cuda_draw, basic_drawing) {
     float t = 0.f;
     while(!glfwWindowShouldClose(w)) {
         std::clog << "Loop" << std::endl;
-        t += 0.1f;
+        t += 0.5f;
         invokeRenderingKernel(vis.getSurface(), t);
 
         vis.render_gl_texture();
@@ -95,7 +95,7 @@ TEST(cuda_draw, drawing_less_surfaces) {
 
     float t = 0.f;
     while(!glfwWindowShouldClose(w)) {
-        t += 0.1f;
+        t += 0.5f;
         render_cuda2(vis.getSurface(), t);
 
         vis.render_gl_texture();
@@ -124,12 +124,12 @@ __global__ void trace_kernel(cudaSurfaceObject_t Surface, const triangle* T, int
     const auto x = blockIdx.x * blockDim.x + threadIdx.x;
     const auto y = blockIdx.y * blockDim.y + threadIdx.y;
 
-    const float focal_length = .5f;
+    const float focal_length = 1.f;
 
     if(x < Width && y < Height)
     {
         ray R;
-        R.origin    = coord{0., 0., -10.};
+        R.origin    = coord{0., 0., 0.};
         float DX = 2.f / ((float) Width  - 1);
         float DY = 2.f / ((float) Height - 1);
         R.direction = coord{x * DX - 1.f, y * DY - 1.f, focal_length};
@@ -139,7 +139,6 @@ __global__ void trace_kernel(cudaSurfaceObject_t Surface, const triangle* T, int
         FGColor.y = 255;
         FGColor.z = 255;
         FGColor.w = 255;
-
         
         const auto Traced = R.intersects(*T);
 
@@ -184,16 +183,16 @@ TEST(cuda_draw, drawing_traced_triangle)
     Vertices[3] = {1,-0.8,1};
     Vertices[4] = {-1,0.8,1};
 
-    const thrust::device_ptr<coord> P0 = &Vertices[0];
-    const thrust::device_ptr<coord> P1 = &Vertices[1];
-    const thrust::device_ptr<coord> P2 = &Vertices[2];
-    const thrust::device_ptr<coord> P3 = &Vertices[3];
-    const thrust::device_ptr<coord> P4 = &Vertices[4];
+    const auto P0 = Vertices[0];
+    const auto P1 = Vertices[1];
+    const auto P2 = Vertices[2];
+    const auto P3 = Vertices[3];
+    const auto P4 = Vertices[4];
 
     thrust::device_vector<triangle> Triangles(3);
-    Triangles[0] = {P0.get(), P1.get(), P2.get()};
-    Triangles[1] = {P0.get(), P1.get(), P3.get()};
-    Triangles[2] = {P4.get(), P2.get(), P0.get()};
+    Triangles[0] = {P0, P1, P2};
+    Triangles[1] = {P0, P1, P3};
+    Triangles[2] = {P4, P2, P0};
     std::clog << "triangles done" << std::endl;
 
     while(!glfwWindowShouldClose(w)) {
@@ -228,7 +227,7 @@ TEST(cuda_draw, draw_loaded_geometry)
 
     surface_raii vis(640, 480);
 
-    world_geometry world("mini_cooper.obj");
+    world_geometry world("shapes.obj");
     std::clog << "initialized" << std::endl;
 
     const auto& Triangles = world.triangles();
@@ -251,7 +250,6 @@ TEST(cuda_draw, draw_loaded_geometry)
         glfwWaitEvents();
     } 
     std::clog << "Done" << std::endl;
-
 }
 
 

@@ -72,13 +72,11 @@ void world_geometry::load(const std::string& file_name) {
             const auto idx1 = shape.mesh.indices[index_offset + 1].vertex_index;
             const auto idx2 = shape.mesh.indices[index_offset + 2].vertex_index;
 
-            const thrust::device_ptr<coord> P0 = &__vertices[idx0];
-            const thrust::device_ptr<coord> P1 = &__vertices[idx1];
-            const thrust::device_ptr<coord> P2 = &__vertices[idx2];
+            const auto P0 = __vertices[idx0];
+            const auto P1 = __vertices[idx1];
+            const auto P2 = __vertices[idx2];
 
-            __triangles.push_back(triangle{P0.get(), 
-                                           P1.get(), 
-                                           P2.get()});
+            __triangles.push_back(triangle{P0, P1, P2});
                 
             index_offset+= fv;
         }

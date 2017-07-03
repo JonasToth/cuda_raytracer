@@ -17,7 +17,7 @@
 class triangle {
 public:
     CUCALL triangle() = default;
-    CUCALL triangle(const coord* p0, const coord* p1, const coord* p2) : __points{p0, p1, p2} {}
+    CUCALL triangle(coord p0, coord p1, coord p2) : __points{p0, p1, p2} {}
 
     CUCALL triangle(const triangle&) = default;
     CUCALL triangle& operator=(const triangle&) = default;
@@ -27,9 +27,9 @@ public:
 
     CUCALL ~triangle() = default;
 
-    CUCALL coord p0() const noexcept { return *__points[0]; }
-    CUCALL coord p1() const noexcept { return *__points[1]; }
-    CUCALL coord p2() const noexcept { return *__points[2]; }
+    CUCALL coord p0() const noexcept { return __points[0]; }
+    CUCALL coord p1() const noexcept { return __points[1]; }
+    CUCALL coord p2() const noexcept { return __points[2]; }
 
     /// Surface normal of the triangle, not normalized
     CUCALL coord normal() const noexcept { return cross(p1() - p0(), p2() - p1()); }
@@ -59,10 +59,10 @@ public:
                dot(N, cross(E2, C2)) > 0;
     }
 
-    CUCALL bool isValid() const noexcept { return spansArea(*__points[0], *__points[1], *__points[2]); }
+    CUCALL bool isValid() const noexcept { return spansArea(__points[0], __points[1], __points[2]); }
 
 private:
-    const coord* __points[3]; //< optimization, triangles can share vertices
+    coord __points[3]; //< optimization, triangles can share vertices
 };
 
 

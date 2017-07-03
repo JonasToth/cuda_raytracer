@@ -46,7 +46,7 @@ TEST(ray, intersection)
     R.direction = coord{0, 0, 1};
 
     const coord P0{0, -10, 10}, P1{-10, 10, 10}, P2{10, 10, 10};
-    triangle T{&P0, &P1, &P2};
+    triangle T{P0, P1, P2};
 
     bool DoesIntersect;
     intersect I;
@@ -121,15 +121,15 @@ TEST(ray, trace_many_successfull)
     Vertices[0] = {0,-1,1}; 
     Vertices[1] = {-1,1,1};
     Vertices[2] = {1,1,1};
-    const thrust::device_ptr<coord> P0 = &Vertices[0];
-    const thrust::device_ptr<coord> P1 = &Vertices[1];
-    const thrust::device_ptr<coord> P2 = &Vertices[2];
+    const auto P0 = Vertices[0];
+    const auto P1 = Vertices[1];
+    const auto P2 = Vertices[2];
 
     const coord Origin{0, 0, 0};
 
     const auto triangle_void = thrust::device_malloc(sizeof(triangle));
     auto _ = gsl::finally([&triangle_void]() { thrust::device_free(triangle_void); });
-    const auto triangle_ptr = thrust::device_new(triangle_void, triangle{P0.get(), P1.get(), P2.get()});
+    const auto triangle_ptr = thrust::device_new(triangle_void, triangle{P0, P1, P2});
 
     OUT << "Triangle and tracer origin created" << std::endl;
 
@@ -168,15 +168,15 @@ TEST(ray, trace_many_failing)
     Vertices[0] = {0,-1,1}; 
     Vertices[1] = {-1,1,1};
     Vertices[2] = {1,1,1};
-    const thrust::device_ptr<coord> P0 = &Vertices[0];
-    const thrust::device_ptr<coord> P1 = &Vertices[1];
-    const thrust::device_ptr<coord> P2 = &Vertices[2];
+    const auto P0 = Vertices[0];
+    const auto P1 = Vertices[1];
+    const auto P2 = Vertices[2];
 
     const coord Origin{0, 0, 10};
 
     const auto triangle_void = thrust::device_malloc(sizeof(triangle));
     auto _ = gsl::finally([&triangle_void]() { thrust::device_free(triangle_void); });
-    const auto T = thrust::device_new(triangle_void, triangle{P0.get(), P1.get(), P2.get()});
+    const auto T = thrust::device_new(triangle_void, triangle{P0, P1, P2});
 
     const auto AllRays = generateRays(&Origin, SquareDim);
     const auto Result = traceTriangle(T, AllRays);
@@ -195,15 +195,15 @@ TEST(ray, trace_perspective)
     Vertices[0] = {.5f,-1,1}; 
     Vertices[1] = {-1,.5f,1};
     Vertices[2] = {1,1,1};
-    const thrust::device_ptr<coord> P0 = &Vertices[0];
-    const thrust::device_ptr<coord> P1 = &Vertices[1];
-    const thrust::device_ptr<coord> P2 = &Vertices[2];
+    const auto P0 = Vertices[0];
+    const auto P1 = Vertices[1];
+    const auto P2 = Vertices[2];
 
     const coord Origin{0, 0, 0};
 
     const auto triangle_void = thrust::device_malloc(sizeof(triangle));
     auto _ = gsl::finally([&triangle_void]() { thrust::device_free(triangle_void); });
-    const auto triangle_ptr = thrust::device_new(triangle_void, triangle{P0.get(), P1.get(), P2.get()});
+    const auto triangle_ptr = thrust::device_new(triangle_void, triangle{P0, P1, P2});
 
     OUT << "Triangle and tracer origin created" << std::endl;
 

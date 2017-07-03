@@ -43,11 +43,11 @@ TEST(triangle_test, construction)
     Vertices[0] = {0,0,0}; 
     Vertices[1] = {1,0,0};
     Vertices[2] = {0,1,0};
-    const thrust::device_ptr<coord> P0 = &Vertices[0];
-    const thrust::device_ptr<coord> P1 = &Vertices[1];
-    const thrust::device_ptr<coord> P2 = &Vertices[2];
+    const auto P0 = Vertices[0];
+    const auto P1 = Vertices[1];
+    const auto P2 = Vertices[2];
 
-    thrust::device_vector<triangle> Triangles(1, {P0.get(), P1.get(), P2.get()});
+    thrust::device_vector<triangle> Triangles(1, {P0, P1, P2});
 
     OUT << "Constructed" << std::endl;
 
@@ -59,13 +59,13 @@ TEST(triangle_test, construction)
 TEST(triangle_test, validity)
 {
     thrust::device_vector<coord> Vertices(3, coord{0,0,0});
-    const thrust::device_ptr<coord> P0 = &Vertices[0];
-    const thrust::device_ptr<coord> P1 = &Vertices[1];
-    const thrust::device_ptr<coord> P2 = &Vertices[2];
+    const auto P0 = Vertices[0];
+    const auto P1 = Vertices[1];
+    const auto P2 = Vertices[2];
 
     const auto triangle_void = thrust::device_malloc(sizeof(triangle));
     auto _ = gsl::finally([&triangle_void]() { thrust::device_free(triangle_void); });
-    const auto T = thrust::device_new(triangle_void, triangle{P0.get(), P1.get(), P2.get()});
+    const auto T = thrust::device_new(triangle_void, triangle{P0, P1, P2});
 
     OUT << "Data constructed and on the device" << std::endl;
 
@@ -104,14 +104,14 @@ TEST(triangle_test, contains_point)
     Vertices[0] = {0,0,0}; 
     Vertices[1] = {1,0,0};
     Vertices[2] = {0,1,0};
-    const thrust::device_ptr<coord> P0 = &Vertices[0];
-    const thrust::device_ptr<coord> P1 = &Vertices[1];
-    const thrust::device_ptr<coord> P2 = &Vertices[2];
+    const auto P0 = Vertices[0];
+    const auto P1 = Vertices[1];
+    const auto P2 = Vertices[2];
 
     const auto triangle_void = thrust::device_malloc(sizeof(triangle));
     auto _ = gsl::finally([&triangle_void]() { thrust::device_free(triangle_void); });
 
-    const auto T = thrust::device_new(triangle_void, triangle{P0.get(), P1.get(), P2.get()});
+    const auto T = thrust::device_new(triangle_void, triangle{P0, P1, P2});
 
     ASSERT_EQ(thrust::none_of(thrust::device, T, T + 1,
                               does_contain_correct_points{}), 
