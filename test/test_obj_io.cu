@@ -7,6 +7,24 @@
 /** @file test/test_obj_io.cpp
  * Test if .obj - Files for geometry are correctly loaded and saved.
  */
+TEST(obj_io, load_cube) {
+    world_geometry w("cube.obj");
+    
+    EXPECT_EQ(w.vertex_count(), 8) << "Bad Number of Vertices";
+    EXPECT_EQ(w.triangle_count(), 12) << "Bad Number of Triangles";
+    EXPECT_EQ(w.shape_count(), 1) << "Bad number of Shapes";
+
+    const thrust::host_vector<coord> h_vertices = w.vertices();
+
+    EXPECT_EQ(norm(h_vertices[0] - coord{1.f, -1.f, -1.f}), 0.f)                << "Bad vertex";
+    EXPECT_EQ(norm(h_vertices[1] - coord{1.f, -1.f, 1.f}), 0.f)                 << "Bad vertex";
+    EXPECT_EQ(norm(h_vertices[2] - coord{-1.f, -1.f, 1.f}), 0.f)                << "Bad vertex";
+    EXPECT_EQ(norm(h_vertices[3] - coord{-1.f, -1.f, -1.f}), 0.f)               << "Bad vertex";
+    EXPECT_EQ(norm(h_vertices[4] - coord{1.f, 1.f, -0.999999f}), 0.f)           << "Bad vertex";
+    EXPECT_LE(norm(h_vertices[5] - coord{0.9999999f, 1.f, 1.000001f}), 0.001f)  << "Bad vertex";
+    EXPECT_EQ(norm(h_vertices[6] - coord{-1.f, 1.f, 1.f}), 0.f)                 << "Bad vertex";
+    EXPECT_EQ(norm(h_vertices[7] - coord{-1.f, 1.f, -1.f}), 0.f)                << "Bad vertex";
+}
 
 TEST(obj_io, loading_simple) {
     world_geometry w;
