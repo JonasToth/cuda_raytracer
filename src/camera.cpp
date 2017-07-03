@@ -33,7 +33,7 @@ ray camera::rayAt(int u, int v) const noexcept {
     const coord rotated_dir(
             __rotation[0] * dir.x + __rotation[1] * dir.y + __rotation[2] * dir.z,
             __rotation[3] * dir.x + __rotation[4] * dir.y + __rotation[5] * dir.z,
-            __rotation[6] * dir.x + __rotation[7] * dir.y + __rotation[8] * dir.z,
+            __rotation[6] * dir.x + __rotation[7] * dir.y + __rotation[8] * dir.z
     );
 
     return ray(__origin, rotated_dir);
