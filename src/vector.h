@@ -100,6 +100,29 @@ inline CUCALL bool spansArea(const coord p0, const coord p1, const coord p2) noe
     return (p0 != p1) && (p0 != p2) && (p1 != p2);
 }
 
+inline CUCALL void rotation(coord v_orig, coord v_rot, float rotation_matrix[9]) noexcept
+{
+    v_orig = normalize(v_orig);
+    v_rot  = normalize(v_rot);
+
+    // https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d
+    coord v_cross = cross(v_orig, v_rot);
+    const float v1 = v_cross.x, v2 = v_cross.y, v3 = v_cross.z;
+    float cos = dot(v_orig, v_rot); // cos
+
+    // add skew_matrix squared
+    const float coeff = 1.f / (1.f + cos);
+    rotation_matrix[0] = 1.f + coeff * (-v3 * v3 + v2 * -v2);
+    rotation_matrix[1] = -v3 + coeff * (v1 * v2);
+    rotation_matrix[2] =  v2 + coeff * (v3 * v1);
+    rotation_matrix[3] =  v3 + coeff * (v1 * v2);
+    rotation_matrix[4] = 1.f + coeff * (v3 * -v3 + -v1 * v1);
+    rotation_matrix[5] = -v1 + coeff * (v3 * v2);
+    rotation_matrix[6] = -v2 + coeff * (v1 * v3);
+    rotation_matrix[7] =  v1 + coeff * (v2 * v3);
+    rotation_matrix[8] = 1.f + coeff * (-v2 * v2 + v1 * -v1);
+}
+
 
 inline std::ostream& operator<<(std::ostream& os, const coord& c)
 {

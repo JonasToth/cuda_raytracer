@@ -81,6 +81,23 @@ TEST(vector, utility)
     ASSERT_EQ(spansArea(V4, V5, V6), true);
 }
 
+TEST(vector, rotation)
+{
+    float R[9] = {0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f};
+    coord Vectors[] = {
+        {1.f, 0.f, 0.f}, {0.f, 1.f, 0.f}, {0.f, 0.f, 1.f},
+        {10.5f, -12.f, 14.f}
+    };
+
+    for(const auto& v: Vectors)
+    {
+        rotation({0.f, 0.f, 1.f}, v, R);
+        std::clog << R[0] << ',' << R[1] << ',' << R[2] << std::endl;
+        std::clog << R[3] << ',' << R[4] << ',' << R[5] << std::endl;
+        std::clog << R[6] << ',' << R[7] << ',' << R[8] << std::endl;
+    }
+}
+
 int main(int argc, char** argv)
 {
     testing::InitGoogleTest(&argc, argv);

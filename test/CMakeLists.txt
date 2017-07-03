@@ -49,6 +49,10 @@ target_link_libraries(test_build_cuda.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread
 cuda_add_executable(test_surface_raii.x test_surface_raii.cu ${cudafiles} ${PROJECT_SOURCE_DIR}/src/surface_raii.cu)
 target_link_libraries(test_surface_raii.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread glfw ${OPENGL_gl_LIBRARY})
 
+add_executable(test_camera.x test_camera.cpp 
+               ${PROJECT_SOURCE_DIR}/src/camera.cpp)
+target_link_libraries(test_camera.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
+
 # ----------------------------------------------------------------------------------------
 #                               ===== Testing =====
 
@@ -60,6 +64,7 @@ add_test(test_cuda_triangle test_cuda_triangle.x)
 add_test(test_triangle test_triangle.x)
 add_test(test_cuda_ray test_cuda_ray.x)
 add_test(test_ray test_ray.x)
+add_test(test_camera test_camera.x)
 #add_test(test_surface_raii test_surface_raii.x)
 
 #set_tests_properties(test_build_cuda)
