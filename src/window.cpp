@@ -10,7 +10,7 @@ window::window(int width, int height, const std::string& title)
     if(init == 0)
         throw std::runtime_error{"Could not initialize glfw"};
 
-    __w = glfwCreateWindow(640, 480, title.c_str(), nullptr, nullptr);
+    __w = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
 
     if(__w == nullptr)
     {

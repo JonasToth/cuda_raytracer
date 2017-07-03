@@ -19,11 +19,40 @@
 #include <thrust/fill.h>
 #include <utility>
 
+const int Width = 800, Height = 600;
+camera c(Width, Height, {5.f, 5.f, 5.f}, {0.f, 0.f, 1.f});
 
 static void quit_with_q(GLFWwindow* w, int key, int scancode, int action, int mods)
 {
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    {
         glfwSetWindowShouldClose(w, GLFW_TRUE);
+        return;
+    }
+
+    else if(key == GLFW_KEY_A && action == GLFW_PRESS)
+        c.move({-0.5f, 0.f, 0.f});
+    
+    else if(key == GLFW_KEY_D && action == GLFW_PRESS)
+        c.move({0.5f, 0.f, 0.f});
+
+    else if(key == GLFW_KEY_W && action == GLFW_PRESS)
+        c.move({0.f, -0.5f, 0.f});
+
+    else if(key == GLFW_KEY_S && action == GLFW_PRESS)
+        c.move({0.f, 0.5f, 0.f});
+
+    else if(key == GLFW_KEY_Q && action == GLFW_PRESS)
+        c.move({0.f, 0.f, -0.5f});
+
+    else if(key == GLFW_KEY_E && action == GLFW_PRESS)
+        c.move({0.f, 0.f, 0.5f});
+
+    else
+        return;
+
+    std::clog << "Camera Position: " << c.origin() << std::endl;
+    std::clog << "Camera Steering At: " << c.steering() << std::endl;
 }
 
 
@@ -153,6 +182,13 @@ __global__ void trace_kernel(cudaSurfaceObject_t Surface, const triangle* T, int
     }
 }
 
+void raytrace_cuda(cudaSurfaceObject_t& Surface, const triangle* T) {
+    dim3 dimBlock(32,32);
+    dim3 dimGrid((640 + dimBlock.x) / dimBlock.x,
+                 (480 + dimBlock.y) / dimBlock.y);
+    trace_kernel<<<dimGrid, dimBlock>>>(Surface, T, 640, 480);
+}
+
 __global__ void trace_many_kernel(cudaSurfaceObject_t Surface, 
                                   camera c,
                                   const triangle* Triangles, int TriangleCount,
@@ -209,22 +245,15 @@ __global__ void trace_many_kernel(cudaSurfaceObject_t Surface,
 
 }
 
-void raytrace_cuda(cudaSurfaceObject_t& Surface, const triangle* T) {
-    dim3 dimBlock(32,32);
-    dim3 dimGrid((640 + dimBlock.x) / dimBlock.x,
-                 (480 + dimBlock.y) / dimBlock.y);
-    trace_kernel<<<dimGrid, dimBlock>>>(Surface, T, 640, 480);
-}
-
 void raytrace_many_cuda(cudaSurfaceObject_t& Surface, 
                         const camera& c,
                         const triangle* Triangles,
                         int TriangleCount) {
     dim3 dimBlock(32,32);
-    dim3 dimGrid((640 + dimBlock.x) / dimBlock.x,
-                 (480 + dimBlock.y) / dimBlock.y);
+    dim3 dimGrid((c.width() + dimBlock.x) / dimBlock.x,
+                 (c.height() + dimBlock.y) / dimBlock.y);
     trace_many_kernel<<<dimGrid, dimBlock>>>(Surface, c, Triangles, TriangleCount, 
-                                             640, 480);
+                                             c.width(), c.height());
 }
 
 TEST(cuda_draw, drawing_traced_triangle) 
@@ -286,14 +315,13 @@ TEST(cuda_draw, drawing_traced_triangle)
 
 TEST(cuda_draw, draw_loaded_geometry)
 {
-    window win(640, 480, "Cuda Raytracer");
+    window win(Width, Height, "Cuda Raytracer");
     auto w = win.getWindow();
 
     glfwSetKeyCallback(w, quit_with_q);
     glfwMakeContextCurrent(w);
 
-    surface_raii vis(640, 480);
-    camera c(640, 480, {2.f, 2.f, 2.f}, {-2.f, -2.f, -2.f});
+    surface_raii vis(Width, Height);
 
     world_geometry world("cube.obj");
     std::clog << "initialized" << std::endl;
@@ -302,9 +330,9 @@ TEST(cuda_draw, draw_loaded_geometry)
 
     while(!glfwWindowShouldClose(w)) {
         dim3 dimBlock(32,32);
-        dim3 dimGrid((640 + dimBlock.x) / dimBlock.x,
-                     (480 + dimBlock.y) / dimBlock.y);
-        black_kernel<<<dimGrid, dimBlock>>>(vis.getSurface(), 640, 480);
+        dim3 dimGrid((Width + dimBlock.x) / dimBlock.x,
+                     (Height + dimBlock.y) / dimBlock.y);
+        black_kernel<<<dimGrid, dimBlock>>>(vis.getSurface(), Width, Height);
 
         raytrace_many_cuda(vis.getSurface(), c, 
                            Triangles.data().get(), Triangles.size());
