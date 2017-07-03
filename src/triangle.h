@@ -51,9 +51,9 @@ public:
         //if(!(PlaneEquation < 0.001 && PlaneEquation > -0.001))
             //return false;
 
-        return dot(N, cross(E0, C0)) > 0 &&
-               dot(N, cross(E1, C1)) > 0 &&
-               dot(N, cross(E2, C2)) > 0;
+        return dot(N, cross(E0, C0)) >= 0 &&
+               dot(N, cross(E1, C1)) >= 0 &&
+               dot(N, cross(E2, C2)) >= 0;
     }
 
     CUCALL bool isValid() const noexcept { return spansArea(__points[0], __points[1], __points[2]); }

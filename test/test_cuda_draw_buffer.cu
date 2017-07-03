@@ -20,39 +20,64 @@
 #include <utility>
 
 const int Width = 800, Height = 600;
-camera c(Width, Height, {5.f, 5.f, 5.f}, {0.f, 0.f, 1.f});
+camera c(Width, Height, {2.f, 2.f, 2.f}, {0.f, 0.f, 1.f});
 
 static void quit_with_q(GLFWwindow* w, int key, int scancode, int action, int mods)
 {
+    const float dP     = 0.5;
+    const float dAngle = M_PI / 180. * 5.;
+
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
     {
         glfwSetWindowShouldClose(w, GLFW_TRUE);
         return;
     }
-
     else if(key == GLFW_KEY_A && action == GLFW_PRESS)
-        c.move({-0.5f, 0.f, 0.f});
+        c.move({-dP, 0.f, 0.f});
     
     else if(key == GLFW_KEY_D && action == GLFW_PRESS)
-        c.move({0.5f, 0.f, 0.f});
+        c.move({dP, 0.f, 0.f});
 
     else if(key == GLFW_KEY_W && action == GLFW_PRESS)
-        c.move({0.f, -0.5f, 0.f});
+        c.move({0.f, 0.f, dP});
 
     else if(key == GLFW_KEY_S && action == GLFW_PRESS)
-        c.move({0.f, 0.5f, 0.f});
+        c.move({0.f, 0.f, -dP});
 
     else if(key == GLFW_KEY_Q && action == GLFW_PRESS)
-        c.move({0.f, 0.f, -0.5f});
+        c.move({0.f, dP, 0.f});
 
     else if(key == GLFW_KEY_E && action == GLFW_PRESS)
-        c.move({0.f, 0.f, 0.5f});
+        c.move({0.f, -dP, 0.f});
+
+    else if(key == GLFW_KEY_LEFT && action == GLFW_PRESS)
+        c.swipe(0.f, -dAngle, 0.f);
+
+    else if(key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
+        c.swipe(0.f, dAngle, 0.f);
+
+    else if(key == GLFW_KEY_UP && action == GLFW_PRESS)
+        c.swipe(dAngle, 0.f, 0.f);
+
+    else if(key == GLFW_KEY_DOWN && action == GLFW_PRESS)
+        c.swipe(-dAngle, 0.f, 0.f);
 
     else
         return;
 
     std::clog << "Camera Position: " << c.origin() << std::endl;
     std::clog << "Camera Steering At: " << c.steering() << std::endl;
+}
+
+static void control_steering(GLFWwindow* w, double xpos, double ypos)
+{
+    // xpos = alpha
+    // ypos = beta
+    //std::clog << "X: " << xpos << ";Y: " << ypos << std::endl;
+    //float beta  = 2. * M_PI * xpos / Width;
+    //float gamma = M_PI * ypos / Height;
+    //c.swipe(beta, gamma);
+    //std::clog << "Camera Steering At: " << c.steering() << std::endl;
 }
 
 
@@ -315,14 +340,22 @@ TEST(cuda_draw, drawing_traced_triangle)
 
 TEST(cuda_draw, draw_loaded_geometry)
 {
+    // Window stuff
     window win(Width, Height, "Cuda Raytracer");
     auto w = win.getWindow();
 
     glfwSetKeyCallback(w, quit_with_q);
+    glfwSetCursorPosCallback(w, control_steering);
+    glfwSetInputMode(w, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //c.lookAt({0.f, 0.f, 0.f});
+    std::clog << c.steering() << std::endl;
+
     glfwMakeContextCurrent(w);
 
+    // Cuda stuff
     surface_raii vis(Width, Height);
 
+    // 3D Stuff
     world_geometry world("cube.obj");
     std::clog << "initialized" << std::endl;
 

@@ -36,14 +36,14 @@ TEST(triangle_test, contains_point)
     triangle T{P0, P1, P2};
 
     // Edges and vertices seem not to match
-    //EXPECT_EQ(T.contains(P0), true) << "P0";
-    //EXPECT_EQ(T.contains(P1), true) << "P1";
-    //EXPECT_EQ(T.contains(P2), true) << "P2";
+    EXPECT_EQ(T.contains(P0), true) << "P0";
+    EXPECT_EQ(T.contains(P1), true) << "P1";
+    EXPECT_EQ(T.contains(P2), true) << "P2";
 
-    //EXPECT_EQ(T.contains({0.5, 0.5, 0}), true) << "0.5 0.5 0";
-    //EXPECT_EQ(T.contains({0.5, 0.0, 0}), true) << "0.5 0 0";
+    EXPECT_EQ(T.contains({0.5, 0.5, 0}), true) << "0.5 0.5 0";
+    EXPECT_EQ(T.contains({0.5, 0.0, 0}), true) << "0.5 0 0";
 
-    EXPECT_EQ(T.contains({0.5, 0.5, 1}), false) << "0.5 0.5 1";
+    EXPECT_EQ(T.contains({0.5, 0.5, 1}), true) << "0.5 0.5 1";
     EXPECT_EQ(T.contains({0.5, -0.5, 0}), false) << "0.5 -0.5 0";
     EXPECT_EQ(T.contains({-0.5, -0.5, 0}), false) << "-0.5 -0.5 0";
     EXPECT_EQ(T.contains({-0.5, 0.5, 0}), false) << "-0.5 0.5 0";

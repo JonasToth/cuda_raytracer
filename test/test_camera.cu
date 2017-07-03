@@ -18,7 +18,7 @@ TEST(camera, properties)
     EXPECT_EQ(c.width(), 640) << "Bad width";
     EXPECT_EQ(c.height(), 480) << "Bad height";
     EXPECT_EQ(c.origin(), coord(1.f, 1.f, 1.f)) << "Bad origin";
-    EXPECT_EQ(c.steering(), coord(-1.f, -1.f, -1.f)) << "Bad steering";
+    EXPECT_EQ(c.steering(), normalize(coord(-1.f, -1.f, -1.f))) << "Bad steering";
 
     c.move({5.f, 0.f, 0.f});
     EXPECT_EQ(c.origin(), coord(6.f, 1.f, 1.f)) << "Bad origin";
@@ -64,6 +64,10 @@ TEST(camera, complex_rays)
     std::clog << c.rayAt(640, 0).direction << std::endl;
     std::clog << c.rayAt(0, 480).direction << std::endl;
     std::clog << c.rayAt(640, 480).direction << std::endl;
+
+    c.swipe(0.f, M_PI / 4., M_PI / 4.);
+
+    std::clog << c.rayAt(320, 480).direction << std::endl;
 }
 
 
