@@ -34,9 +34,9 @@ target_link_libraries(test_ray.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 cuda_add_executable(test_cuda_ray.x test_cuda_ray.cu)
 target_link_libraries(test_cuda_ray.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
-add_executable(test_glfw.x test_glfw.cpp)
-target_link_libraries(test_glfw.x ${GTEST_MAIN} ${GTEST_LIBRARIES} glfw ${OPENGL_gl_LIBRARY} pthread
-                      ${PROJECT_SOURCE_DIR}/src/window.cpp)
+add_executable(test_glfw.x test_glfw.cpp
+               ${PROJECT_SOURCE_DIR}/src/window.cpp)
+target_link_libraries(test_glfw.x ${GTEST_MAIN} ${GTEST_LIBRARIES} glfw ${OPENGL_gl_LIBRARY} pthread)
 
 cuda_add_executable(test_cuda_draw_buffer.x test_cuda_draw_buffer.cu 
                     ${PROJECT_SOURCE_DIR}/src/surface_raii.cu 
@@ -55,6 +55,10 @@ cuda_add_executable(test_camera.x test_camera.cu
                     ${PROJECT_SOURCE_DIR}/src/camera.cu)
 target_link_libraries(test_camera.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
+add_executable(test_input_manager.x test_input_manager.cpp
+               ${PROJECT_SOURCE_DIR}/src/input_manager.cpp)
+target_link_libraries(test_input_manager.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
+
 # ----------------------------------------------------------------------------------------
 #                               ===== Testing =====
 
@@ -67,7 +71,8 @@ add_test(test_triangle test_triangle.x)
 add_test(test_cuda_ray test_cuda_ray.x)
 add_test(test_ray test_ray.x)
 add_test(test_camera test_camera.x)
-#add_test(test_surface_raii test_surface_raii.x)
+add_test(test_surface_raii test_surface_raii.x)
+add_test(test_input_manager test_input_manager.x)
 
 #set_tests_properties(test_build_cuda)
 #PROPERTIES
