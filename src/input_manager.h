@@ -20,6 +20,8 @@ public:
 
     bool isPressed(int key_id);
 
+    void clear() { __key_mapping.clear(); }
+
 private:
     input_manager() = default;
 

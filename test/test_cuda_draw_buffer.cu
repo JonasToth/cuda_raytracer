@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "camera.h"
+#include "input_manager.h"
 #include "macros.h"
 #include "obj_io.h"
 #include "triangle.h"
@@ -19,7 +20,7 @@
 #include <thrust/fill.h>
 #include <utility>
 
-const int Width = 800, Height = 600;
+const int Width = 800, Height = 800;
 camera c(Width, Height, {2.f, 2.f, 2.f}, {0.f, 0.f, 1.f});
 
 static void quit_with_q(GLFWwindow* w, int key, int scancode, int action, int mods)
@@ -27,46 +28,40 @@ static void quit_with_q(GLFWwindow* w, int key, int scancode, int action, int mo
     const float dP     = 0.5;
     const float dAngle = M_PI / 180. * 5.;
 
-    if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-    {
+    auto& im = input_manager::instance();
+
+    if(action == GLFW_PRESS)
+        im.press(key);
+    else if(action == GLFW_RELEASE)
+        im.release(key);
+
+    if(im.isPressed(GLFW_KEY_ESCAPE))
         glfwSetWindowShouldClose(w, GLFW_TRUE);
-        return;
-    }
-    else if(key == GLFW_KEY_A && action == GLFW_PRESS)
+    else if(im.isPressed(GLFW_KEY_A))
         c.move({-dP, 0.f, 0.f});
-    
-    else if(key == GLFW_KEY_D && action == GLFW_PRESS)
+    else if(im.isPressed(GLFW_KEY_D))
         c.move({dP, 0.f, 0.f});
-
-    else if(key == GLFW_KEY_W && action == GLFW_PRESS)
+    else if(im.isPressed(GLFW_KEY_W))
         c.move({0.f, 0.f, dP});
-
-    else if(key == GLFW_KEY_S && action == GLFW_PRESS)
+    else if(im.isPressed(GLFW_KEY_S))
         c.move({0.f, 0.f, -dP});
-
-    else if(key == GLFW_KEY_Q && action == GLFW_PRESS)
+    else if(im.isPressed(GLFW_KEY_Q))
         c.move({0.f, dP, 0.f});
-
-    else if(key == GLFW_KEY_E && action == GLFW_PRESS)
+    else if(im.isPressed(GLFW_KEY_E))
         c.move({0.f, -dP, 0.f});
-
-    else if(key == GLFW_KEY_LEFT && action == GLFW_PRESS)
+    else if(im.isPressed(GLFW_KEY_LEFT))
         c.swipe(0.f, -dAngle, 0.f);
-
-    else if(key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
+    else if(im.isPressed(GLFW_KEY_RIGHT))
         c.swipe(0.f, dAngle, 0.f);
-
-    else if(key == GLFW_KEY_UP && action == GLFW_PRESS)
+    else if(im.isPressed(GLFW_KEY_UP))
         c.swipe(dAngle, 0.f, 0.f);
-
-    else if(key == GLFW_KEY_DOWN && action == GLFW_PRESS)
+    else if(im.isPressed(GLFW_KEY_DOWN))
         c.swipe(-dAngle, 0.f, 0.f);
-
     else
         return;
 
     std::clog << "Camera Position: " << c.origin() << std::endl;
-    std::clog << "Camera Steering At: " << c.steering() << std::endl;
+    std::clog << "Camera Steering At: " << c.steering() << std::endl << std::endl;
 }
 
 static void control_steering(GLFWwindow* w, double xpos, double ypos)
@@ -102,20 +97,20 @@ void invokeRenderingKernel(cudaSurfaceObject_t& Surface, float t)
 {
     //std::clog << "Rendering new image " << char{t} << std::endl;
     dim3 dimBlock(32,32);
-    dim3 dimGrid((640 + dimBlock.x) / dimBlock.x,
-                 (480 + dimBlock.y) / dimBlock.y);
+    dim3 dimGrid((Width  + dimBlock.x) / dimBlock.x,
+                 (Height + dimBlock.y) / dimBlock.y);
     std::clog << "Render : " << t << std::endl;
-    grayKernel<<<dimGrid, dimBlock>>>(Surface, 640, 480, t);
+    grayKernel<<<dimGrid, dimBlock>>>(Surface, Width, Height, t);
 }
 
 TEST(cuda_draw, basic_drawing) {
-    window win(640, 480, "Cuda Raytracer");
+    window win(Width, Height, "Cuda Raytracer");
     auto w = win.getWindow();
 
     glfwSetKeyCallback(w, quit_with_q);
     glfwMakeContextCurrent(w);
 
-    surface_raii vis(640, 480);
+    surface_raii vis(Width, Height);
 
     std::clog << "Init" << std::endl;
     float t = 0.f;
@@ -130,6 +125,7 @@ TEST(cuda_draw, basic_drawing) {
         glfwPollEvents();
         std::clog << "Loop end" << std::endl;
     }
+    input_manager::instance().clear();
 
     std::clog << "Done" << std::endl;
 }
@@ -141,13 +137,13 @@ void render_cuda2(cudaSurfaceObject_t& Surface, float t) {
 }
 
 TEST(cuda_draw, drawing_less_surfaces) {
-    window win(640, 480, "Cuda Raytracer");
+    window win(Width, Height, "Cuda Raytracer");
     auto w = win.getWindow();
 
     glfwSetKeyCallback(w, quit_with_q);
     glfwMakeContextCurrent(w);
 
-    surface_raii vis(640, 480);
+    surface_raii vis(Width, Height);
 
     float t = 0.f;
     while(!glfwWindowShouldClose(w)) {
@@ -159,6 +155,7 @@ TEST(cuda_draw, drawing_less_surfaces) {
         glfwSwapBuffers(w);
         glfwWaitEvents();
     }
+    input_manager::instance().clear();
     std::clog << "Done" << std::endl;
 }
 
@@ -185,7 +182,7 @@ __global__ void trace_kernel(cudaSurfaceObject_t Surface, const triangle* T, int
     if(x < Width && y < Height)
     {
         ray R;
-        R.origin    = coord{1.5, 1.5, 1.5};
+        R.origin    = coord{0.f, 0.f, -1.f};
         float DX = 2.f / ((float) Width  - 1);
         float DY = 2.f / ((float) Height - 1);
         R.direction = coord{x * DX - 1.f, y * DY - 1.f, focal_length};
@@ -209,9 +206,9 @@ __global__ void trace_kernel(cudaSurfaceObject_t Surface, const triangle* T, int
 
 void raytrace_cuda(cudaSurfaceObject_t& Surface, const triangle* T) {
     dim3 dimBlock(32,32);
-    dim3 dimGrid((640 + dimBlock.x) / dimBlock.x,
-                 (480 + dimBlock.y) / dimBlock.y);
-    trace_kernel<<<dimGrid, dimBlock>>>(Surface, T, 640, 480);
+    dim3 dimGrid((Width + dimBlock.x) / dimBlock.x,
+                 (Height+ dimBlock.y) / dimBlock.y);
+    trace_kernel<<<dimGrid, dimBlock>>>(Surface, T, Width, Height);
 }
 
 __global__ void trace_many_kernel(cudaSurfaceObject_t Surface, 
@@ -283,7 +280,7 @@ void raytrace_many_cuda(cudaSurfaceObject_t& Surface,
 
 TEST(cuda_draw, drawing_traced_triangle) 
 {
-    window win(640, 480, "Cuda Raytracer");
+    window win(Width, Height, "Cuda Raytracer");
     auto w = win.getWindow();
 
     glfwSetKeyCallback(w, quit_with_q);
@@ -291,7 +288,7 @@ TEST(cuda_draw, drawing_traced_triangle)
 
     std::clog << "before surface creation" << std::endl;
 
-    surface_raii vis(640, 480);
+    surface_raii vis(Width, Height);
     
     std::clog << "init" << std::endl;
 
@@ -320,9 +317,9 @@ TEST(cuda_draw, drawing_traced_triangle)
 
     while(!glfwWindowShouldClose(w)) {
         dim3 dimBlock(32,32);
-        dim3 dimGrid((640 + dimBlock.x) / dimBlock.x,
-                     (480 + dimBlock.y) / dimBlock.y);
-        black_kernel<<<dimGrid, dimBlock>>>(vis.getSurface(), 640, 480);
+        dim3 dimGrid((Width + dimBlock.x) / dimBlock.x,
+                     (Height+ dimBlock.y) / dimBlock.y);
+        black_kernel<<<dimGrid, dimBlock>>>(vis.getSurface(), Width, Height);
 
         for(std::size_t i = 0; i < Triangles.size(); ++i)
         {
@@ -335,6 +332,7 @@ TEST(cuda_draw, drawing_traced_triangle)
         glfwSwapBuffers(w);
         glfwWaitEvents();
     } 
+    input_manager::instance().clear();
     std::clog << "Done" << std::endl;
 }
 
@@ -347,6 +345,7 @@ TEST(cuda_draw, draw_loaded_geometry)
     glfwSetKeyCallback(w, quit_with_q);
     glfwSetCursorPosCallback(w, control_steering);
     glfwSetInputMode(w, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     //c.lookAt({0.f, 0.f, 0.f});
     std::clog << c.steering() << std::endl;
 
@@ -356,7 +355,7 @@ TEST(cuda_draw, draw_loaded_geometry)
     surface_raii vis(Width, Height);
 
     // 3D Stuff
-    world_geometry world("mini_cooper.obj");
+    world_geometry world("shapes.obj");
     std::clog << "initialized" << std::endl;
 
     const auto& Triangles = world.triangles();
@@ -375,6 +374,7 @@ TEST(cuda_draw, draw_loaded_geometry)
         glfwSwapBuffers(w);
         glfwWaitEvents();
     } 
+    input_manager::instance().clear();
     std::clog << "Done" << std::endl;
 }
 
