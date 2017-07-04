@@ -23,7 +23,9 @@
 const int Width = 800, Height = 800;
 camera c(Width, Height, {2.f, 2.f, 2.f}, {0.f, 0.f, 1.f});
 
-static void quit_with_q(GLFWwindow* w, int key, int scancode, int action, int mods)
+double m_x = 0., m_y = 0.;
+
+static void handle_keys(GLFWwindow* w, int key, int scancode, int action, int mods)
 {
     const float dP     = 0.5;
     const float dAngle = M_PI / 180. * 5.;
@@ -64,15 +66,32 @@ static void quit_with_q(GLFWwindow* w, int key, int scancode, int action, int mo
     std::clog << "Camera Steering At: " << c.steering() << std::endl << std::endl;
 }
 
-static void control_steering(GLFWwindow* w, double xpos, double ypos)
+static void mouse_movement(GLFWwindow* w, double xpos, double ypos)
 {
+    double dx = m_x - xpos;
+    double dy = m_y - ypos;
     // xpos = alpha
     // ypos = beta
-    //std::clog << "X: " << xpos << ";Y: " << ypos << std::endl;
-    //float beta  = 2. * M_PI * xpos / Width;
-    //float gamma = M_PI * ypos / Height;
-    //c.swipe(beta, gamma);
-    //std::clog << "Camera Steering At: " << c.steering() << std::endl;
+    double beta   = -2. * M_PI * dx / Width * 0.01;
+    double gamma_ = M_PI * dy / Height * 0.1;
+
+    c.swipe(0., beta, gamma_);
+
+    m_x = xpos;
+    m_y = ypos;
+
+    std::clog << "X: " << xpos << ";Y: " << ypos << std::endl;
+    std::clog << "Camera Steering At: " << c.steering() << std::endl;
+}
+
+static void mouse_scrolling(GLFWwindow* w, double xoffset, double yoffset)
+{
+    double alpha = 5. * yoffset / (2. * M_PI);
+
+    c.swipe(alpha, 0., 0.);
+
+    std::clog << "Xoff: " << xoffset << ";Yoff: " << yoffset << std::endl;
+    std::clog << "Camera Steering At: " << c.steering() << std::endl;
 }
 
 
@@ -107,7 +126,7 @@ TEST(cuda_draw, basic_drawing) {
     window win(Width, Height, "Cuda Raytracer");
     auto w = win.getWindow();
 
-    glfwSetKeyCallback(w, quit_with_q);
+    glfwSetKeyCallback(w, handle_keys);
     glfwMakeContextCurrent(w);
 
     surface_raii vis(Width, Height);
@@ -140,7 +159,7 @@ TEST(cuda_draw, drawing_less_surfaces) {
     window win(Width, Height, "Cuda Raytracer");
     auto w = win.getWindow();
 
-    glfwSetKeyCallback(w, quit_with_q);
+    glfwSetKeyCallback(w, handle_keys);
     glfwMakeContextCurrent(w);
 
     surface_raii vis(Width, Height);
@@ -283,7 +302,7 @@ TEST(cuda_draw, drawing_traced_triangle)
     window win(Width, Height, "Cuda Raytracer");
     auto w = win.getWindow();
 
-    glfwSetKeyCallback(w, quit_with_q);
+    glfwSetKeyCallback(w, handle_keys);
     glfwMakeContextCurrent(w);
 
     std::clog << "before surface creation" << std::endl;
@@ -342,8 +361,9 @@ TEST(cuda_draw, draw_loaded_geometry)
     window win(Width, Height, "Cuda Raytracer");
     auto w = win.getWindow();
 
-    glfwSetKeyCallback(w, quit_with_q);
-    glfwSetCursorPosCallback(w, control_steering);
+    glfwSetKeyCallback(w, handle_keys);
+    glfwSetCursorPosCallback(w, mouse_movement);
+    glfwSetScrollCallback(w, mouse_scrolling);
     glfwSetInputMode(w, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     //c.lookAt({0.f, 0.f, 0.f});
