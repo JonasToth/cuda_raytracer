@@ -58,13 +58,10 @@ struct ray {
         float Divisor = dot(TNormal, direction);
 
         // rays are parallel, so no intersection
-        if(Divisor < 0.000001 && Divisor > -0.000001)
+        if(Divisor == 0.f)
             return LIB::make_pair(false, intersect{});
 
-        // plane equation: Ax + By + Cz + D = 0, compute D
-        const float D = dot(TNormal, Tri.p0());
-        
-        const float T = (dot(TNormal, origin) + D) / Divisor;
+        const float T = dot(TNormal, Tri.p0() - origin) / Divisor;
         const coord Hit = origin + T * direction;
 
         if(T > 0.f)

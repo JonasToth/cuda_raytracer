@@ -356,7 +356,7 @@ TEST(cuda_draw, draw_loaded_geometry)
     surface_raii vis(Width, Height);
 
     // 3D Stuff
-    world_geometry world("cube.obj");
+    world_geometry world("mini_cooper.obj");
     std::clog << "initialized" << std::endl;
 
     const auto& Triangles = world.triangles();

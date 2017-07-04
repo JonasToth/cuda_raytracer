@@ -35,7 +35,8 @@ cuda_add_executable(test_cuda_ray.x test_cuda_ray.cu)
 target_link_libraries(test_cuda_ray.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 add_executable(test_glfw.x test_glfw.cpp)
-target_link_libraries(test_glfw.x ${GTEST_MAIN} ${GTEST_LIBRARIES} glfw ${OPENGL_gl_LIBRARY} pthread)
+target_link_libraries(test_glfw.x ${GTEST_MAIN} ${GTEST_LIBRARIES} glfw ${OPENGL_gl_LIBRARY} pthread
+                      ${PROJECT_SOURCE_DIR}/src/window.cpp)
 
 cuda_add_executable(test_cuda_draw_buffer.x test_cuda_draw_buffer.cu 
                     ${PROJECT_SOURCE_DIR}/src/surface_raii.cu 
