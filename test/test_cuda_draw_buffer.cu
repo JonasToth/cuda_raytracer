@@ -274,9 +274,13 @@ __global__ void trace_many_kernel(cudaSurfaceObject_t Surface,
         }
 
         if(NearestTriangle != nullptr) {
-            FGColor.x = NearestIntersect.depth * 10.f;
+            auto flat_shade = dot(NearestIntersect.normal, R.direction);
+            //FGColor.x = NearestIntersect.depth * 10.f;
             FGColor.y = NearestIntersect.depth * 10.f;
             FGColor.z = NearestIntersect.depth * 10.f;
+            FGColor.x = flat_shade;
+            //FGColor.y = flat_shade * 255;
+            //FGColor.z = flat_shade * 255;
             surf2Dwrite(FGColor, Surface, x * 4, y);
         }
         else {

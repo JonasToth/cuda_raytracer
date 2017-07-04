@@ -26,6 +26,7 @@ TEST(ray, intersection)
     ASSERT_EQ(DoesIntersect, true) << "depth=" << I.depth;
     ASSERT_EQ(I.depth, 10.) << "(" << I.hit.x << "," << I.hit.y << "," << I.hit.z << ")\n" 
                             << "(" << I.normal.x << "," << I.normal.y << "," << I.normal.z << ")";
+    ASSERT_EQ(I.normal, coord(0., 0., -1.f)) << I.normal;
 }
 
 std::vector<ray> generateRays(const coord& Origin, std::size_t SquareDim) {
