@@ -9,16 +9,8 @@
 #include "management/window.h"
 #include "obj_io.h"
 
-#include <GLFW/glfw3.h>
-#include <gsl/gsl>
 #include <iostream>
-#include <limits>
-#include <thrust/device_free.h>
-#include <thrust/device_malloc.h>
-#include <thrust/device_new.h>
-#include <thrust/device_vector.h>
-#include <thrust/execution_policy.h>
-#include <thrust/fill.h>
+//#include <limits>
 #include <utility>
 
 const int Width = 800, Height = 800;
@@ -147,35 +139,6 @@ TEST(cuda_draw, basic_drawing) {
     }
     input_manager::instance().clear();
 
-    std::clog << "Done" << std::endl;
-}
-
-/// Write pixel data with cuda.
-void render_cuda2(cudaSurfaceObject_t& Surface, float t) {
-    // Rendering
-    invokeRenderingKernel(Surface, t);
-}
-
-TEST(cuda_draw, drawing_less_surfaces) {
-    window win(Width, Height, "Cuda Raytracer");
-    auto w = win.getWindow();
-
-    glfwSetKeyCallback(w, handle_keys);
-    glfwMakeContextCurrent(w);
-
-    surface_raii vis(Width, Height);
-
-    float t = 0.f;
-    while(!glfwWindowShouldClose(w)) {
-        t += 0.5f;
-        render_cuda2(vis.getSurface(), t);
-
-        vis.render_gl_texture();
-
-        glfwSwapBuffers(w);
-        glfwWaitEvents();
-    }
-    input_manager::instance().clear();
     std::clog << "Done" << std::endl;
 }
 
