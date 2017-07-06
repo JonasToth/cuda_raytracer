@@ -45,8 +45,8 @@ public:
     const thrust::device_vector<triangle>& triangles() const noexcept { return __triangles; }
 
 private:
-    thrust::device_vector<coord> __vertices;        ///< all vertices in the world
-    thrust::device_vector<phong_material> __materials;    ///< all existing materials
+    thrust::device_vector<coord> __vertices;            ///< all vertices in the world
+    thrust::device_vector<phong_material> __materials;  ///< all existing materials
 
     thrust::device_vector<triangle> __triangles;    ///< references the __vertices 
                                                     ///  and __materials
@@ -54,15 +54,5 @@ private:
     std::size_t __shape_count;                      ///< number of shapes(objects) in scene
 };
 
-
-namespace __detail 
-{
-/// For better testing, will be called internally
-void deserialize_geometry(const std::string& file_name,
-                         thrust::host_vector<coord>& vertices,
-                         thrust::host_vector<triangle>& triangles,
-                         thrust::host_vector<phong_material>& materials,
-                         std::size_t& shape_count);
-}
 
 #endif /* end of include guard: OBJ_IO_H_ZHYWUHRN */

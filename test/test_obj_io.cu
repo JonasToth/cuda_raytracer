@@ -9,45 +9,6 @@
  * Test if .obj - Files for geometry are correctly loaded and saved.
  */
 
-TEST(obj_io, detail_load)
-{
-    thrust::host_vector<coord> h_vertices;
-    thrust::host_vector<triangle> h_triangles;
-    thrust::host_vector<phong_material> h_materials;
-    std::size_t shape_count;
-
-    __detail::deserialize_geometry("cube.obj", h_vertices, h_triangles, h_materials, shape_count);
-
-    EXPECT_EQ(shape_count, 1) << "bad number of shapes";
-
-    EXPECT_EQ(h_vertices[0], coord(1.f, -1.f, -1.f))            << "Bad vertex";
-    EXPECT_EQ(h_vertices[1], coord(1.f, -1.f, 1.f))             << "Bad vertex";
-    EXPECT_EQ(h_vertices[2], coord(-1.f, -1.f, 1.f))            << "Bad vertex";
-    EXPECT_EQ(h_vertices[3], coord(-1.f, -1.f, -1.f))           << "Bad vertex";
-    EXPECT_EQ(h_vertices[4], coord(1.f, 1.f, -0.999999f))       << "Bad vertex";
-    EXPECT_EQ(h_vertices[5], coord(0.9999999f, 1.f, 1.000001f)) << "Bad vertex";
-    EXPECT_EQ(h_vertices[6], coord(-1.f, 1.f, 1.f))             << "Bad vertex";
-    EXPECT_EQ(h_vertices[7], coord(-1.f, 1.f, -1.f))            << "Bad vertex";
-
-    EXPECT_EQ(h_triangles[0].p0(), h_vertices[1])   << "Bad Triangle v 0";
-    EXPECT_EQ(h_triangles[0].p1(), h_vertices[3])   << "Bad Triangle v 0";
-    EXPECT_EQ(h_triangles[0].p2(), h_vertices[0])   << "Bad Triangle v 0";
-
-    std::clog << h_triangles[0].normal() << std::endl;
-
-    EXPECT_EQ(h_triangles[1].p0(), h_vertices[7])   << "Bad Triangle v 1";
-    EXPECT_EQ(h_triangles[1].p1(), h_vertices[5])   << "Bad Triangle v 1";
-    EXPECT_EQ(h_triangles[1].p2(), h_vertices[4])   << "Bad Triangle v 1";
-
-    std::clog << h_triangles[1].normal() << std::endl;
-
-    EXPECT_EQ(h_triangles[2].p0(), h_vertices[4])   << "Bad Triangle v 2";
-    EXPECT_EQ(h_triangles[2].p1(), h_vertices[1])   << "Bad Triangle v 2";
-    EXPECT_EQ(h_triangles[2].p2(), h_vertices[0])   << "Bad Triangle v 2";
-
-    std::clog << h_triangles[2].normal() << std::endl;
-}
-
 TEST(obj_io, load_cube) {
     world_geometry w("cube.obj");
     
@@ -93,6 +54,33 @@ TEST(obj_io, test_simple_materials) {
     EXPECT_EQ(w.triangle_count(), 12) << "Bad Number of Triangles";
     EXPECT_EQ(w.shape_count(), 1) << "Bad number of Shapes";
     EXPECT_EQ(w.material_count(), 1) << "Bad number of materials";
+
+    // Test material properties
+    const auto& d_material                          = w.materials();
+    thrust::host_vector<phong_material> h_material  = w.materials();
+    const thrust::host_vector<triangle> h_triangles = w.triangles();
+
+    ASSERT_EQ(h_material.size(), 1) << "Inconsistent material counts!";
+
+    // Material properties
+    EXPECT_FLOAT_EQ(h_material[0].shininess(), 96.078431f);
+
+    EXPECT_FLOAT_EQ(h_material[0].r.specular_reflection(), .5f);
+    EXPECT_FLOAT_EQ(h_material[0].r.diffuse_reflection(), .64f);
+    EXPECT_FLOAT_EQ(h_material[0].r.ambient_reflection(), 1.f);
+
+    EXPECT_FLOAT_EQ(h_material[0].g.specular_reflection(), .5f);
+    EXPECT_FLOAT_EQ(h_material[0].g.diffuse_reflection(), .64f);
+    EXPECT_FLOAT_EQ(h_material[0].g.ambient_reflection(), 1.f);
+
+    EXPECT_FLOAT_EQ(h_material[0].b.specular_reflection(), .5f);
+    EXPECT_FLOAT_EQ(h_material[0].b.diffuse_reflection(), .64f);
+    EXPECT_FLOAT_EQ(h_material[0].b.ambient_reflection(), 1.f);
+
+    // Connection between triangle and material
+    const auto& t = h_triangles[0];
+    const auto m_ptr = &d_material[0];
+    EXPECT_EQ(t.material(), m_ptr.get()) << "Pointers to material differ, connection wrong";
 }
 
 TEST(obj_io, loading_complex) {
@@ -100,7 +88,7 @@ TEST(obj_io, loading_complex) {
     w.load("mini_cooper.obj");
 
     EXPECT_EQ(w.vertex_count(), 234435) << "Bad Number of Vertices";
-    EXPECT_EQ(w.triangle_count(),304135) << "Bad Number of Triangles";
+    EXPECT_EQ(w.triangle_count(), 304135) << "Bad Number of Triangles";
     EXPECT_EQ(w.shape_count(), 49) << "Bad number of Shapes";
     EXPECT_EQ(w.material_count(), 15) << "Bad number of materials";
 }
