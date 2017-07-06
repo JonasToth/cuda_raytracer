@@ -104,15 +104,19 @@ TEST(shading, comple_shade_one_channel)
     float spec[3] = {0.5f, 0.5f, 0.5f};
     float diff[3] = {0.5f, 0.5f, 0.5f};
     float ambi[3] = {0.5f, 0.5f, 0.5f};
-    const phong_material m(spec, diff, ambi, 0.05f);
-    const light_source ls = {{spec, diff, ambi}, {2.f, 2.f, 2.f}};
+    const phong_material m(spec, diff, ambi, 1.f);
+    const light_source ls = {{spec, diff, ambi}, {2.f, 0.0f, 1.f}};
 
-    const camera c(640, 480, {1.f, 1.f, 1.f}, {-1.f, -1.f, -1.f});
+    //const camera c(640, 480, {1.f, 1.f, 1.f}, {-1.f, -1.f, -1.f});
     const intersect hit(1.f, {0.f, 0.f, 0.f}, {0.f, 0.f, 1.f});
 
-    const auto light_value = phong_shading(m, &ls, 1ul, c, hit);
-
-    ASSERT_GT(light_value, 0.f) << "Light must be there";
+    for(float x_dir = 2.f; x_dir > 0.f; x_dir-= 0.5f)
+    {
+        const auto light_value = phong_shading(m, &ls, 1ul, 
+                                               normalize(coord(x_dir, 0.f, -1.f)), hit);
+        ASSERT_GT(light_value, 0.f) << "Light must be there";
+        std::clog << "Light Value = " << light_value << std::endl;
+    }
 }
 
 int main(int argc, char** argv)

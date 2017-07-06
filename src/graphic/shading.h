@@ -30,6 +30,7 @@ CUCALL ALWAYS_INLINE inline float diffuse(float kd, float id, coord N, coord L)
 CUCALL ALWAYS_INLINE inline float specular(float ks, float is, coord V, coord R, float alpha)
 {
     return ks * std::pow(dot(R, V), alpha) * is;
+    //return ks * std::pow(0.5f, alpha) * is;
 }
 
 
@@ -37,7 +38,7 @@ CUCALL ALWAYS_INLINE inline float specular(float ks, float is, coord V, coord R,
 /// This is C-Style, since it must run on the gpu as well, therefor no nice vectors
 CUCALL float phong_shading(const phong_material& m, 
                            const light_source* lights, std::size_t light_count,
-                           const camera& c, const intersect& hit);
+                           const coord& ray_direction, const intersect& hit);
 
 
 
