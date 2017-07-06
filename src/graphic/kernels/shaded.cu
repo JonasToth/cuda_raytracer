@@ -1,7 +1,7 @@
 #include "graphic/kernels/shaded.h"
 
 
-CUCALL color phong_shading(const phong_material* m,
+/*CUCALL color phong_shading(const phong_material* m,
                            const light_source* lights, std::size_t light_count,
                            const coord& ray_direction, const intersect& hit)
 {
@@ -15,9 +15,9 @@ CUCALL color phong_shading(const phong_material* m,
     const auto& mb = m->b;
 
     // currently zero, since no global ambient coefficient for all lights
-    c.r = ambient(mr.ambient_reflection(), 0.5f);
-    c.g = ambient(mg.ambient_reflection(), 0.5f);
-    c.b = ambient(mb.ambient_reflection(), 0.5f);
+    c.r = ambient(mr.ambient_reflection(), 0.1f);
+    c.g = ambient(mg.ambient_reflection(), 0.1f);
+    c.b = ambient(mb.ambient_reflection(), 0.1f);
 
     
     for(std::size_t i = 0; i < light_count; ++i)
@@ -57,6 +57,7 @@ CUCALL color phong_shading(const phong_material* m,
 
     return c;
 }
+*/
 
 
 __device__ static float clamp(float lowest, float value, float highest)
@@ -115,10 +116,6 @@ __global__ void trace_many_triangles_shaded(cudaSurfaceObject_t surface, camera 
             pixel_color.x = 255 * clamp(0.f, float_color.r, 1.f);
             pixel_color.y = 255 * clamp(0.f, float_color.g, 1.f);
             pixel_color.z = 255 * clamp(0.f, float_color.b, 1.f);
-
-            //pixel_color.x = float_color.r;
-            //pixel_color.y = float_color.g;
-            //pixel_color.z = float_color.b;
 
             surf2Dwrite(pixel_color, surface, x * 4, y);
         }

@@ -14,9 +14,9 @@ CUCALL color phong_shading(const phong_material* m,
     const auto& mb = m->b;
 
     // currently zero, since no global ambient coefficient for all lights
-    c.r = ambient(mr.ambient_reflection(), 0.5f);
-    c.g = ambient(mg.ambient_reflection(), 0.5f);
-    c.b = ambient(mb.ambient_reflection(), 0.5f);
+    c.r = ambient(mr.ambient_reflection(), 0.1f);
+    c.g = ambient(mg.ambient_reflection(), 0.1f);
+    c.b = ambient(mb.ambient_reflection(), 0.1f);
 
     
     for(std::size_t i = 0; i < light_count; ++i)
