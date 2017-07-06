@@ -13,4 +13,7 @@
 
 #define OUT ::std::cout
 
+/// control Inlining
+#define ALWAYS_INLINE __attribute__((always_inline))
+
 #endif /* end of include guard: MACROS_H_5JXBGRAD */
