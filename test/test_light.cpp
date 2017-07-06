@@ -62,6 +62,27 @@ TEST(light, property_change)
     EXPECT_FLOAT_EQ(l.r.ka, 10.f) << "Wrong ambient reflection";
 }
 
+TEST(light_source, basic_properties)
+{
+    float spec[3] = {10.f, 10.f, 10.f};
+    float diff[3] = {10.f, 10.f, 10.f};
+    float ambi[3] = {10.f, 10.f, 10.f};
+    light_source ls = {{spec, diff, ambi}, {0.f, 0.f, 0.f}};
+
+    EXPECT_FLOAT_EQ(ls.light.r.specular_reflection(), 10.f) << "Wrong specular reflection";
+    EXPECT_FLOAT_EQ(ls.light.r.ks, 10.f) << "Wrong specular reflection";
+
+    EXPECT_FLOAT_EQ(ls.light.r.diffuse_reflection(), 10.f) << "Wrong diffuse reflection";
+    EXPECT_FLOAT_EQ(ls.light.r.kd, 10.f) << "Wrong diffuse reflection";
+
+    EXPECT_FLOAT_EQ(ls.light.r.ambient_reflection(), 10.f) << "Wrong ambient reflection";
+    EXPECT_FLOAT_EQ(ls.light.r.ka, 10.f) << "Wrong ambient reflection";
+
+    EXPECT_FLOAT_EQ(ls.position.x, 0.f) << "Bad x position";
+    EXPECT_FLOAT_EQ(ls.position.y, 0.f) << "Bad y position";
+    EXPECT_FLOAT_EQ(ls.position.z, 0.f) << "Bad z position";
+}
+
 
 int main(int argc, char** argv)
 {
