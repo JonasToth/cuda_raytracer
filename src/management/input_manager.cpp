@@ -6,7 +6,7 @@ input_manager& input_manager::instance() {
     return instance;
 }
 
-bool input_manager::isPressed(int key_id) 
+bool input_manager::isPressed(int key_id) const
 {
     auto v = __key_mapping.find(key_id);
     if(v == __key_mapping.end()) 

@@ -6,6 +6,7 @@
 #include "graphic/kernels/utility.h"
 #include "macros.h"
 #include "management/input_manager.h"
+#include "management/input_callback.h"
 #include "management/surface_raii.h"
 #include "management/window.h"
 #include "obj_io.h"
@@ -19,17 +20,12 @@ camera c(Width, Height, {2.f, 2.f, 2.f}, {0.f, 0.f, 1.f});
 
 double m_x = 0., m_y = 0.;
 
-static void handle_keys(GLFWwindow* w, int key, int scancode, int action, int mods)
+static void handle_keys(GLFWwindow* w)
 {
     const float dP     = 0.5;
     const float dAngle = M_PI / 180. * 5.;
 
-    auto& im = input_manager::instance();
-
-    if(action == GLFW_PRESS)
-        im.press(key);
-    else if(action == GLFW_RELEASE)
-        im.release(key);
+    const auto& im = input_manager::instance();
 
     if(im.isPressed(GLFW_KEY_ESCAPE))
         glfwSetWindowShouldClose(w, GLFW_TRUE);
@@ -60,25 +56,19 @@ static void handle_keys(GLFWwindow* w, int key, int scancode, int action, int mo
     std::clog << "Camera Steering At: " << c.steering() << std::endl << std::endl;
 }
 
-static void mouse_movement(GLFWwindow* w, double xpos, double ypos)
+static void handle_mouse_movement()
 {
-    double dx = m_x - xpos;
-    double dy = m_y - ypos;
-    // xpos = alpha
-    // ypos = beta
-    double beta   = -2. * M_PI * dx / Width * 0.01;
-    double gamma_ = M_PI * dy / Height * 0.1;
+    const auto& im = input_manager::instance();
 
+    double beta   = -2. * M_PI * im.mouse_diff_x() / Width * 0.01;
+    double gamma_ = M_PI * im.mouse_diff_y() / Height * 0.1;
     c.swipe(0., beta, gamma_);
 
-    m_x = xpos;
-    m_y = ypos;
-
-    std::clog << "X: " << xpos << ";Y: " << ypos << std::endl;
+    std::clog << "X: " << im.mouse_x() << ";Y: " << im.mouse_y() << std::endl;
     std::clog << "Camera Steering At: " << c.steering() << std::endl;
 }
 
-static void mouse_scrolling(GLFWwindow* w, double xoffset, double yoffset)
+/*static void mouse_scrolling(GLFWwindow* w, double xoffset, double yoffset)
 {
     double alpha = 5. * yoffset / (2. * M_PI);
 
@@ -86,7 +76,7 @@ static void mouse_scrolling(GLFWwindow* w, double xoffset, double yoffset)
 
     std::clog << "Xoff: " << xoffset << ";Yoff: " << yoffset << std::endl;
     std::clog << "Camera Steering At: " << c.steering() << std::endl;
-}
+}*/
 
 void invokeRenderingKernel(cudaSurfaceObject_t& Surface, float t)
 {
@@ -102,7 +92,7 @@ TEST(cuda_draw, basic_drawing) {
     window win(Width, Height, "Cuda Raytracer");
     auto w = win.getWindow();
 
-    glfwSetKeyCallback(w, handle_keys);
+    glfwSetKeyCallback(w, register_key_press);
     glfwMakeContextCurrent(w);
 
     surface_raii vis(Width, Height);
@@ -118,10 +108,10 @@ TEST(cuda_draw, basic_drawing) {
 
         glfwSwapBuffers(w);
         glfwPollEvents();
+        handle_keys(w);
         std::clog << "Loop end" << std::endl;
     }
     input_manager::instance().clear();
-
     std::clog << "Done" << std::endl;
 }
 
@@ -240,7 +230,7 @@ TEST(cuda_draw, drawing_traced_triangle)
     window win(Width, Height, "Cuda Raytracer");
     auto w = win.getWindow();
 
-    glfwSetKeyCallback(w, handle_keys);
+    glfwSetKeyCallback(w, register_key_press);
     glfwMakeContextCurrent(w);
 
     std::clog << "before surface creation" << std::endl;
@@ -288,6 +278,7 @@ TEST(cuda_draw, drawing_traced_triangle)
 
         glfwSwapBuffers(w);
         glfwWaitEvents();
+        handle_keys(w);
     } 
     input_manager::instance().clear();
     std::clog << "Done" << std::endl;
@@ -299,9 +290,9 @@ TEST(cuda_draw, draw_loaded_geometry)
     window win(Width, Height, "Cuda Raytracer");
     auto w = win.getWindow();
 
-    glfwSetKeyCallback(w, handle_keys);
-    glfwSetCursorPosCallback(w, mouse_movement);
-    glfwSetScrollCallback(w, mouse_scrolling);
+    glfwSetKeyCallback(w, register_key_press);
+    glfwSetCursorPosCallback(w, register_mouse_movement);
+    //glfwSetScrollCallback(w, mouse_scrolling);
     glfwSetInputMode(w, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     //c.lookAt({0.f, 0.f, 0.f});
@@ -331,6 +322,8 @@ TEST(cuda_draw, draw_loaded_geometry)
 
         glfwSwapBuffers(w);
         glfwWaitEvents();
+        handle_keys(w);
+        handle_mouse_movement();
     } 
     input_manager::instance().clear();
     std::clog << "Done" << std::endl;

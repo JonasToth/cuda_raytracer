@@ -18,7 +18,7 @@ public:
     void press(int key_id) { __key_mapping[key_id] = true; }
     void release(int key_id) { __key_mapping[key_id] = false; }
 
-    bool isPressed(int key_id);
+    bool isPressed(int key_id) const;
 
     void move_mouse(double new_x, double new_y) noexcept;
     double mouse_x() const noexcept { return __x_pos; }

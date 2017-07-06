@@ -46,6 +46,7 @@ cuda_add_executable(test_cuda_draw_buffer.x test_cuda_draw_buffer.cu
                     ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu 
                     ${PROJECT_SOURCE_DIR}/src/management/window.cpp
                     ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp
+                    ${PROJECT_SOURCE_DIR}/src/management/input_callback.cpp
                     ${PROJECT_SOURCE_DIR}/src/graphic/camera.cu
                     ${PROJECT_SOURCE_DIR}/src/graphic/kernels/utility.cu
                     ${PROJECT_SOURCE_DIR}/src/obj_io.cu

@@ -1,4 +1,4 @@
-#include "management/input_callbacks.h"
+#include "management/input_callback.h"
 #include "management/input_manager.h"
 #include <GLFW/glfw3.h>
 
