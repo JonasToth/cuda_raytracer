@@ -1,5 +1,6 @@
 #include "utility.h"
 
+/// Surface gets all black
 __global__ void black_kernel(cudaSurfaceObject_t surface, int width, int height) {
     const auto x = blockIdx.x * blockDim.x + threadIdx.x;
     const auto y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -14,6 +15,7 @@ __global__ void black_kernel(cudaSurfaceObject_t surface, int width, int height)
         surf2Dwrite(black, surface, x * 4, y);
 }
 
+/// Just draw some color on the surface, control with parameter t
 __global__ void stupid_colors(cudaSurfaceObject_t surface, int width, int height, float t)
 {
     auto x = blockIdx.x * blockDim.x + threadIdx.x;
