@@ -74,6 +74,10 @@ target_link_libraries(test_material.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 add_executable(test_light.x test_light.cpp)
 target_link_libraries(test_light.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
+
+add_executable(test_shading.x test_shading.cpp)
+target_link_libraries(test_light.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
+
 # ----------------------------------------------------------------------------------------
 #                               ===== Testing =====
 
@@ -90,6 +94,7 @@ add_test(test_surface_raii test_surface_raii.x)
 add_test(test_input_manager test_input_manager.x)
 add_test(test_material test_material.x)
 add_test(test_light test_light.x)
+add_test(test_shading test_shading.c)
 
 #set_tests_properties(test_build_cuda)
 #PROPERTIES
