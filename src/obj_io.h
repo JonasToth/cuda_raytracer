@@ -40,12 +40,12 @@ public:
     std::size_t shape_count() const noexcept { return __shape_count; }
 
     const thrust::device_vector<coord>& vertices() const noexcept { return __vertices; }
-    const thrust::device_vector<material>& materials() const noexcept { return __materials; }
+    const thrust::device_vector<phong_material>& materials() const noexcept { return __materials; }
     const thrust::device_vector<triangle>& triangles() const noexcept { return __triangles; }
 
 private:
     thrust::device_vector<coord> __vertices;        ///< all vertices in the world
-    thrust::device_vector<material> __materials;    ///< all existing materials
+    thrust::device_vector<phong_material> __materials;    ///< all existing materials
 
     thrust::device_vector<triangle> __triangles;    ///< references the __vertices 
                                                     ///  and __materials
@@ -60,7 +60,7 @@ namespace __detail
 void deserialize_geometry(const std::string& file_name,
                          thrust::host_vector<coord>& vertices,
                          thrust::host_vector<triangle>& triangles,
-                         thrust::host_vector<material>& materials,
+                         thrust::host_vector<phong_material>& materials,
                          std::size_t& shape_count);
 }
 

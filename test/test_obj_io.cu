@@ -13,7 +13,7 @@ TEST(obj_io, detail_load)
 {
     thrust::host_vector<coord> h_vertices;
     thrust::host_vector<triangle> h_triangles;
-    thrust::host_vector<material> h_materials;
+    thrust::host_vector<phong_material> h_materials;
     std::size_t shape_count;
 
     __detail::deserialize_geometry("cube.obj", h_vertices, h_triangles, h_materials, shape_count);
@@ -90,7 +90,7 @@ TEST(obj_io, test_simple_materials) {
     world_geometry w("test_camera_light.obj");
 
     EXPECT_EQ(w.vertex_count(), 8) << "Bad Number of Vertices";
-    EXPECT_EQ(w.triangle_count(), 6) << "Bad Number of Triangles";
+    EXPECT_EQ(w.triangle_count(), 12) << "Bad Number of Triangles";
     EXPECT_EQ(w.shape_count(), 1) << "Bad number of Shapes";
     EXPECT_EQ(w.material_count(), 1) << "Bad number of materials";
 }

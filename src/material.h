@@ -3,7 +3,7 @@
 
 
 /// Implement the phong reflection model
-struct material {
+struct phong_material {
     // See https://en.wikipedia.org/wiki/Phong_reflection_model
     // for each coefficient
     float ks;     ///< specular reflection
@@ -11,6 +11,17 @@ struct material {
     float ka;     ///< ambient reflection
     float alpha;  ///< shininess constant
 
+    void specular_reflection(float kspec) noexcept { ks = kspec; }
+    float specular_reflection() const noexcept { return ks; }
+
+    void diffuse_reflection(float kdiff) noexcept { kd = kdiff; }
+    float diffuse_reflection() const noexcept { return kd; }
+
+    void ambient_reflection(float kamb) noexcept { ka = kamb; }
+    float ambient_reflection() const noexcept { return ka; }
+
+    void shininess(float s) noexcept { alpha = s; }
+    float shininess() const noexcept { return alpha; }
 };
 
 

@@ -41,7 +41,7 @@ namespace {
 void world_geometry::load(const std::string& file_name) {
     thrust::host_vector<coord> vertices;
     thrust::host_vector<triangle> triangles;
-    thrust::host_vector<material> materials;
+    thrust::host_vector<phong_material> materials;
 
     __detail::deserialize_geometry(file_name, vertices, triangles, materials, __shape_count);
 
@@ -54,7 +54,7 @@ namespace __detail {
 void deserialize_geometry(const std::string& file_name,
                          thrust::host_vector<coord>& vertices,
                          thrust::host_vector<triangle>& triangles,
-                         thrust::host_vector<material>& materials,
+                         thrust::host_vector<phong_material>& materials,
                          std::size_t& shape_count) {
     // Load with the library
     const auto data = __load(file_name.c_str());
@@ -95,6 +95,13 @@ void deserialize_geometry(const std::string& file_name,
                 
             index_offset+= fv;
         }
+    }
+
+    materials.reserve(data.materials.size());
+    // all materials
+    for(const auto& m: data.materials)
+    {
+        materials.push_back({m.specular[0], m.diffuse[0], m.ambient[0], m.shininess});
     }
 }
 
