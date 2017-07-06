@@ -47,12 +47,14 @@ endif()
 #file(GLOB cudafiles *.cu)
 
 cuda_add_library(shader STATIC 
-                    ${PROJECT_SOURCE_DIR}/src/graphic/kernels/utility.cu
-                    ${PROJECT_SOURCE_DIR}/src/graphic/kernels/trace.cu
-                    ${PROJECT_SOURCE_DIR}/src/graphic/shading.cu
-                    ${PROJECT_SOURCE_DIR}/src/graphic/camera.cu
+                 ${PROJECT_SOURCE_DIR}/src/graphic/shading.cu
+                 ${PROJECT_SOURCE_DIR}/src/graphic/camera.cu
+                 ${PROJECT_SOURCE_DIR}/src/graphic/kernels/utility.cu
+                 ${PROJECT_SOURCE_DIR}/src/graphic/kernels/trace.cu
                 )
-cuda_add_library(management STATIC
+set_target_properties(shader PROPERTIES CUDA_SEPARABLE_COMPILATION ON
+                                        POSITION_INDEPENDENT_CODE ON)
+add_library(management STATIC
                     ${PROJECT_SOURCE_DIR}/src/obj_io.cu
                     ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu 
                     ${PROJECT_SOURCE_DIR}/src/management/window.cpp

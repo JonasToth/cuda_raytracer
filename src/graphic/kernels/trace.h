@@ -15,9 +15,4 @@ __global__ void trace_many_triangles_with_camera(cudaSurfaceObject_t surface, ca
                                                  const triangle* triangles, int n_triangles,
                                                  int width, int height);
 
-__global__ void trace_many_triangles_shaded(cudaSurfaceObject_t surface, camera c,
-                                            const triangle* triangles, std::size_t n_triangles,
-                                            const light_source* lights, std::size_t n_lights,
-                                            int width, int height);
-
 #endif /* end of include guard: TRACE_H_ORLZJOGP */
