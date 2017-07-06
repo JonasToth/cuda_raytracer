@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "graphic/triangle.h"
+#include "graphic/material.h"
 
 TEST(triangle_test, construction)
 {
@@ -22,6 +23,8 @@ TEST(triangle_test, construction)
     ASSERT_EQ(N.x, 0);
     ASSERT_EQ(N.y, 0);
     ASSERT_EQ(N.z, 1);
+
+    ASSERT_EQ(T.material(), nullptr) << "Material shall be zero";
 }
 
 TEST(triangle_test, validity)
@@ -54,6 +57,20 @@ TEST(triangle_test, contains_point)
     EXPECT_EQ(T.contains({0.5, 2, 0}), false) << "0.5 2 0";
 }
 
+TEST(triangle_test, material)
+{
+    float spec[3] = {0.f, 0.f, 0.f};
+    float diff[3] = {0.f, 0.f, 0.f};
+    float ambi[3] = {0.f, 0.f, 0.f};
+    phong_material m(spec, diff, ambi, 0.f);
+
+    const coord P0{0, 0, 0}, P1{1, 0, 0}, P2{0, 1, 0};
+    triangle T{P0, P1, P2};
+
+    T.material(&m);
+
+    EXPECT_EQ(T.material(), &m) << "Material connection correctly set";
+}
 
 int main(int argc, char** argv)
 {
