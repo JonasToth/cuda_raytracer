@@ -1,8 +1,8 @@
 #include "graphic/shading.h"
 
-color phong_shading(const phong_material& m,
-                    const light_source* lights, std::size_t light_count,
-                    const coord& ray_direction, const intersect& hit)
+CUCALL color phong_shading(const phong_material& m,
+                           const light_source* lights, std::size_t light_count,
+                           const coord& ray_direction, const intersect& hit)
 {
     const auto N = hit.normal;
     const auto V = normalize(coord(-ray_direction.x, -ray_direction.y, -ray_direction.z));

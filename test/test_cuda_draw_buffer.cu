@@ -1,18 +1,14 @@
 #include "gtest/gtest.h"
 
-#include "graphic/camera.h"
 #include "graphic/kernels/utility.h"
 #include "graphic/kernels/trace.h"
 #include "macros.h"
-#include "management/input_manager.h"
 #include "management/input_callback.h"
-#include "management/surface_raii.h"
+#include "management/input_manager.h"
 #include "management/window.h"
 #include "obj_io.h"
 
 #include <iostream>
-//#include <limits>
-#include <utility>
 
 const int Width = 800, Height = 800;
 camera c(Width, Height, {2.f, 2.f, 2.f}, {0.f, 0.f, 1.f});
@@ -111,9 +107,24 @@ void raytrace_many_cuda(cudaSurfaceObject_t& Surface,
     dim3 dimBlock(32,32);
     dim3 dimGrid((c.width() + dimBlock.x) / dimBlock.x,
                  (c.height() + dimBlock.y) / dimBlock.y);
-    trace_many_triangle_with_camera<<<dimGrid, dimBlock>>>(Surface, c, 
-                                                           Triangles, TriangleCount, 
-                                                           c.width(), c.height());
+    black_kernel<<<dimGrid, dimBlock>>>(Surface, c.width(), c.height());
+    trace_many_triangles_with_camera<<<dimGrid, dimBlock>>>(Surface, c, 
+                                                            Triangles, TriangleCount, 
+                                                            c.width(), c.height());
+}
+
+void raytrace_many_shaded(cudaSurfaceObject_t& surface, camera c,
+                          const triangle* triangles, std::size_t n_triangles,
+                          const light_source* lights, std::size_t n_lights)
+{
+    dim3 dimBlock(32,32);
+    dim3 dimGrid((c.width() + dimBlock.x) / dimBlock.x,
+                 (c.height() + dimBlock.y) / dimBlock.y);
+    black_kernel<<<dimGrid, dimBlock>>>(surface, c.width(), c.height());
+    trace_many_triangles_shaded<<<dimGrid, dimBlock>>>(surface, c,
+                                                       triangles, n_triangles, 
+                                                       lights, n_lights,
+                                                       c.width(), c.height());
 }
 
 TEST(cuda_draw, drawing_traced_triangle) 
@@ -203,6 +214,41 @@ TEST(cuda_draw, draw_loaded_geometry)
     input_manager::instance().clear();
 }
 
+TEST(cuda_draw, draw_phong_shaded)
+{
+    // Window stuff
+    window win(Width, Height, "Cuda Raytracer");
+    auto w = win.getWindow();
+
+    glfwSetKeyCallback(w, register_key_press);
+    glfwSetCursorPosCallback(w, register_mouse_movement);
+    glfwSetInputMode(w, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    glfwMakeContextCurrent(w);
+
+    // Cuda stuff
+    surface_raii vis(Width, Height);
+
+    // 3D Stuff
+    world_geometry world("test_camera_light.obj");
+
+    thrust::device_vector<light_source> lights;
+
+    const auto& triangles = world.triangles();
+
+    while(!glfwWindowShouldClose(w)) {
+        raytrace_many_shaded(vis.getSurface(), c,
+                             triangles.data().get(), triangles.size(),
+                             lights.data().get(), lights.size());
+        vis.render_gl_texture();
+
+        glfwSwapBuffers(w);
+        glfwWaitEvents();
+        handle_keys(w);
+        handle_mouse_movement();
+    } 
+    input_manager::instance().clear();
+}
 
 int main(int argc, char** argv)
 {
