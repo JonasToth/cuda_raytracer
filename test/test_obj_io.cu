@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 
+#include "material.h"
 #include "obj_io.h"
 #include <algorithm>
 #include <vector>
@@ -12,9 +13,10 @@ TEST(obj_io, detail_load)
 {
     thrust::host_vector<coord> h_vertices;
     thrust::host_vector<triangle> h_triangles;
+    thrust::host_vector<material> h_materials;
     std::size_t shape_count;
 
-    __detail::deserialize_geometry("cube.obj", h_vertices, h_triangles, shape_count);
+    __detail::deserialize_geometry("cube.obj", h_vertices, h_triangles, h_materials, shape_count);
 
     EXPECT_EQ(shape_count, 1) << "bad number of shapes";
 
@@ -52,6 +54,7 @@ TEST(obj_io, load_cube) {
     EXPECT_EQ(w.vertex_count(), 8) << "Bad Number of Vertices";
     EXPECT_EQ(w.triangle_count(), 12) << "Bad Number of Triangles";
     EXPECT_EQ(w.shape_count(), 1) << "Bad number of Shapes";
+    EXPECT_EQ(w.material_count(), 0) << "Bad number of materials";
 }
 
 TEST(obj_io, loading_simple) {
@@ -61,6 +64,7 @@ TEST(obj_io, loading_simple) {
     EXPECT_EQ(w.vertex_count(), 122) << "Bad Number of Vertices";
     EXPECT_EQ(w.triangle_count(), 228) << "Bad Number of Triangles";
     EXPECT_EQ(w.shape_count(), 4) << "Bad number of Shapes";
+    EXPECT_EQ(w.material_count(), 0) << "Bad number of materials";
 
     const thrust::host_vector<coord> h_vertices     = w.vertices();
     const std::vector<coord> vertices(h_vertices.begin(), h_vertices.end());
@@ -82,6 +86,15 @@ TEST(obj_io, test_bad_input) {
     //ASSERT_THROW(w.load("bad.obj"), std::invalid_argument) << "Did not notice the quad";
 }
 
+TEST(obj_io, test_simple_materials) {
+    world_geometry w("test_camera_light.obj");
+
+    EXPECT_EQ(w.vertex_count(), 8) << "Bad Number of Vertices";
+    EXPECT_EQ(w.triangle_count(), 6) << "Bad Number of Triangles";
+    EXPECT_EQ(w.shape_count(), 1) << "Bad number of Shapes";
+    EXPECT_EQ(w.material_count(), 1) << "Bad number of materials";
+}
+
 TEST(obj_io, loading_complex) {
     world_geometry w;
     w.load("mini_cooper.obj");
@@ -89,6 +102,7 @@ TEST(obj_io, loading_complex) {
     EXPECT_EQ(w.vertex_count(), 234435) << "Bad Number of Vertices";
     EXPECT_EQ(w.triangle_count(),304135) << "Bad Number of Triangles";
     EXPECT_EQ(w.shape_count(), 49) << "Bad number of Shapes";
+    EXPECT_EQ(w.material_count(), 15) << "Bad number of materials";
 }
 
 int main(int argc, char** argv)

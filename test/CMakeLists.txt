@@ -6,6 +6,8 @@ add_custom_target(example_files
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/bad.obj ${PROJECT_BINARY_DIR}/test
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/mini_cooper.obj ${PROJECT_BINARY_DIR}/test
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/mini_cooper.mtl ${PROJECT_BINARY_DIR}/test
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/test_camera_light.obj ${PROJECT_BINARY_DIR}/test
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/test_camera_light.mtl ${PROJECT_BINARY_DIR}/test
 )
 
 # google test as testing framework must be available
@@ -60,6 +62,9 @@ add_executable(test_input_manager.x test_input_manager.cpp
                ${PROJECT_SOURCE_DIR}/src/input_manager.cpp)
 target_link_libraries(test_input_manager.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
+add_executable(test_material.x test_material.cpp)
+    #${PROJECT_SOURCE_DIR}/src/material.cpp)
+target_link_libraries(test_material.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
 # ----------------------------------------------------------------------------------------
 #                               ===== Testing =====
 
@@ -74,6 +79,7 @@ add_test(test_ray test_ray.x)
 add_test(test_camera test_camera.x)
 add_test(test_surface_raii test_surface_raii.x)
 add_test(test_input_manager test_input_manager.x)
+add_test(test_material test_material.x)
 
 #set_tests_properties(test_build_cuda)
 #PROPERTIES

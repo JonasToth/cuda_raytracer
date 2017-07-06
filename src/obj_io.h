@@ -34,15 +34,20 @@ public:
     void load(const std::string& file_name);
 
     std::size_t vertex_count() const noexcept { return __vertices.size(); }
+    std::size_t material_count() const noexcept { return __materials.size(); }
     std::size_t triangle_count() const noexcept { return __triangles.size(); }
     std::size_t shape_count() const noexcept { return __shape_count; }
 
-    const thrust::device_vector<triangle>& triangles() const noexcept { return __triangles; }
     const thrust::device_vector<coord>& vertices() const noexcept { return __vertices; }
+    const thrust::device_vector<material>& vertices() const noexcept { return __materials; }
+    const thrust::device_vector<triangle>& triangles() const noexcept { return __triangles; }
 
 private:
     thrust::device_vector<coord> __vertices;        ///< all vertices in the world
-    thrust::device_vector<triangle> __triangles;    ///< references the __vertices
+    thrust::device_vector<material> __materials;    ///< all existing materials
+
+    thrust::device_vector<triangle> __triangles;    ///< references the __vertices 
+                                                    ///  and __materials
 
     std::size_t __shape_count;                      ///< number of shapes(objects) in scene
 };
@@ -54,6 +59,7 @@ namespace __detail
 void deserialize_geometry(const std::string& file_name,
                          thrust::host_vector<coord>& vertices,
                          thrust::host_vector<triangle>& triangles,
+                         thrust::host_vector<material>& materials,
                          std::size_t& shape_count);
 }
 

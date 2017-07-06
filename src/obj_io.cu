@@ -41,17 +41,20 @@ namespace {
 void world_geometry::load(const std::string& file_name) {
     thrust::host_vector<coord> vertices;
     thrust::host_vector<triangle> triangles;
+    thrust::host_vector<material> materials;
 
-    __detail::deserialize_geometry(file_name, vertices, triangles, __shape_count);
+    __detail::deserialize_geometry(file_name, vertices, triangles, materials, __shape_count);
 
     __vertices = vertices;
     __triangles = triangles;
+    __materials = materials;
 }
 
 namespace __detail {
 void deserialize_geometry(const std::string& file_name,
                          thrust::host_vector<coord>& vertices,
                          thrust::host_vector<triangle>& triangles,
+                         thrust::host_vector<material>& materials,
                          std::size_t& shape_count) {
     // Load with the library
     const auto data = __load(file_name.c_str());
