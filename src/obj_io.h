@@ -6,8 +6,9 @@
 #include <thrust/host_vector.h>
 #include <string>
 #include <vector>
-#include "vector.h"
+#include "material.h"
 #include "triangle.h"
+#include "vector.h"
 
 /// Holds the World Geometry in a device vector and handles loading it from file.
 ///
@@ -39,7 +40,7 @@ public:
     std::size_t shape_count() const noexcept { return __shape_count; }
 
     const thrust::device_vector<coord>& vertices() const noexcept { return __vertices; }
-    const thrust::device_vector<material>& vertices() const noexcept { return __materials; }
+    const thrust::device_vector<material>& materials() const noexcept { return __materials; }
     const thrust::device_vector<triangle>& triangles() const noexcept { return __triangles; }
 
 private:
