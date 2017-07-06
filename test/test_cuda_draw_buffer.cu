@@ -12,7 +12,7 @@
 #include <iostream>
 
 const int Width = 800, Height = 800;
-camera c(Width, Height, {2.f, 2.f, 2.f}, {0.f, 0.f, 1.f});
+camera c(Width, Height, {-2.f, 1.f, -2.f}, {2.f, -1.f, 2.f});
 
 double m_x = 0., m_y = 0.;
 
@@ -234,6 +234,15 @@ TEST(cuda_draw, draw_phong_shaded)
     world_geometry world("test_camera_light.obj");
 
     thrust::device_vector<light_source> lights;
+    float spec[3] = {0.2f, 0.4f, 0.2f};
+    float diff[3] = {0.8f, 0.6f, 0.7f};
+    float ambi[3] = {1.0f, 1.9f, 1.0f};
+    //light_source ls = ;
+    lights.push_back({{spec, diff, ambi}, {-1.7f, -1.5f, -1.5f}});
+    lights.push_back({{spec, diff, ambi}, { 1.3f, -1.8f, -1.2f}});
+    //lights.push_back({{spec, diff, ambi}, {-1.1f,  2.0f,  1.1f}});
+    //lights.push_back({{spec, diff, ambi}, {-1.5f, -1.5f,  1.5f}});
+
 
     const auto& triangles = world.triangles();
 

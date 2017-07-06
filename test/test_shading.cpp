@@ -30,27 +30,29 @@ TEST(shading, diffuse_coeff)
     const float MatGud = 0.5f;
     const float LightGud = 1.6f;
 
+    const float dot_product = dot(RealDirection1, RealDirection2);
+
     // Playing with the material coefficients
-    EXPECT_FLOAT_EQ(diffuse(MatNone, LightNone, RealDirection1, RealDirection2), 0.f) 
+    EXPECT_FLOAT_EQ(diffuse(MatNone, LightNone, dot_product), 0.f) 
                     << "No diffuse material and light should return 0.f";
-    EXPECT_FLOAT_EQ(diffuse(MatGud, LightNone, RealDirection1, RealDirection2), 0.f) 
+    EXPECT_FLOAT_EQ(diffuse(MatGud, LightNone, dot_product), 0.f) 
                     << "No diffuse light should return 0.f";
-    EXPECT_FLOAT_EQ(diffuse(MatNone, LightGud, RealDirection1, RealDirection2), 0.f) 
+    EXPECT_FLOAT_EQ(diffuse(MatNone, LightGud, dot_product), 0.f) 
                     << "No diffuse material should return 0.f";
-    const auto ExpectedOk = diffuse(MatGud, LightGud, RealDirection1, RealDirection2);
+    const auto ExpectedOk = diffuse(MatGud, LightGud, dot_product);
     EXPECT_NE(ExpectedOk, 0.f) 
               << "diffuse material and light should return !=0.f";
     OUT << "Good Value: " << ExpectedOk << std::endl;
 
     // Playing with light source and camera direction
-    EXPECT_FLOAT_EQ(diffuse(MatGud, LightGud, XAxis, YAxis), 0.f)
+    EXPECT_FLOAT_EQ(diffuse(MatGud, LightGud, dot(XAxis, YAxis)), 0.f)
                     << "Orthogonal directions should be zero";
-    EXPECT_FLOAT_EQ(diffuse(MatGud, LightGud, XAxis, ZAxis), 0.f)
+    EXPECT_FLOAT_EQ(diffuse(MatGud, LightGud, dot(XAxis, ZAxis)), 0.f)
                     << "Orthogonal directions should be zero";
-    EXPECT_FLOAT_EQ(diffuse(MatGud, LightGud, YAxis, ZAxis), 0.f)
+    EXPECT_FLOAT_EQ(diffuse(MatGud, LightGud, dot(YAxis, ZAxis)), 0.f)
                     << "Orthogonal directions should be zero";
 
-    EXPECT_NE(diffuse(MatGud, LightGud, RealDirection1, ZAxis), 0.f)
+    EXPECT_NE(diffuse(MatGud, LightGud, dot(RealDirection1, ZAxis)), 0.f)
                     << "Valid Directions result in nonzero diffuse";
 }
 
@@ -113,7 +115,7 @@ TEST(shading, comple_shade_one_channel)
 
     for(float x_dir = 2.f; x_dir > 0.f; x_dir-= 0.5f)
     {
-        const auto lv = phong_shading(m, &ls, 1ul, normalize({x_dir, 0.f, -1.f}), hit);
+        const auto lv = phong_shading(&m, &ls, 1ul, normalize({x_dir, 0.f, -1.f}), hit);
         EXPECT_GT(lv.r, 0.f) << "Light must be there";
         EXPECT_GT(lv.g, 0.f) << "Light must be there";
         EXPECT_GT(lv.b, 0.f) << "Light must be there";
