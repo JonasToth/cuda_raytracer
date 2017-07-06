@@ -20,12 +20,23 @@ public:
 
     bool isPressed(int key_id);
 
-    void clear() { __key_mapping.clear(); }
+    void move_mouse(double new_x, double new_y) noexcept;
+    double mouse_x() const noexcept { return __x_pos; }
+    double mouse_y() const noexcept { return __y_pos; }
+
+    double mouse_diff_x() const noexcept { return __x_diff; }
+    double mouse_diff_y() const noexcept { return __y_diff; }
+
+    void clear();
 
 private:
     input_manager() = default;
 
     std::unordered_map<int, bool> __key_mapping;
+    double __x_pos  = 0.; ///< stores current cursor x position
+    double __y_pos  = 0.; ///< stores current cursor y position
+    double __x_diff = 0.; ///< stores difference to last cursor x position
+    double __y_diff = 0.; ///< stores difference to last cursor y position
 };
 
 #endif /* end of include guard: INPUT_MANAGER_H_ODDJW5OV */
