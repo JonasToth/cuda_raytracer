@@ -49,6 +49,7 @@ cuda_add_executable(test_cuda_draw_buffer.x test_cuda_draw_buffer.cu
                     ${PROJECT_SOURCE_DIR}/src/management/input_callback.cpp
                     ${PROJECT_SOURCE_DIR}/src/graphic/camera.cu
                     ${PROJECT_SOURCE_DIR}/src/graphic/kernels/utility.cu
+                    ${PROJECT_SOURCE_DIR}/src/graphic/kernels/trace.cu
                     ${PROJECT_SOURCE_DIR}/src/obj_io.cu
                     )
 target_link_libraries(test_cuda_draw_buffer.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread glfw ${OPENGL_gl_LIBRARY})
