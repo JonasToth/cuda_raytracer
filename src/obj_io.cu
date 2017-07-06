@@ -101,7 +101,10 @@ void deserialize_geometry(const std::string& file_name,
     materials.reserve(data.materials.size());
     for(const auto& m: data.materials)
     {
-        materials.push_back({m.specular[0], m.diffuse[0], m.ambient[0], m.shininess});
+        materials.push_back({static_cast<const float*>(m.specular), 
+                             static_cast<const float*>(m.diffuse), 
+                             static_cast<const float*>(m.ambient), 
+                             static_cast<float>(m.shininess)});
     }
 }
 

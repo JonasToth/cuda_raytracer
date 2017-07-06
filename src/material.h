@@ -5,24 +5,38 @@
 
 /// Implement the phong reflection model
 struct phong_material {
-    // See https://en.wikipedia.org/wiki/Phong_reflection_model
-    // for each coefficient
-    float ks;     ///< specular reflection
-    float kd;     ///< diffuse reflection
-    float ka;     ///< ambient reflection
-    float alpha;  ///< shininess constant
+    struct param {
+        // See https://en.wikipedia.org/wiki/Phong_reflection_model
+        // for each coefficient
+        float ks;     ///< specular reflection
+        float kd;     ///< diffuse reflection
+        float ka;     ///< ambient reflection
 
-    CUCALL void specular_reflection(float kspec) noexcept { ks = kspec; }
-    CUCALL float specular_reflection() const noexcept { return ks; }
+        CUCALL void specular_reflection(float kspec) noexcept { ks = kspec; }
+        CUCALL float specular_reflection() const noexcept { return ks; }
 
-    CUCALL void diffuse_reflection(float kdiff) noexcept { kd = kdiff; }
-    CUCALL float diffuse_reflection() const noexcept { return kd; }
+        CUCALL void diffuse_reflection(float kdiff) noexcept { kd = kdiff; }
+        CUCALL float diffuse_reflection() const noexcept { return kd; }
 
-    CUCALL void ambient_reflection(float kamb) noexcept { ka = kamb; }
-    CUCALL float ambient_reflection() const noexcept { return ka; }
+        CUCALL void ambient_reflection(float kamb) noexcept { ka = kamb; }
+        CUCALL float ambient_reflection() const noexcept { return ka; }
+    };
+
+    CUCALL phong_material(const float spec[3], const float diff[3], const float amb[3], 
+                          float shininess)
+        : r{spec[0], diff[0], amb[0]}
+        , g{spec[1], diff[1], amb[1]}
+        , b{spec[2], diff[2], amb[2]}
+        , alpha{shininess}
+    {}
 
     CUCALL void shininess(float s) noexcept { alpha = s; }
     CUCALL float shininess() const noexcept { return alpha; }
+
+    param r;        ///< red channel
+    param g;        ///< grenn channel
+    param b;        ///< blue channel
+    float alpha;    ///< shininess constant
 };
 
 
