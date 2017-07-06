@@ -1,12 +1,13 @@
 #include "gtest/gtest.h"
-#include "camera.h"
-#include "input_manager.h"
+
+#include "graphic/camera.h"
+#include "graphic/triangle.h"
+#include "graphic/ray.h"
 #include "macros.h"
+#include "management/input_manager.h"
+#include "management/surface_raii.h"
+#include "management/window.h"
 #include "obj_io.h"
-#include "triangle.h"
-#include "ray.h"
-#include "surface_raii.h"
-#include "window.h"
 
 #include <GLFW/glfw3.h>
 #include <gsl/gsl>

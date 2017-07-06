@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "vector.h"
+#include "graphic/vector.h"
 
 TEST(vector, construction)
 {

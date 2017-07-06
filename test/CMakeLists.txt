@@ -14,7 +14,8 @@ add_custom_target(example_files
 find_package(GTest REQUIRED) 
 include_directories(${GTEST_INCLUDE_DIRS}) 
 # unit tests
-cuda_add_executable(test_obj_io.x test_obj_io.cu ${PROJECT_SOURCE_DIR}/src/obj_io.cu)
+cuda_add_executable(test_obj_io.x test_obj_io.cu 
+                    ${PROJECT_SOURCE_DIR}/src/obj_io.cu)
 target_link_libraries(test_obj_io.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 add_dependencies(test_obj_io.x example_files)
 
@@ -37,29 +38,35 @@ cuda_add_executable(test_cuda_ray.x test_cuda_ray.cu)
 target_link_libraries(test_cuda_ray.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 add_executable(test_glfw.x test_glfw.cpp
-               ${PROJECT_SOURCE_DIR}/src/window.cpp)
+               ${PROJECT_SOURCE_DIR}/src/management/window.cpp
+               )
 target_link_libraries(test_glfw.x ${GTEST_MAIN} ${GTEST_LIBRARIES} glfw ${OPENGL_gl_LIBRARY} pthread)
 
 cuda_add_executable(test_cuda_draw_buffer.x test_cuda_draw_buffer.cu 
-                    ${PROJECT_SOURCE_DIR}/src/surface_raii.cu 
-                    ${PROJECT_SOURCE_DIR}/src/camera.cu
+                    ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu 
+                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp
+                    ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp
+                    ${PROJECT_SOURCE_DIR}/src/graphic/camera.cu
                     ${PROJECT_SOURCE_DIR}/src/obj_io.cu
-                    ${PROJECT_SOURCE_DIR}/src/window.cpp
-                    ${PROJECT_SOURCE_DIR}/src/input_manager.cpp)
+                    )
 target_link_libraries(test_cuda_draw_buffer.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread glfw ${OPENGL_gl_LIBRARY})
 
-cuda_add_executable(test_build_cuda.x test_build_cuda.cu ${cudafiles})
+cuda_add_executable(test_build_cuda.x test_build_cuda.cu)
 target_link_libraries(test_build_cuda.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
-cuda_add_executable(test_surface_raii.x test_surface_raii.cu ${cudafiles} ${PROJECT_SOURCE_DIR}/src/surface_raii.cu)
+cuda_add_executable(test_surface_raii.x test_surface_raii.cu
+                    ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu
+                    )
 target_link_libraries(test_surface_raii.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread glfw ${OPENGL_gl_LIBRARY})
 
 cuda_add_executable(test_camera.x test_camera.cu
-                    ${PROJECT_SOURCE_DIR}/src/camera.cu)
+                    ${PROJECT_SOURCE_DIR}/src/graphic/camera.cu
+                    )
 target_link_libraries(test_camera.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 add_executable(test_input_manager.x test_input_manager.cpp
-               ${PROJECT_SOURCE_DIR}/src/input_manager.cpp)
+               ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp
+               )
 target_link_libraries(test_input_manager.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 add_executable(test_material.x test_material.cpp)

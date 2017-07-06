@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "camera.h"
+#include "graphic/camera.h"
 
 TEST(camera, properties)
 {

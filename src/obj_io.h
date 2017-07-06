@@ -6,9 +6,10 @@
 #include <thrust/host_vector.h>
 #include <string>
 #include <vector>
-#include "material.h"
-#include "triangle.h"
-#include "vector.h"
+
+#include "graphic/material.h"
+#include "graphic/triangle.h"
+#include "graphic/vector.h"
 
 /// Holds the World Geometry in a device vector and handles loading it from file.
 ///

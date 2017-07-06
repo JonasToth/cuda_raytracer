@@ -2,7 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <gsl/gsl>
 
-#include "window.h"
+#include "management/window.h"
 
 TEST(GLFW, init) {
     auto InitVal = glfwInit();

@@ -3,7 +3,7 @@
 #include <cuda_gl_interop.h>
 #include <cuda_runtime.h>
 
-#include "surface_raii.h"
+#include "management/surface_raii.h"
 
 
 //TEST(visualization, basic_starting)

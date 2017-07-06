@@ -2,7 +2,7 @@
 #include <cuda_runtime.h>
 #include "gtest/gtest.h"
 #include <gsl/gsl>
-#include "triangle.h"
+#include "graphic/triangle.h"
 #include <thrust/device_malloc.h>
 #include <thrust/device_free.h>
 #include <thrust/device_new.h>

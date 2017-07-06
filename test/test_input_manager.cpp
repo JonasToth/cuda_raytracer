@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "input_manager.h"
+#include "management/input_manager.h"
 #include <GLFW/glfw3.h>
 
 TEST(input_manager, basic_functionality)

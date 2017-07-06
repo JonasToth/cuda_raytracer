@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "ray.h"
+#include "graphic/ray.h"
 
 constexpr std::size_t SquareDim = 10;
 

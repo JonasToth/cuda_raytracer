@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "material.h"
+#include "graphic/material.h"
 #include "obj_io.h"
 #include <algorithm>
 #include <vector>

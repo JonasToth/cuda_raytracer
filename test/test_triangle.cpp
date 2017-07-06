@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "triangle.h"
+#include "graphic/triangle.h"
 
 TEST(triangle_test, construction)
 {

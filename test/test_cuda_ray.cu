@@ -11,7 +11,7 @@
 #include <thrust/logical.h>
 #include <utility>
 
-#include "ray.h"
+#include "graphic/ray.h"
 
 
 struct does_intersect {

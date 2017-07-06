@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "light.h"
+#include "graphic/light.h"
 
 TEST(light, basic_properties)
 {

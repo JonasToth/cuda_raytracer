@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "material.h"
+#include "graphic/material.h"
 
 TEST(phong_material, basic_properties)
 {
