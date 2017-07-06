@@ -73,29 +73,30 @@ TEST(shading, specular_coeff)
     const float ShineGud  = 2.f;
 
     // playing with material coefficients
-    EXPECT_FLOAT_EQ(specular(MatNone, LightNone, RealDirection1, RealDirection2, ShineNone), 0.f)
+    float dot_product = dot(RealDirection1, RealDirection2);
+    EXPECT_FLOAT_EQ(specular(MatNone, LightNone, dot_product, ShineNone), 0.f)
                     << "No material, light and shininess needs to result in 0";
-    EXPECT_FLOAT_EQ(specular(MatNone, LightNone, RealDirection1, RealDirection2, ShineGud), 0.f)
+    EXPECT_FLOAT_EQ(specular(MatNone, LightNone, dot_product, ShineGud), 0.f)
                     << "No material, light needs to result in 0";
-    EXPECT_FLOAT_EQ(specular(MatNone, LightGud, RealDirection1, RealDirection2, ShineNone), 0.f)
+    EXPECT_FLOAT_EQ(specular(MatNone, LightGud, dot_product, ShineNone), 0.f)
                     << "No material and shininess needs to result in 0";
-    EXPECT_FLOAT_EQ(specular(MatNone, LightGud, RealDirection1, RealDirection2, ShineGud), 0.f)
+    EXPECT_FLOAT_EQ(specular(MatNone, LightGud, dot_product, ShineGud), 0.f)
                     << "No material needs to result in 0";
-    EXPECT_FLOAT_EQ(specular(MatGud, LightNone, RealDirection1, RealDirection2, ShineNone), 0.f)
+    EXPECT_FLOAT_EQ(specular(MatGud, LightNone, dot_product, ShineNone), 0.f)
                     << "No light and shininess needs to result in 0";
-    EXPECT_FLOAT_EQ(specular(MatGud, LightNone, RealDirection1, RealDirection2, ShineGud), 0.f)
+    EXPECT_FLOAT_EQ(specular(MatGud, LightNone, dot_product, ShineGud), 0.f)
                     << "No light needs to result in 0";
-    const auto ExpectedOk = specular(MatGud, LightGud, RealDirection1, RealDirection2, ShineGud);
+    const auto ExpectedOk = specular(MatGud, LightGud, dot_product, ShineGud);
     EXPECT_NE(ExpectedOk, 0.f) << "Good Value Expected";
     OUT << "Good Value: " << ExpectedOk << std::endl;
 
     // playing with directions
-    EXPECT_FLOAT_EQ(specular(MatGud, LightNone, XAxis, ZAxis, ShineGud), 0.f)
+    EXPECT_FLOAT_EQ(specular(MatGud, LightNone, dot(XAxis, ZAxis), ShineGud), 0.f)
                     << "Orthogonal directions result in no specular";
-    EXPECT_FLOAT_EQ(specular(MatGud, LightNone, YAxis, ZAxis, ShineGud), 0.f)
+    EXPECT_FLOAT_EQ(specular(MatGud, LightNone, dot(YAxis, ZAxis), ShineGud), 0.f)
                     << "Orthogonal directions result in no specular";
 
-    EXPECT_NE(specular(MatGud, LightGud, RealDirection1, ZAxis, ShineGud), 0.f)
+    EXPECT_NE(specular(MatGud, LightGud, dot(RealDirection1, ZAxis), ShineGud), 0.f)
               << "Valid directions result in nonzero";
 }
 
@@ -112,10 +113,15 @@ TEST(shading, comple_shade_one_channel)
 
     for(float x_dir = 2.f; x_dir > 0.f; x_dir-= 0.5f)
     {
-        const auto light_value = phong_shading(m, &ls, 1ul, 
-                                               normalize(coord(x_dir, 0.f, -1.f)), hit);
-        ASSERT_GT(light_value, 0.f) << "Light must be there";
-        std::clog << "Light Value = " << light_value << std::endl;
+        const auto lv = phong_shading(m, &ls, 1ul, normalize({x_dir, 0.f, -1.f}), hit);
+        EXPECT_GT(lv.r, 0.f) << "Light must be there";
+        EXPECT_GT(lv.g, 0.f) << "Light must be there";
+        EXPECT_GT(lv.b, 0.f) << "Light must be there";
+        EXPECT_FLOAT_EQ(lv.r, lv.g) << "Expect same values for all channels";
+        EXPECT_FLOAT_EQ(lv.r, lv.b) << "Expect same values for all channels";
+        std::clog << "Light Value = (" 
+                  << lv.r << ", " << lv.g << ", " << lv.b
+                  << ")" << std::endl;
     }
 }
 

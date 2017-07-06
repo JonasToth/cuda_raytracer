@@ -1,14 +1,17 @@
 #include "graphic/shading.h"
 
-float phong_shading(const phong_material& m,
+color phong_shading(const phong_material& m,
                     const light_source* lights, std::size_t light_count,
                     const coord& ray_direction, const intersect& hit)
 {
     const auto N = hit.normal;
     const auto V = normalize(coord(-ray_direction.x, -ray_direction.y, -ray_direction.z));
 
+    color c{0.f, 0.f, 0.f};
     // currently zero, since no global ambient coefficient for all lights
-    float value = ambient(m.r.ambient_reflection(), 0.f);
+    c.r = ambient(m.r.ambient_reflection(), 0.f);
+    c.g = ambient(m.g.ambient_reflection(), 0.f);
+    c.b = ambient(m.b.ambient_reflection(), 0.f);
 
     
     for(std::size_t i = 0; i < light_count; ++i)
@@ -18,20 +21,35 @@ float phong_shading(const phong_material& m,
         // Reflectionsrichtung des Lichts
         const auto R = normalize(2 * dot(L, N) * N - L);
 
-        const auto& light_channel = lights[i].light.r;
+        const auto& lr = lights[i].light.r;
+        const auto& lg = lights[i].light.g;
+        const auto& lb = lights[i].light.b;
 
+        const auto& mr = m.r;
+        const auto& mg = m.g;
+        const auto& mb = m.b;
+
+        const float dot_product = dot(R, V);
+
+#ifndef __CUDACC__
         std::clog << "L = " << L << std::endl;
         std::clog << "R = " << R << std::endl;
         std::clog << "N = " << N << std::endl;
         std::clog << "V = " << V << std::endl;
         std::clog << "dot(R,V) = " << dot(R, V) << std::endl;
+#endif
         
-        value+= diffuse(m.r.diffuse_reflection(), lights[i].light.r.diffuse_reflection(),
-                        N, L);
-        value+= specular(m.r.specular_reflection(), light_channel.specular_reflection(),
-                         V, R, m.shininess());
-    }
-    
+        c.r+= diffuse(mr.diffuse_reflection(), lr.diffuse_reflection(), N, L);
+        c.g+= diffuse(mg.diffuse_reflection(), lr.diffuse_reflection(), N, L);
+        c.b+= diffuse(mr.diffuse_reflection(), lr.diffuse_reflection(), N, L);
 
-    return value;
+        c.r+= specular(mr.specular_reflection(), lr.specular_reflection(), dot_product, 
+                       m.shininess());
+        c.g+= specular(mg.specular_reflection(), lg.specular_reflection(), dot_product, 
+                       m.shininess());
+        c.b+= specular(mb.specular_reflection(), lb.specular_reflection(), dot_product, 
+                       m.shininess());
+    }
+
+    return c;
 }
