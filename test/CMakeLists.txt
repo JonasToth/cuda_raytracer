@@ -77,7 +77,10 @@ target_link_libraries(test_material.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
 add_executable(test_light.x test_light.cpp)
 target_link_libraries(test_light.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
-add_executable(test_shading.x test_shading.cpp)
+cuda_add_executable(test_shading.x test_shading.cpp
+                    ${PROJECT_SOURCE_DIR}/src/graphic/shading.cu
+                    ${PROJECT_SOURCE_DIR}/src/graphic/camera.cu
+                   )
 target_link_libraries(test_shading.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 # ----------------------------------------------------------------------------------------

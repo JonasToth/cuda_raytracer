@@ -99,6 +99,22 @@ TEST(shading, specular_coeff)
               << "Valid directions result in nonzero";
 }
 
+TEST(shading, comple_shade_one_channel)
+{
+    float spec[3] = {0.5f, 0.5f, 0.5f};
+    float diff[3] = {0.5f, 0.5f, 0.5f};
+    float ambi[3] = {0.5f, 0.5f, 0.5f};
+    const phong_material m(spec, diff, ambi, 0.05f);
+    const light_source ls = {{spec, diff, ambi}, {2.f, 2.f, 2.f}};
+
+    const camera c(640, 480, {1.f, 1.f, 1.f}, {-1.f, -1.f, -1.f});
+    const intersect hit(1.f, {0.f, 0.f, 0.f}, {0.f, 0.f, 1.f});
+
+    const auto light_value = phong_shading(m, &ls, 1ul, c, hit);
+
+    ASSERT_GT(light_value, 0.f) << "Light must be there";
+}
+
 int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);

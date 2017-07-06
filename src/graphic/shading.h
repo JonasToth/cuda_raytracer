@@ -1,6 +1,7 @@
 #ifndef SHADING_H_7ITEXQWS
 #define SHADING_H_7ITEXQWS
 
+#include "graphic/camera.h"
 #include "graphic/material.h"
 #include "graphic/light.h"
 #include "macros.h"
@@ -30,6 +31,13 @@ CUCALL ALWAYS_INLINE inline float specular(float ks, float is, coord V, coord R,
 {
     return ks * std::pow(dot(R, V), alpha) * is;
 }
+
+
+/// Calculate the whole shading formular for one channel
+/// This is C-Style, since it must run on the gpu as well, therefor no nice vectors
+CUCALL float phong_shading(const phong_material& m, 
+                           const light_source* lights, std::size_t light_count,
+                           const camera& c, const intersect& hit);
 
 
 
