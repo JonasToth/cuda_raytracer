@@ -126,8 +126,8 @@ __global__ void trace_many_triangles_shaded(cudaSurfaceObject_t surface, camera 
             const auto float_color = phong_shading(*nearest->material(),
                                                    lights, n_lights,
                                                    r.direction, nearest_hit);
-            pixel_color.x = clamp(0, 255 * float_color.r, 255);
-            pixel_color.y = clamp(0, 255 * float_color.g, 255);
+            pixel_color.x = clamp(0.f, 255.f * float_color.r, 255.f);
+            pixel_color.y = clamp(0.f, 255.f * float_color.g, 255.f);
             pixel_color.z = clamp(0.f, 255.f * float_color.b, 255.f);
             surf2Dwrite(pixel_color, surface, x * 4, y);
         }

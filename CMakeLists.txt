@@ -44,8 +44,21 @@ endif()
 
 # ----------------------------------------------------------------------------------------
 #                              ===== Build targets =====
-file(GLOB cudafiles *.cu)
+#file(GLOB cudafiles *.cu)
 
+cuda_add_library(shader STATIC 
+                    ${PROJECT_SOURCE_DIR}/src/graphic/kernels/utility.cu
+                    ${PROJECT_SOURCE_DIR}/src/graphic/kernels/trace.cu
+                    ${PROJECT_SOURCE_DIR}/src/graphic/shading.cu
+                    ${PROJECT_SOURCE_DIR}/src/graphic/camera.cu
+                )
+cuda_add_library(management STATIC
+                    ${PROJECT_SOURCE_DIR}/src/obj_io.cu
+                    ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu 
+                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp
+                    ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp
+                    ${PROJECT_SOURCE_DIR}/src/management/input_callback.cpp
+                )
 # executable raytracer
 cuda_add_executable(raytracer.x src/main.cpp)
 
