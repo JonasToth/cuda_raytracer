@@ -45,12 +45,6 @@ public:
 
         const auto N = cross(E0, E1);
 
-        //const float D = dot(N, p0());
-        //const auto PlaneEquation = dot(N,P) + D;
-
-        //if(!(PlaneEquation < 0.001 && PlaneEquation > -0.001))
-            //return false;
-
         return dot(N, cross(E0, C0)) >= 0 &&
                dot(N, cross(E1, C1)) >= 0 &&
                dot(N, cross(E2, C2)) >= 0;
