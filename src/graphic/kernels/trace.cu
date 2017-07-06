@@ -29,9 +29,9 @@ __global__ void trace_single_triangle(cudaSurfaceObject_t surface, const triangl
 }
 
 
-__global__ void trace_many_triangle_with_camera(cudaSurfaceObject_t surface, camera c,
-                                                const triangle* triangles, int n_triangles,
-                                                int width, int height)
+__global__ void trace_many_triangles_with_camera(cudaSurfaceObject_t surface, camera c,
+                                                 const triangle* triangles, int n_triangles,
+                                                 int width, int height)
 {
     const auto x = blockIdx.x * blockDim.x + threadIdx.x;
     const auto y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -73,14 +73,3 @@ __global__ void trace_many_triangle_with_camera(cudaSurfaceObject_t surface, cam
         }
     }
 }
-
-__device__ unsigned char clamp(float lowest, float value, float highest)
-{
-    if(value < lowest) 
-        return static_cast<unsigned char>(lowest);
-    else if(value > highest) 
-        return static_cast<unsigned char>(highest);
-    else
-        return static_cast<unsigned char>(value);
-}
-

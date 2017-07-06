@@ -1,5 +1,14 @@
 #include "graphic/kernels/shaded.h"
 
+__device__ static unsigned char clamp(float lowest, float value, float highest)
+{
+    if(value < lowest) 
+        return static_cast<unsigned char>(lowest);
+    else if(value > highest) 
+        return static_cast<unsigned char>(highest);
+    else
+        return static_cast<unsigned char>(value);
+}
 
 __global__ void trace_many_triangles_shaded(cudaSurfaceObject_t surface, camera c,
                                             const triangle* triangles, std::size_t n_triangles,

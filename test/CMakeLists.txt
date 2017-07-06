@@ -46,7 +46,8 @@ cuda_add_executable(test_cuda_draw_buffer.x test_cuda_draw_buffer.cu
                     ${PROJECT_SOURCE_DIR}/src/graphic/camera.cu
                     ${PROJECT_SOURCE_DIR}/src/graphic/shading.cu
                     ${PROJECT_SOURCE_DIR}/src/graphic/kernels/utility.cu
-                    #${PROJECT_SOURCE_DIR}/src/graphic/kernels/trace.cu
+                    ${PROJECT_SOURCE_DIR}/src/graphic/kernels/trace.cu
+                    ${PROJECT_SOURCE_DIR}/src/graphic/kernels/shaded.cu
 
                     ${PROJECT_SOURCE_DIR}/src/obj_io.cu
                     ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu 
