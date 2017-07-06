@@ -56,7 +56,8 @@ cuda_add_executable(test_cuda_draw_buffer.x test_cuda_draw_buffer.cu
 target_link_libraries(test_cuda_draw_buffer.x 
                       ${GTEST_MAIN} ${GTEST_LIBRARIES} 
                       pthread 
-                      glfw ${OPENGL_gl_LIBRARY})
+                      glfw ${OPENGL_gl_LIBRARY}
+                      )
 
 cuda_add_executable(test_build_cuda.x test_build_cuda.cu)
 target_link_libraries(test_build_cuda.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
