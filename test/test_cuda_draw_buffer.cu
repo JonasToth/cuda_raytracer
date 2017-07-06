@@ -3,6 +3,7 @@
 #include "graphic/camera.h"
 #include "graphic/triangle.h"
 #include "graphic/ray.h"
+#include "graphic/kernels/utility.h"
 #include "macros.h"
 #include "management/input_manager.h"
 #include "management/surface_raii.h"
@@ -87,24 +88,6 @@ static void mouse_scrolling(GLFWwindow* w, double xoffset, double yoffset)
     std::clog << "Camera Steering At: " << c.steering() << std::endl;
 }
 
-
-__global__ void grayKernel(cudaSurfaceObject_t Surface, int width, int height, float t)
-{
-    auto x = blockIdx.x * blockDim.x + threadIdx.x;
-    auto y = blockIdx.y * blockDim.y + threadIdx.y;
-
-    if(x < width && y < height)
-    {
-        uchar4 Color;
-        char new_t = t;
-        Color.x = x - new_t;
-        Color.y = y + new_t;
-        Color.z = new_t;
-        Color.w = 255;
-        surf2Dwrite(Color, Surface, x * 4, y);
-    }
-}
-
 void invokeRenderingKernel(cudaSurfaceObject_t& Surface, float t)
 {
     //std::clog << "Rendering new image " << char{t} << std::endl;
@@ -112,7 +95,7 @@ void invokeRenderingKernel(cudaSurfaceObject_t& Surface, float t)
     dim3 dimGrid((Width  + dimBlock.x) / dimBlock.x,
                  (Height + dimBlock.y) / dimBlock.y);
     std::clog << "Render : " << t << std::endl;
-    grayKernel<<<dimGrid, dimBlock>>>(Surface, Width, Height, t);
+    stupid_colors<<<dimGrid, dimBlock>>>(Surface, Width, Height, t);
 }
 
 TEST(cuda_draw, basic_drawing) {
@@ -142,19 +125,6 @@ TEST(cuda_draw, basic_drawing) {
     std::clog << "Done" << std::endl;
 }
 
-__global__ void black_kernel(cudaSurfaceObject_t Surface, int Width, int Height) {
-    const auto x = blockIdx.x * blockDim.x + threadIdx.x;
-    const auto y = blockIdx.y * blockDim.y + threadIdx.y;
-
-    uchar4 BGColor;
-    BGColor.x = 0;
-    BGColor.y = 0;
-    BGColor.z = 0;
-    BGColor.w = 255;
-
-    if(x < Width && y < Height)
-        surf2Dwrite(BGColor, Surface, x * 4, y);
-}
 
 __global__ void trace_kernel(cudaSurfaceObject_t Surface, const triangle* T, int Width, int Height) {
     const auto x = blockIdx.x * blockDim.x + threadIdx.x;
