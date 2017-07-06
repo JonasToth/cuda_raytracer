@@ -1,6 +1,6 @@
 #include "graphic/shading.h"
 
-CUCALL color phong_shading(const phong_material* m,
+color phong_shading(const phong_material* m,
                            const light_source* lights, std::size_t light_count,
                            const coord& ray_direction, const intersect& hit)
 {
