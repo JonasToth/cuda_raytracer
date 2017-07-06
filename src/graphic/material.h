@@ -1,7 +1,7 @@
 #ifndef MATERIAL_H_YZ53U2I4
 #define MATERIAL_H_YZ53U2I4
 
-#include "phong_parameters.h"
+#include "graphic/phong_parameters.h"
 
 /// Implement the phong reflection model
 struct phong_material {

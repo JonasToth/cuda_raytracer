@@ -11,7 +11,7 @@
 #include <stdexcept>
 
 #include "macros.h"
-#include "vector.h"
+#include "graphic/vector.h"
 
 /// A triangle is a set of 3 __points, the order of the __points defines the orientation.
 class triangle {

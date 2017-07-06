@@ -6,8 +6,8 @@
 #include <thrust/tuple.h>
 
 #include "macros.h"
-#include "triangle.h"
-#include "vector.h"
+#include "graphic/triangle.h"
+#include "graphic/vector.h"
 
 struct intersect {
     CUCALL intersect() = default;
