@@ -1,16 +1,16 @@
 
-CUCALL camera::camera(int width, int height, coord origin, coord steering)
+inline CUCALL camera::camera(int width, int height, coord origin, coord steering)
     : __origin{origin}
     , __steering{normalize(steering)}
     , __width{width}
     , __height{height}
 {}
 
-CUCALL camera::camera(int width, int height)
+inline CUCALL camera::camera(int width, int height)
     : camera(width, height, {0.f, 0.f, 0.f}, {0.f, 0.f, 1.f})
 {}
 
-CUCALL ray camera::rayAt(int u, int v) const noexcept {
+inline CUCALL ray camera::rayAt(int u, int v) const noexcept {
     // imeplement pinhole model
     const float focal_length = 360.f;
     const float fx = focal_length, fy = focal_length;
@@ -40,7 +40,7 @@ CUCALL ray camera::rayAt(int u, int v) const noexcept {
 // beta => mouse x movement
 // gamma=> mouse y movement
 // http://planning.cs.uiuc.edu/node102.html
-CUCALL void camera::swipe(float alpha, float beta, float gamma) noexcept {
+inline CUCALL void camera::swipe(float alpha, float beta, float gamma) noexcept {
     using std::sin;
     using std::cos;
     float dR[9] = {
@@ -56,7 +56,7 @@ CUCALL void camera::swipe(float alpha, float beta, float gamma) noexcept {
     ));
 }
 
-CUCALL void camera::lookAt(coord target) noexcept {
+inline CUCALL void camera::lookAt(coord target) noexcept {
     __steering = normalize(target - __origin);
 }
 

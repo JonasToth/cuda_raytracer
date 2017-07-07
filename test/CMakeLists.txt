@@ -21,19 +21,16 @@ cuda_add_executable(test_build_cuda.x test_build_cuda.cu)
 target_link_libraries(test_build_cuda.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 
-cuda_add_executable(test_camera.x test_camera.cu
-                    ${PROJECT_SOURCE_DIR}/src/graphic/camera.cu)
+cuda_add_executable(test_camera.x test_camera.cu)
 target_link_libraries(test_camera.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 
 add_executable(test_camera_control.x test_camera_control.cpp
-                ${PROJECT_SOURCE_DIR}/src/graphic/camera.cu
                 ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp)
 target_link_libraries(test_camera_control.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 
 cuda_add_executable(test_cuda_draw_buffer.x test_cuda_draw_buffer.cu
-                    ${PROJECT_SOURCE_DIR}/src/graphic/camera.cu
                     #${PROJECT_SOURCE_DIR}/src/graphic/shading.cu
                     ${PROJECT_SOURCE_DIR}/src/graphic/kernels/shaded.cu
                     ${PROJECT_SOURCE_DIR}/src/graphic/kernels/trace.cu
@@ -102,7 +99,6 @@ target_link_libraries(test_triangle.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 
 cuda_add_executable(test_shading.x test_shading.cpp
-                    ${PROJECT_SOURCE_DIR}/src/graphic/camera.cu
                     ${PROJECT_SOURCE_DIR}/src/graphic/shading.cu)
 target_link_libraries(test_shading.x 
                       ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)

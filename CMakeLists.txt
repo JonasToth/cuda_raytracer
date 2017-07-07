@@ -48,7 +48,6 @@ endif()
 
 cuda_add_library(shader STATIC 
                  ${PROJECT_SOURCE_DIR}/src/graphic/shading.cu
-                 ${PROJECT_SOURCE_DIR}/src/graphic/camera.cu
                  ${PROJECT_SOURCE_DIR}/src/graphic/kernels/utility.cu
                  ${PROJECT_SOURCE_DIR}/src/graphic/kernels/trace.cu
                 )
