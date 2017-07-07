@@ -1,5 +1,10 @@
 enable_testing()
 
+# google test as testing framework must be available
+find_package(GTest REQUIRED) 
+include_directories(${GTEST_INCLUDE_DIRS}) 
+
+
 # symbolic links to all test files
 add_custom_target(example_files
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube.obj ${PROJECT_BINARY_DIR}/test
@@ -18,7 +23,6 @@ add_custom_target(example_files
 
 
 cuda_add_executable(demo_cuda_draw_buffer.x demo_cuda_draw_buffer.cu
-
                     ${PROJECT_SOURCE_DIR}/src/obj_io.cu
                     ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp
                     ${PROJECT_SOURCE_DIR}/src/management/input_callback.cpp
@@ -32,17 +36,14 @@ add_dependencies(demo_cuda_draw_buffer.x example_files)
 
 
 cuda_add_executable(demo_render_materials.x demo_render_materials.cu)
-target_link_libraries(demo_render_materials.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
+target_link_libraries(demo_render_materials.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread
+                                              glfw ${OPENGL_gl_LIBRARY})
 add_dependencies(demo_render_materials.x example_files)
 
 # ======================== TESTING ===================================
 
-# google test as testing framework must be available
-find_package(GTest REQUIRED) 
-include_directories(${GTEST_INCLUDE_DIRS}) 
 
 # unit tests
-
 cuda_add_executable(test_build_cuda.x test_build_cuda.cu)
 target_link_libraries(test_build_cuda.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
