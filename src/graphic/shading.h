@@ -6,10 +6,6 @@
 #include "graphic/light.h"
 #include "macros.h"
 
-#ifndef __CUDACC__
-#   include <gsl/gsl>
-#endif
-
 struct color { float r; float g; float b; };
 
 /// Calculate ambient lighting from the global coefficient and the material coefficient
@@ -33,6 +29,8 @@ CUCALL color phong_shading(const phong_material* m,
                            const light_source* lights, std::size_t light_count,
                            const coord& ray_direction, const intersect& hit);
 
+
+#include "shading.inl"
 
 
 #endif /* end of include guard: SHADING_H_7ITEXQWS */
