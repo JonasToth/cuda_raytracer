@@ -33,10 +33,52 @@ TEST(camera, ray_generation)
     ASSERT_EQ(r.origin, coord(0.f, 0.f, 0.f)) << "Not from center of the universe";
     ASSERT_EQ(r.direction, coord(0.f, 0.f, 1.f)) << "Centered ray not in optical axis";
 
-    std::clog << c.rayAt(0, 0).direction << std::endl;
-    std::clog << c.rayAt(640, 0).direction << std::endl;
-    std::clog << c.rayAt(0, 480).direction << std::endl;
-    std::clog << c.rayAt(640, 480).direction << std::endl;
+    const auto tl = c.rayAt(0, 0).direction;
+    const auto tm = c.rayAt(320, 0).direction;
+    const auto tr = c.rayAt(640, 0).direction;
+
+    const auto ml = c.rayAt(0, 240).direction;
+    const auto mm = c.rayAt(320, 240).direction;
+    const auto mr = c.rayAt(640, 240).direction;
+
+    const auto bl = c.rayAt(0, 480).direction;
+    const auto bm = c.rayAt(320, 480).direction;
+    const auto br = c.rayAt(640, 480).direction;
+
+    // Rays in one of the coordinate axis
+    EXPECT_FLOAT_EQ(tm.x, 0.f) << "x center not centered " << tm;
+    EXPECT_FLOAT_EQ(mm.x, 0.f) << "x center not centered " << mm;
+    EXPECT_FLOAT_EQ(bm.x, 0.f) << "x center not centered " << bm;
+
+    EXPECT_FLOAT_EQ(ml.y, 0.f) << "y center not centered " << ml;
+    EXPECT_FLOAT_EQ(mm.y, 0.f) << "y center not centered " << mm;
+    EXPECT_FLOAT_EQ(mr.y, 0.f) << "y center not centered " << mr;
+
+    EXPECT_EQ(mm, coord(0.f, 0.f, 1.f)) << "middle ray not in optical axis " << mm;
+
+    EXPECT_FLOAT_EQ(tl.x, -tr.x) << "x value not mirrored " << tl;
+    EXPECT_FLOAT_EQ(ml.x, -mr.x) << "x value not mirrored " << ml;
+    EXPECT_FLOAT_EQ(bl.x, -br.x) << "x value not mirrored " << bl;
+    EXPECT_LT(tl.x, 0.f) << "left sided ray not on negative x axis " << tl;
+    EXPECT_LT(ml.x, 0.f) << "left sided ray not on negative x axis " << ml;
+    EXPECT_LT(bl.x, 0.f) << "left sided ray not on negative x axis " << bl;
+
+    EXPECT_FLOAT_EQ(tl.y, -bl.y) << "y value not mirrored " << tl;
+    EXPECT_FLOAT_EQ(tm.y, -bm.y) << "y value not mirrored " << tm;
+    EXPECT_FLOAT_EQ(tr.y, -br.y) << "y value not mirrored " << tr;
+    EXPECT_LT(tl.y, 0.f) << "top rays not on negative y axis " << tl;
+    EXPECT_LT(tm.y, 0.f) << "top rays not on negative y axis " << tm;
+    EXPECT_LT(tr.y, 0.f) << "top rays not on negative y axis " << tr;
+
+    EXPECT_GT(tl.z, 0.f) << "ray not in positive z direction " << tl;
+    EXPECT_GT(tm.z, 0.f) << "ray not in positive z direction " << tm;
+    EXPECT_GT(tr.z, 0.f) << "ray not in positive z direction " << tr;
+    EXPECT_GT(ml.z, 0.f) << "ray not in positive z direction " << ml;
+    EXPECT_GT(mm.z, 0.f) << "ray not in positive z direction " << mm;
+    EXPECT_GT(mr.z, 0.f) << "ray not in positive z direction " << mr;
+    EXPECT_GT(bl.z, 0.f) << "ray not in positive z direction " << bl;
+    EXPECT_GT(bm.z, 0.f) << "ray not in positive z direction " << bm;
+    EXPECT_GT(br.z, 0.f) << "ray not in positive z direction " << br;
 }
 
 TEST(camera, rays_moved_camera)
