@@ -53,7 +53,7 @@ cuda_add_executable(test_build_cuda.x test_build_cuda.cu)
 target_link_libraries(test_build_cuda.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 
-cuda_add_executable(test_camera.x test_camera.cu)
+add_executable(test_camera.x test_camera.cpp)
 target_link_libraries(test_camera.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 
@@ -99,7 +99,7 @@ add_executable(test_triangle.x test_triangle.cpp)
 target_link_libraries(test_triangle.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 
-cuda_add_executable(test_shading.x test_shading.cpp)
+add_executable(test_shading.x test_shading.cpp)
 target_link_libraries(test_shading.x 
                       ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
