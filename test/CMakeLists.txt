@@ -9,7 +9,33 @@ add_custom_target(example_files
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/mini_cooper.mtl ${PROJECT_BINARY_DIR}/test
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/test_camera_light.obj ${PROJECT_BINARY_DIR}/test
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/test_camera_light.mtl ${PROJECT_BINARY_DIR}/test
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.obj ${PROJECT_BINARY_DIR}/test
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.mtl ${PROJECT_BINARY_DIR}/test
 )
+
+
+# ======================== DEMOING ===================================
+
+
+cuda_add_executable(demo_cuda_draw_buffer.x demo_cuda_draw_buffer.cu
+
+                    ${PROJECT_SOURCE_DIR}/src/obj_io.cu
+                    ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp
+                    ${PROJECT_SOURCE_DIR}/src/management/input_callback.cpp
+                    ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu 
+                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp)
+target_link_libraries(demo_cuda_draw_buffer.x 
+                      ${GTEST_MAIN} ${GTEST_LIBRARIES} 
+                      pthread 
+                      glfw ${OPENGL_gl_LIBRARY})
+add_dependencies(demo_cuda_draw_buffer.x example_files)
+
+
+cuda_add_executable(demo_render_materials.x demo_render_materials.cu)
+target_link_libraries(demo_render_materials.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
+add_dependencies(demo_render_materials.x example_files)
+
+# ======================== TESTING ===================================
 
 # google test as testing framework must be available
 find_package(GTest REQUIRED) 
@@ -28,20 +54,6 @@ target_link_libraries(test_camera.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
 add_executable(test_camera_control.x test_camera_control.cpp
                 ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp)
 target_link_libraries(test_camera_control.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
-
-
-cuda_add_executable(test_cuda_draw_buffer.x test_cuda_draw_buffer.cu
-
-                    ${PROJECT_SOURCE_DIR}/src/obj_io.cu
-                    ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp
-                    ${PROJECT_SOURCE_DIR}/src/management/input_callback.cpp
-                    ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu 
-                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp)
-target_link_libraries(test_cuda_draw_buffer.x 
-                      ${GTEST_MAIN} ${GTEST_LIBRARIES} 
-                      pthread 
-                      glfw ${OPENGL_gl_LIBRARY})
-add_dependencies(test_cuda_draw_buffer.x example_files)
 
 
 cuda_add_executable(test_cuda_ray.x test_cuda_ray.cu)
@@ -101,9 +113,6 @@ target_link_libraries(test_shading.x
 add_executable(test_vector.x test_vector.cpp)
 target_link_libraries(test_vector.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
-
-# ----------------------------------------------------------------------------------------
-#                               ===== Testing =====
 
 add_test(test_build_cuda test_build_cuda.x)
 add_test(test_camera test_camera.x)
