@@ -34,6 +34,12 @@ TEST(input_manager, mouse_handling)
     EXPECT_DOUBLE_EQ(m.mouse_y(), 200.) << "Movement not accounted";
     EXPECT_DOUBLE_EQ(m.mouse_diff_x(), 100.) << "Difference not calculated correctly";
     EXPECT_DOUBLE_EQ(m.mouse_diff_y(), 200.) << "Difference not calculated correctly";
+
+    m.clear();
+    EXPECT_DOUBLE_EQ(m.mouse_x(), 0.) << "Position not cleared";
+    EXPECT_DOUBLE_EQ(m.mouse_y(), 0.) << "Position not cleared";
+    EXPECT_DOUBLE_EQ(m.mouse_diff_x(), 0.) << "Difference not cleared";
+    EXPECT_DOUBLE_EQ(m.mouse_diff_y(), 0.) << "Difference not cleared";
 }
 
 

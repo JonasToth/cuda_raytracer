@@ -1,5 +1,6 @@
 enable_testing()
 
+# symbolic links to all test files
 add_custom_target(example_files
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube.obj ${PROJECT_BINARY_DIR}/test
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/shapes.obj ${PROJECT_BINARY_DIR}/test
@@ -13,108 +14,119 @@ add_custom_target(example_files
 # google test as testing framework must be available
 find_package(GTest REQUIRED) 
 include_directories(${GTEST_INCLUDE_DIRS}) 
+
 # unit tests
+
+cuda_add_executable(test_build_cuda.x test_build_cuda.cu)
+target_link_libraries(test_build_cuda.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
+
+
+cuda_add_executable(test_camera.x test_camera.cu
+                    ${PROJECT_SOURCE_DIR}/src/graphic/camera.cu)
+target_link_libraries(test_camera.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
+
+
+add_executable(test_camera_control.x test_camera_control.cpp
+                ${PROJECT_SOURCE_DIR}/src/graphic/camera.cu
+                ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp)
+target_link_libraries(test_camera_control.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
+
+
+cuda_add_executable(test_cuda_draw_buffer.x test_cuda_draw_buffer.cu
+                    ${PROJECT_SOURCE_DIR}/src/graphic/camera.cu
+                    #${PROJECT_SOURCE_DIR}/src/graphic/shading.cu
+                    ${PROJECT_SOURCE_DIR}/src/graphic/kernels/shaded.cu
+                    ${PROJECT_SOURCE_DIR}/src/graphic/kernels/trace.cu
+                    ${PROJECT_SOURCE_DIR}/src/graphic/kernels/utility.cu
+
+                    ${PROJECT_SOURCE_DIR}/src/obj_io.cu
+                    ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp
+                    ${PROJECT_SOURCE_DIR}/src/management/input_callback.cpp
+                    ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu 
+                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp)
+target_link_libraries(test_cuda_draw_buffer.x 
+                      management
+                      ${GTEST_MAIN} ${GTEST_LIBRARIES} 
+                      pthread 
+                      glfw ${OPENGL_gl_LIBRARY})
+add_dependencies(test_cuda_draw_buffer.x example_files)
+
+
+cuda_add_executable(test_cuda_ray.x test_cuda_ray.cu)
+target_link_libraries(test_cuda_ray.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
+
+
+cuda_add_executable(test_cuda_triangle.x test_cuda_triangle.cu)
+target_link_libraries(test_cuda_triangle.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
+
+
+cuda_add_executable(test_cuda_vector.x test_cuda_vector.cu)
+target_link_libraries(test_cuda_vector.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
+
+
+add_executable(test_glfw.x test_glfw.cpp
+               ${PROJECT_SOURCE_DIR}/src/management/window.cpp)
+target_link_libraries(test_glfw.x ${GTEST_MAIN} ${GTEST_LIBRARIES} glfw ${OPENGL_gl_LIBRARY} pthread)
+
+
+add_executable(test_input_manager.x test_input_manager.cpp
+               ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp)
+target_link_libraries(test_input_manager.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
+
+
+add_executable(test_light.x test_light.cpp)
+target_link_libraries(test_light.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
+
+
+add_executable(test_material.x test_material.cpp)
+target_link_libraries(test_material.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
+
+
 cuda_add_executable(test_obj_io.x test_obj_io.cu 
                     ${PROJECT_SOURCE_DIR}/src/obj_io.cu)
 target_link_libraries(test_obj_io.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 add_dependencies(test_obj_io.x example_files)
 
-add_executable(test_vector.x test_vector.cpp)
-target_link_libraries(test_vector.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
-
-cuda_add_executable(test_cuda_vector.x test_cuda_vector.cu)
-target_link_libraries(test_cuda_vector.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
-
-add_executable(test_triangle.x test_triangle.cpp)
-target_link_libraries(test_triangle.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
-
-cuda_add_executable(test_cuda_triangle.x test_cuda_triangle.cu)
-target_link_libraries(test_cuda_triangle.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 add_executable(test_ray.x test_ray.cpp)
 target_link_libraries(test_ray.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
-cuda_add_executable(test_cuda_ray.x test_cuda_ray.cu)
-target_link_libraries(test_cuda_ray.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
-
-add_executable(test_glfw.x test_glfw.cpp
-               ${PROJECT_SOURCE_DIR}/src/management/window.cpp
-               )
-target_link_libraries(test_glfw.x ${GTEST_MAIN} ${GTEST_LIBRARIES} glfw ${OPENGL_gl_LIBRARY} pthread)
-
-cuda_add_executable(test_cuda_draw_buffer.x test_cuda_draw_buffer.cu
-                    ${PROJECT_SOURCE_DIR}/src/graphic/camera.cu
-                    #${PROJECT_SOURCE_DIR}/src/graphic/shading.cu
-                    ${PROJECT_SOURCE_DIR}/src/graphic/kernels/utility.cu
-                    ${PROJECT_SOURCE_DIR}/src/graphic/kernels/trace.cu
-                    ${PROJECT_SOURCE_DIR}/src/graphic/kernels/shaded.cu
-
-                    ${PROJECT_SOURCE_DIR}/src/obj_io.cu
-                    ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu 
-                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp
-                    ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp
-                    ${PROJECT_SOURCE_DIR}/src/management/input_callback.cpp
-                    )
-target_link_libraries(test_cuda_draw_buffer.x 
-                      management
-                      ${GTEST_MAIN} ${GTEST_LIBRARIES} 
-                      pthread 
-                      glfw ${OPENGL_gl_LIBRARY}
-                      )
-
-cuda_add_executable(test_build_cuda.x test_build_cuda.cu)
-target_link_libraries(test_build_cuda.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 cuda_add_executable(test_surface_raii.x test_surface_raii.cu
-                    ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu
-                    )
+                    ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu)
 target_link_libraries(test_surface_raii.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread glfw ${OPENGL_gl_LIBRARY})
 
-cuda_add_executable(test_camera.x test_camera.cu
-                    ${PROJECT_SOURCE_DIR}/src/graphic/camera.cu
-                    )
-target_link_libraries(test_camera.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
-add_executable(test_input_manager.x test_input_manager.cpp
-               ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp
-               )
-target_link_libraries(test_input_manager.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
+add_executable(test_triangle.x test_triangle.cpp)
+target_link_libraries(test_triangle.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
-add_executable(test_material.x test_material.cpp)
-target_link_libraries(test_material.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
-
-add_executable(test_light.x test_light.cpp)
-target_link_libraries(test_light.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 cuda_add_executable(test_shading.x test_shading.cpp
                     ${PROJECT_SOURCE_DIR}/src/graphic/camera.cu
-                    ${PROJECT_SOURCE_DIR}/src/graphic/shading.cu
-                   )
+                    ${PROJECT_SOURCE_DIR}/src/graphic/shading.cu)
 target_link_libraries(test_shading.x 
                       ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
+
+
+add_executable(test_vector.x test_vector.cpp)
+target_link_libraries(test_vector.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
+
 
 # ----------------------------------------------------------------------------------------
 #                               ===== Testing =====
 
-add_test(test_obj_io test_obj_io.x)
 add_test(test_build_cuda test_build_cuda.x)
-add_test(test_cuda_vector test_cuda_vector.x)
-add_test(test_vector test_vector.x)
-add_test(test_cuda_triangle test_cuda_triangle.x)
-add_test(test_triangle test_triangle.x)
-add_test(test_cuda_ray test_cuda_ray.x)
-add_test(test_ray test_ray.x)
 add_test(test_camera test_camera.x)
-add_test(test_surface_raii test_surface_raii.x)
+add_test(test_camera_control test_camera_control.x)
+add_test(test_cuda_ray test_cuda_ray.x)
+add_test(test_cuda_triangle test_cuda_triangle.x)
+add_test(test_cuda_vector test_cuda_vector.x)
 add_test(test_input_manager test_input_manager.x)
-add_test(test_material test_material.x)
 add_test(test_light test_light.x)
+add_test(test_obj_io test_obj_io.x)
+add_test(test_material test_material.x)
+add_test(test_ray test_ray.x)
 add_test(test_shading test_shading.x)
-
-#set_tests_properties(test_build_cuda)
-#PROPERTIES
-#PASS_REGULAR_EXPRESSION "LeakSanitizer: detected memory leaks")
-
-# probably not a term with X enabled in the buildbot, but manually running it works
-# add_test(test_glfw test_glfw.x)
-# set_tests_properties(test_glfw PROPERTIES PASS_REGULAR_EXPESSION "FAILED")
+add_test(test_surface_raii test_surface_raii.x)
+add_test(test_triangle test_triangle.x)
+add_test(test_vector test_vector.x)

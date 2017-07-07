@@ -83,6 +83,7 @@ TEST(obj_io, test_simple_materials) {
     EXPECT_EQ(t.material(), m_ptr.get()) << "Pointers to material differ, connection wrong";
 }
 
+#if 0
 TEST(obj_io, loading_complex) {
     world_geometry w;
     w.load("mini_cooper.obj");
@@ -92,6 +93,7 @@ TEST(obj_io, loading_complex) {
     EXPECT_EQ(w.shape_count(), 49) << "Bad number of Shapes";
     EXPECT_EQ(w.material_count(), 15) << "Bad number of materials";
 }
+#endif
 
 int main(int argc, char** argv)
 {
