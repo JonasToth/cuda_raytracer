@@ -17,10 +17,12 @@
                            //const coord& ray_direction, const intersect& hit);
 
 
-__global__ void trace_many_triangles_shaded(cudaSurfaceObject_t surface, camera c,
-                                            const triangle* triangles, std::size_t n_triangles,
-                                            const light_source* lights, std::size_t n_lights,
-                                            int width, int height);
+__global__ inline void trace_many_triangles_shaded(
+                           cudaSurfaceObject_t surface, camera c,
+                           const triangle* triangles, std::size_t n_triangles,
+                           const light_source* lights, std::size_t n_lights,
+                           int width, int height);
 
+#include "graphic/kernels/shaded.inl"
 
 #endif /* end of include guard: SHADED_H_KK3H1DCZ */

@@ -1,9 +1,7 @@
 #include "graphic/kernels/shaded.h"
-/// I dont know why linking this does not work, but include is ok, so UGLY FIX
-#include "graphic/shading.cu"
 
 
-__device__ static float clamp(float lowest, float value, float highest)
+CUCALL inline float clamp(float lowest, float value, float highest)
 {
     if(value < lowest) 
         return lowest;
@@ -13,7 +11,7 @@ __device__ static float clamp(float lowest, float value, float highest)
         return value;
 }
 
-__global__ void trace_many_triangles_shaded(cudaSurfaceObject_t surface, camera c,
+__global__ inline void trace_many_triangles_shaded(cudaSurfaceObject_t surface, camera c,
                                             const triangle* triangles, std::size_t n_triangles,
                                             const light_source* lights, std::size_t n_lights,
                                             int width, int height)
