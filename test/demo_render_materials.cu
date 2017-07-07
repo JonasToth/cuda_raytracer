@@ -11,6 +11,8 @@
 #include <thread>
 #include <chrono>
 
+bool camera_changed = true;
+
 static void handle_keys(GLFWwindow* w, camera& c)
 {
     const auto& im = input_manager::instance();
@@ -18,18 +20,37 @@ static void handle_keys(GLFWwindow* w, camera& c)
     const float dP = 0.5;
     if(im.isPressed(GLFW_KEY_ESCAPE))
         glfwSetWindowShouldClose(w, GLFW_TRUE);
+
     else if(im.isPressed(GLFW_KEY_A))
+    {
         c.move({-dP, 0.f, 0.f});
+        camera_changed = true;
+    }
     else if(im.isPressed(GLFW_KEY_D))
+    {
         c.move({dP, 0.f, 0.f});
+        camera_changed = true;
+    }
     else if(im.isPressed(GLFW_KEY_W))
+    {
         c.move({0.f, dP, 0.f});
+        camera_changed = true;
+    }
     else if(im.isPressed(GLFW_KEY_S))
+    {
         c.move({0.f, -dP, 0.f});
+        camera_changed = true;
+    }
     else if(im.isPressed(GLFW_KEY_Q))
+    {
         c.move({0.f, 0.f, dP});
+        camera_changed = true;
+    }
     else if(im.isPressed(GLFW_KEY_E))
+    {
         c.move({0.f, 0.f, -dP});
+        camera_changed = true;
+    }
 }
 
 static void raytrace_many_shaded(cudaSurfaceObject_t& surface, camera c,
@@ -54,8 +75,7 @@ TEST(demo_materials, scene_visualisation) {
 
     // Camera Setup similar to blender
     camera c(win.getWidth(), win.getHeight(), 
-             {0.0f, -5.0f, 0.0f}, {0.f, 0.f, 1.f});
-    c.lookAt({0.f, 0.f, 0.f});
+             {0.0f, 0.5f, 2.5f}, {0.01f, 0.f, -1.f});
     surface_raii render_surface(win.getWidth(), win.getHeight());
 
     std::clog << "Setup Rendering Platform initialized" << std::endl;
@@ -79,16 +99,21 @@ TEST(demo_materials, scene_visualisation) {
         raytrace_many_shaded(render_surface.getSurface(), c,
                              triangles.data().get(), triangles.size(),
                              lights.data().get(), lights.size());
+        std::this_thread::sleep_for(std::chrono::seconds(1));
         render_surface.render_gl_texture();
         glfwSwapBuffers(w);
         std::clog << "World rendered" << std::endl;
+        std::clog << "Camera Position: " << c.origin() << std::endl;
+        std::clog << "Camera Steering At: " << c.steering() << std::endl << std::endl;
+        camera_changed = false;
     };
 
 
     while(!glfwWindowShouldClose(w)) {
         glfwWaitEvents();
         handle_keys(w, c);
-        render_lambda();
+        if(camera_changed)
+            render_lambda();
     } 
     input_manager::instance().clear();
 }
