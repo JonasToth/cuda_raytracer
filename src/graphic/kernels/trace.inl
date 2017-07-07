@@ -1,5 +1,3 @@
-#include "graphic/kernels/trace.h"
-
 __global__ void trace_single_triangle(cudaSurfaceObject_t surface, const triangle* t,
                                       std::size_t width, std::size_t height) 
 {

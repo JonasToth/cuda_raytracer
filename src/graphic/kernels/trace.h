@@ -15,4 +15,6 @@ __global__ void trace_many_triangles_with_camera(cudaSurfaceObject_t surface, ca
                                                  const triangle* triangles, int n_triangles,
                                                  int width, int height);
 
+#include "trace.inl"
+
 #endif /* end of include guard: TRACE_H_ORLZJOGP */

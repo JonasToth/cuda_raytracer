@@ -6,4 +6,6 @@
 __global__ void black_kernel(cudaSurfaceObject_t surface, int width, int height);
 __global__ void stupid_colors(cudaSurfaceObject_t surface, int width, int height, float t);
 
+#include "utility.inl"
+
 #endif /* end of include guard: UTILITY_H_SZFM0XUL */

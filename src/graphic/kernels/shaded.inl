@@ -1,6 +1,3 @@
-#include "graphic/kernels/shaded.h"
-
-
 CUCALL inline float clamp(float lowest, float value, float highest)
 {
     if(value < lowest) 

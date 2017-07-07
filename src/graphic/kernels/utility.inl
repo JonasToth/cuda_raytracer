@@ -1,5 +1,3 @@
-#include "utility.h"
-
 /// Surface gets all black
 __global__ void black_kernel(cudaSurfaceObject_t surface, int width, int height) {
     const auto x = blockIdx.x * blockDim.x + threadIdx.x;
