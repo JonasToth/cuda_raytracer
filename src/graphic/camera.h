@@ -29,4 +29,6 @@ private:
     int __height;
 };
 
+#include "camera.inl"
+
 #endif /* end of include guard: CAMERA_H_5RCCQYDN */
