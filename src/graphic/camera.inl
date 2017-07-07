@@ -12,13 +12,13 @@ inline CUCALL camera::camera(int width, int height)
 
 inline CUCALL ray camera::rayAt(int u, int v) const noexcept {
     // imeplement pinhole model
-    const float focal_length = 360.f;
-    const float fx = focal_length, fy = focal_length;
+    const float f = 360.f;
+    //const float fx = f, fy = f;
     const int cx = __width / 2;
     const int cy = __height / 2;
 
-    const float x = (u - cx) / fx - (v - cy) / fy;
-    const float y = (v - cy) / fy;
+    const float x = (u - cx) / f;
+    const float y = (v - cy) / f;
 
     // calculate the direction for camera coordinates 
     const float coeff = std::sqrt(1 + x*x + y*y) / (x*x + y*y + 1);
