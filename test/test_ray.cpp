@@ -21,12 +21,28 @@ TEST(ray, intersection)
 
     bool DoesIntersect;
     intersect I;
-    LIB::tie(DoesIntersect, I) = R.intersects(T);
+    std::tie(DoesIntersect, I) = R.intersects(T);
 
-    ASSERT_EQ(DoesIntersect, true) << "depth=" << I.depth;
-    ASSERT_EQ(I.depth, 10.) << "(" << I.hit.x << "," << I.hit.y << "," << I.hit.z << ")\n" 
-                            << "(" << I.normal.x << "," << I.normal.y << "," << I.normal.z << ")";
-    ASSERT_EQ(I.normal, coord(0., 0., -1.f)) << I.normal;
+    EXPECT_EQ(DoesIntersect, true) << "depth=" << I.depth;
+    EXPECT_EQ(I.hit, coord(0.f, 0.f, 10.f)) << "Hit coordinates not correct " << I.hit;
+    EXPECT_EQ(I.depth, 10.) << I.hit << "\n"
+                            << I.normal;
+    EXPECT_EQ(I.normal, coord(0., 0., -1.f)) << I.normal;
+
+    R.direction = normalize(coord{0.f, 0.5f, 1.f});
+    std::tie(DoesIntersect, I) = R.intersects(T);
+    
+    EXPECT_EQ(DoesIntersect, true) << "Intersection wrong";
+    EXPECT_EQ(I.hit, coord(0.f, 5.f, 10.f)) << "Hit coordinates not correct " << I.hit;
+    EXPECT_EQ(I.depth, std::sqrt(125.f)) << "Hit depth wrong";
+
+
+    R.origin = coord{1.f, 0.0f, 1.f};
+    std::tie(DoesIntersect, I) = R.intersects(T);
+
+    EXPECT_EQ(DoesIntersect, true) << "Intersection wrong";
+    EXPECT_EQ(I.hit, coord(1.f, 4.5f, 10.f)) << "Hit coordinates not correct " << I.hit;
+    EXPECT_LT(I.depth - std::sqrt(9.f * 9.f + 4.5f * 4.5f), 0.0001) << "Hit depth wrong";
 }
 
 std::vector<ray> generateRays(const coord& Origin, std::size_t SquareDim) {

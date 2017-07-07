@@ -54,7 +54,8 @@ TEST(demo_materials, scene_visualisation) {
 
     // Camera Setup similar to blender
     camera c(win.getWidth(), win.getHeight(), 
-             {0.0f, -5.0f, 0.0f}, {0.f, 1.f, -0.f});
+             {0.0f, -5.0f, 0.0f}, {0.f, 0.f, 1.f});
+    c.lookAt({0.f, 0.f, 0.f});
     surface_raii render_surface(win.getWidth(), win.getHeight());
 
     std::clog << "Setup Rendering Platform initialized" << std::endl;

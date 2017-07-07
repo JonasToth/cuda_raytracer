@@ -62,18 +62,6 @@ add_executable(test_camera_control.x test_camera_control.cpp
 target_link_libraries(test_camera_control.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 
-cuda_add_executable(test_cuda_ray.x test_cuda_ray.cu)
-target_link_libraries(test_cuda_ray.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
-
-
-cuda_add_executable(test_cuda_triangle.x test_cuda_triangle.cu)
-target_link_libraries(test_cuda_triangle.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
-
-
-cuda_add_executable(test_cuda_vector.x test_cuda_vector.cu)
-target_link_libraries(test_cuda_vector.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
-
-
 add_executable(test_glfw.x test_glfw.cpp
                ${PROJECT_SOURCE_DIR}/src/management/window.cpp)
 target_link_libraries(test_glfw.x ${GTEST_MAIN} ${GTEST_LIBRARIES} glfw ${OPENGL_gl_LIBRARY} pthread)
@@ -123,9 +111,6 @@ target_link_libraries(test_vector.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 add_test(test_build_cuda test_build_cuda.x)
 add_test(test_camera test_camera.x)
 add_test(test_camera_control test_camera_control.x)
-add_test(test_cuda_ray test_cuda_ray.x)
-add_test(test_cuda_triangle test_cuda_triangle.x)
-add_test(test_cuda_vector test_cuda_vector.x)
 add_test(test_input_manager test_input_manager.x)
 add_test(test_light test_light.x)
 add_test(test_obj_io test_obj_io.x)
