@@ -83,14 +83,15 @@ TEST(demo_materials, scene_visualisation) {
     world_geometry scene("material_scene.obj");
 
     // Light Setup similar to blender (position and stuff taken from there)
-    float spec[3] = {1.f, 1.f, 1.f};
-    float diff[3] = {1.f, 1.f, 1.f};
-    float ambi[3] = {1.f, 1.f, 1.f};
+    float spec[3] = {0.8f, 0.8f, 0.8f};
+    float diff[3] = {0.8f, 0.8f, 0.8f};
+    float ambi[3] = {0.2f, 0.2f, 0.2f};
+    float no_ambi[3] = {0.01f, 0.01f, 0.01f};
     thrust::device_vector<light_source> lights;
     lights.push_back({{spec, diff, ambi}, {0.8f, 0.9f, 1.5f}});
-    lights.push_back({{spec, diff, ambi}, {1.7f, -1.1f, -0.3f}});
-    lights.push_back({{spec, diff, ambi}, {-1.3f, 0.8f, 2.0f}});
-    lights.push_back({{spec, diff, ambi}, {-1.7f, -1.7f, 0.8f}});
+    lights.push_back({{spec, diff, no_ambi}, {1.7f, -1.1f, -0.3f}});
+    lights.push_back({{spec, diff, no_ambi}, {-1.3f, 0.8f, 2.0f}});
+    lights.push_back({{spec, diff, no_ambi}, {-1.7f, -1.7f, 0.8f}});
 
     std::clog << "World initialized" << std::endl;
 

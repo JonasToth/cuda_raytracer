@@ -187,6 +187,8 @@ TEST(cuda_draw, draw_loaded_geometry)
 
     glfwMakeContextCurrent(w);
 
+    c = camera(Width, Height, {-2.f, 1.f, -2.f}, {2.f, -1.f, 2.f});
+
     // Cuda stuff
     surface_raii vis(Width, Height);
 
@@ -219,6 +221,7 @@ TEST(cuda_draw, draw_phong_shaded)
     // Window stuff
     window win(Width, Height, "Cuda Raytracer");
     auto w = win.getWindow();
+    c = camera(Width, Height, {-2.f, 1.f, -2.f}, {2.f, -1.f, 2.f});
 
     glfwSetKeyCallback(w, register_key_press);
     glfwSetCursorPosCallback(w, register_mouse_movement);

@@ -13,22 +13,33 @@ inline CUCALL color phong_shading(const phong_material* m,
     const auto& mg = m->g;
     const auto& mb = m->b;
 
-    // currently zero, since no global ambient coefficient for all lights
-    c.r = ambient(mr.ambient_reflection(), 0.1f);
-    c.g = ambient(mg.ambient_reflection(), 0.1f);
-    c.b = ambient(mb.ambient_reflection(), 0.1f);
+    float ir = 0.f, ig = 0.f, ib = 0.f;
 
+    for(std::size_t i = 0; i < light_count; ++i)
+    {
+        ir+= lights[i].light.r.ambient_reflection();
+        ig+= lights[i].light.g.ambient_reflection();
+        ib+= lights[i].light.b.ambient_reflection();
+    }
+    ir/= light_count;
+    ig/= light_count;
+    ib/= light_count;
+
+    // currently zero, since no global ambient coefficient for all lights
+    c.r = ambient(mr.ambient_reflection(), ir);
+    c.g = ambient(mg.ambient_reflection(), ig);
+    c.b = ambient(mb.ambient_reflection(), ib);
     
     for(std::size_t i = 0; i < light_count; ++i)
     {
+        const auto& lr = lights[i].light.r;
+        const auto& lg = lights[i].light.g;
+        const auto& lb = lights[i].light.b;
+
         // Vector zu Licht
         const auto L = normalize(lights[i].position - hit.hit);
         // Reflectionsrichtung des Lichts
         const auto R = normalize(2 * dot(L, N) * N - L);
-
-        const auto& lr = lights[i].light.r;
-        const auto& lg = lights[i].light.g;
-        const auto& lb = lights[i].light.b;
 
         {
         const float dot_product = dot(N, L);
