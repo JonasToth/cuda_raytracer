@@ -39,7 +39,7 @@ TEST(camera, ray_generation)
     std::clog << c.rayAt(640, 480).direction << std::endl;
 }
 
-TEST(camera, complex_rays)
+TEST(camera, rays_moved_camera)
 {
     // look at center of the world
     camera c(640, 480, {10.f, 10.f, 10.f}, {-10.f, -10.f, -10.f});
@@ -64,10 +64,6 @@ TEST(camera, complex_rays)
     std::clog << c.rayAt(640, 0).direction << std::endl;
     std::clog << c.rayAt(0, 480).direction << std::endl;
     std::clog << c.rayAt(640, 480).direction << std::endl;
-
-    c.swipe(0.f, M_PI / 4., M_PI / 4.);
-
-    std::clog << c.rayAt(320, 480).direction << std::endl;
 }
 
 

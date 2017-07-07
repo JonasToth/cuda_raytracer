@@ -37,16 +37,32 @@ inline CUCALL ray camera::rayAt(int u, int v) const noexcept {
     return ray(__origin, rotated_dir);
 }
 
-// beta => mouse x movement
-// gamma=> mouse y movement
 // http://planning.cs.uiuc.edu/node102.html
-inline CUCALL void camera::swipe(float alpha, float beta, float gamma) noexcept {
+inline CUCALL void camera::turn(float yaw, float pitch) noexcept {
     using std::sin;
     using std::cos;
+
+    const float roll = 0.f;
+
+    //const float alpha = yaw;
+    //const float beta  = pitch;
+    //const float gamma = roll;
+
+    const float alpha = roll;
+    const float beta  = yaw;
+    const float gamma = pitch;
+
+    const float c1 = cos(alpha);
+    const float c2 = cos(beta);
+    const float c3 = cos(gamma);
+    const float s1 = sin(alpha);
+    const float s2 = sin(beta);
+    const float s3 = sin(gamma);
+    
     float dR[9] = {
-         cos(alpha) * cos(beta), cos(alpha) * sin(beta) * sin(gamma) - sin(alpha) * cos(gamma), sin(beta) * cos(gamma) + sin(alpha) * sin(gamma),
-         sin(alpha) * sin(beta), sin(alpha) * sin(beta) * sin(gamma) + cos(alpha) * cos(gamma), sin(beta) * cos(gamma) - cos(alpha) * sin(gamma),
-        -sin(beta),              cos(beta) * sin(gamma),                                        cos(beta) * cos(gamma)
+        c1 * c2,        c1 * s2 * s3 - c3 * s1,         s1 * s3 + c1 * c3 * s2,
+        c2 * s1,        c1 * c3 + s1 * s2 * s3,         c3 * s1 * s2 - c1 * s3,
+        -s2,            c2 * s3,                        c2 * c3
     };
     const coord dir = __steering;
     __steering = normalize(coord(

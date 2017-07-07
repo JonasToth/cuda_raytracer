@@ -12,7 +12,7 @@ public:
     CUCALL ray rayAt(int u, int v) const noexcept;
 
     CUCALL void move(coord translation) noexcept { __origin = __origin + translation; }
-    CUCALL void swipe(float alpha, float beta, float gamma) noexcept;
+    CUCALL void turn(float yaw, float pitch) noexcept;
     CUCALL void lookAt(coord target) noexcept;
 
     CUCALL int width() const noexcept { return __width; }

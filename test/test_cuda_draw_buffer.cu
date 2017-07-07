@@ -38,13 +38,13 @@ static void handle_keys(GLFWwindow* w)
     else if(im.isPressed(GLFW_KEY_E))
         c.move({0.f, -dP, 0.f});
     else if(im.isPressed(GLFW_KEY_LEFT))
-        c.swipe(0.f, -dAngle, 0.f);
+        c.turn(-dAngle, 0.f);
     else if(im.isPressed(GLFW_KEY_RIGHT))
-        c.swipe(0.f, dAngle, 0.f);
+        c.turn(dAngle, 0.f);
     else if(im.isPressed(GLFW_KEY_UP))
-        c.swipe(dAngle, 0.f, 0.f);
+        c.turn(0.f, dAngle);
     else if(im.isPressed(GLFW_KEY_DOWN))
-        c.swipe(-dAngle, 0.f, 0.f);
+        c.turn(0.f, -dAngle);
     else
         return;
 
@@ -56,9 +56,9 @@ static void handle_mouse_movement()
 {
     const auto& im = input_manager::instance();
 
-    double beta   = -2. * M_PI * im.mouse_diff_x() / Width * 0.01;
-    double gamma_ = M_PI * im.mouse_diff_y() / Height * 0.1;
-    c.swipe(0., beta, gamma_);
+    double yaw   = -2. * M_PI * im.mouse_diff_x() / Width;
+    double pitch = M_PI * im.mouse_diff_y() / Height;
+    c.turn(yaw, pitch);
 }
 
 void invokeRenderingKernel(cudaSurfaceObject_t& Surface, float t)
