@@ -3,7 +3,6 @@
 #include "graphic/kernels/utility.h"
 #include "graphic/kernels/trace.h"
 #include "graphic/kernels/shaded.h"
-#include "macros.h"
 #include "management/input_callback.h"
 #include "management/input_manager.h"
 #include "management/window.h"

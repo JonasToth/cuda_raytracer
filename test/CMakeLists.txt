@@ -35,7 +35,12 @@ target_link_libraries(demo_cuda_draw_buffer.x
 add_dependencies(demo_cuda_draw_buffer.x example_files)
 
 
-cuda_add_executable(demo_render_materials.x demo_render_materials.cu)
+cuda_add_executable(demo_render_materials.x demo_render_materials.cu
+                    ${PROJECT_SOURCE_DIR}/src/obj_io.cu
+                    ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp
+                    ${PROJECT_SOURCE_DIR}/src/management/input_callback.cpp
+                    ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu 
+                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp)
 target_link_libraries(demo_render_materials.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread
                                               glfw ${OPENGL_gl_LIBRARY})
 add_dependencies(demo_render_materials.x example_files)
