@@ -48,5 +48,8 @@ endif()
 # executable raytracer
 cuda_add_executable(raytracer.x src/main.cpp)
 
+
+add_subdirectory(${PROJECT_SOURCE_DIR}/lib/googletest/googletest)
 add_subdirectory(test)
+
 add_subdirectory(benchmark)

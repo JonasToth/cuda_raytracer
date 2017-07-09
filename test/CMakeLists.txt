@@ -1,7 +1,6 @@
 enable_testing()
 
 # google test as testing framework must be available
-add_subdirectory(${PROJECT_SOURCE_DIR}/lib/googletest/googletest)
 find_package(GTest REQUIRED) 
 include_directories(${GTEST_INCLUDE_DIRS}) 
 
