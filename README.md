@@ -24,16 +24,16 @@ First, install dependenices! (CMake, Cuda, OpenGL)
 
 ```bash
 git clone --recursive https://github.com/JonasToth/cuda_raytracer.git
-cd cuda_raytracer
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=DEBUG
+cd cuda_raytracer && mkdir build && cd build
+cmake .. 
 make raytracer.x -j4 # main executable (dummy right now)
 make all -j4 # all tests, demos and benchmarks, RECOMMENDED
 # Sometimes compiling cuda binaries requires two make calls!
+cd test && ctest -j4 # runs all tests
 ```
 
-
+Benchmarks can be run in `build/benchmark`.
+All Benchmarks with `ctest -j4` or each executable individually.
 
 ## Platform
 
