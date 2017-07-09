@@ -53,4 +53,5 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/lib/googletest/googletest)
 add_subdirectory(test)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/lib/benchmark)
+set(BENCHMARK_ENABLE_TESTING OFF)
 add_subdirectory(benchmark)

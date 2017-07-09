@@ -1,5 +1,4 @@
 # configure GBench
-set(BENCHMARK_ENABLE_TESTING OFF)
 include_directories("${googlebenchmark_SOURCE_DIR}/include")
 
 # testing will be used to run all benchmarks
