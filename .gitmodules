@@ -7,3 +7,6 @@
 [submodule "lib/benchmark"]
 	path = lib/benchmark
 	url = git@github.com:google/benchmark.git
+[submodule "lib/CImg"]
+	path = lib/CImg
+	url = git@github.com:dtschump/CImg.git
