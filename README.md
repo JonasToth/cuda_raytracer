@@ -18,6 +18,20 @@ More advanced features might be added later.
 
 Parts of the implementation might rely on previous projects with similar goals developed by former students.
 
+## Installation
+
+First, install dependenices! (CMake, Cuda, OpenGL, Google Test for testing)
+
+```
+git clone --recursive https://github.com/JonasToth/cuda_raytracer.git
+cd cuda_raytracer
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=DEBUG
+make raytracer.x -j4 # main executable (dummy right now)
+make all -j4 # all tests, demos and benchmarks, RECOMMENDED
+```
+
 ## Platform
 
 This project is developed and tested on the following platform. Other platforms might work but are not tested.
