@@ -48,6 +48,5 @@ endif()
 # executable raytracer
 cuda_add_executable(raytracer.x src/main.cpp)
 
-if(${CMAKE_BUILD_TYPE} MATCHES "DEBUG")
-    add_subdirectory(test)
-endif()
+add_subdirectory(test)
+add_subdirectory(benchmark)
