@@ -5,7 +5,7 @@ It is supplementary to the lecture on the architecture of parallel computers and
 
 ## Installation
 
-First, install dependenices! (CMake, Cuda + Thrust, OpenGL), see below for
+First, install dependenices! (CMake, Cuda + Thrust, OpenGL, libPNG), see below for
 packages in ubuntu.
 
 ```bash
@@ -41,3 +41,5 @@ Dependencies exist to common libraries and SDKs.
   https://developer.nvidia.com/cuda-downloads
 - GLFW http://www.glfw.org/
   `sudo apt-get install libglfw3-dev`
+- libPNG
+  `sudo apt-get install libpng-dev`
