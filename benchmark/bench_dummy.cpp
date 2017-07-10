@@ -1,4 +1,5 @@
-#include "benchmark/benchmark.h"
+#include <benchmark/benchmark.h>
+#include "graphic/kernels/shaded.h"
 #include <vector>
 
 static void BM_VectorInsert(benchmark::State& state)
