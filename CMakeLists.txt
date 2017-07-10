@@ -20,6 +20,7 @@ find_package(CUDA REQUIRED)
 # opengl and libraries to make windows and stuff
 find_package(glfw3 3.2 REQUIRED) # http://www.glfw.org/docs/latest/build_guide.html#build_link_cmake_package
 find_package(OpenGL REQUIRED)
+find_package(PNG REQUIRED)
 
 
 # ----------------------------------------------------------------------------------------
@@ -27,8 +28,9 @@ find_package(OpenGL REQUIRED)
 add_definitions("--std=c++11 -Wall -Wextra -pedantic")
 include_directories(src)
 include_directories(lib)
-include_directories("${PROJECT_SOURCE_DIR}/lib/gsl-lite/include")
-include_directories("${PROJECT_SOURCE_DIR}/lib/png-plusplus")
+include_directories(${PROJECT_SOURCE_DIR}/lib/gsl-lite/include)
+include_directories(${PROJECT_SOURCE_DIR}/lib/png-plusplus)
+include_directories(${PNG_INCLUDE_DIRS})
 
 set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} --std=c++11 -O3 -Wno-deprecated-gpu-targets --expt-extended-lambda -DTHRUST_DEBUG")
 

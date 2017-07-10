@@ -46,7 +46,8 @@ namespace {
             {
                 const auto idx = channels * (y * width + x);
                 const png::rgb_pixel pixel(memory[idx], memory[idx + 1], memory[idx + 2]);
-                img.set_pixel(x, y, pixel);
+                // Otherwise its upside down, because opengl
+                img.set_pixel(x, height - y - 1, pixel);
             }
         }
         return img;

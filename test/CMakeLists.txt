@@ -31,7 +31,8 @@ cuda_add_executable(demo_cuda_draw_buffer.x demo_cuda_draw_buffer.cu
 target_link_libraries(demo_cuda_draw_buffer.x 
                       ${GTEST_MAIN} ${GTEST_LIBRARIES} 
                       pthread 
-                      glfw ${OPENGL_gl_LIBRARY})
+                      glfw ${OPENGL_gl_LIBRARY}
+                      ${PNG_LIBRARIES})
 add_dependencies(demo_cuda_draw_buffer.x example_files)
 
 
@@ -41,8 +42,10 @@ cuda_add_executable(demo_render_materials.x demo_render_materials.cu
                     ${PROJECT_SOURCE_DIR}/src/management/input_callback.cpp
                     ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu 
                     ${PROJECT_SOURCE_DIR}/src/management/window.cpp)
-target_link_libraries(demo_render_materials.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread
-                                              glfw ${OPENGL_gl_LIBRARY})
+target_link_libraries(demo_render_materials.x 
+    ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread
+    glfw ${OPENGL_gl_LIBRARY}
+    ${PNG_LIBRARIES})
 add_dependencies(demo_render_materials.x example_files)
 
 
@@ -55,7 +58,8 @@ cuda_add_executable(demo_draw_mini.x demo_draw_mini.cu
 target_link_libraries(demo_draw_mini.x 
                       ${GTEST_MAIN} ${GTEST_LIBRARIES} 
                       pthread 
-                      glfw ${OPENGL_gl_LIBRARY})
+                      glfw ${OPENGL_gl_LIBRARY}
+                      ${PNG_LIBRARIES})
 add_dependencies(demo_draw_mini.x example_files)
 
 
@@ -107,7 +111,7 @@ target_link_libraries(test_ray.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 cuda_add_executable(test_surface_raii.x test_surface_raii.cu
                     ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu)
-target_link_libraries(test_surface_raii.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread glfw ${OPENGL_gl_LIBRARY})
+target_link_libraries(test_surface_raii.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread glfw ${OPENGL_gl_LIBRARY} ${PNG_LIBRARIES})
 
 
 add_executable(test_triangle.x test_triangle.cpp)
