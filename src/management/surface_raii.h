@@ -4,6 +4,7 @@
 #include <cuda.h>
 #include <cuda_gl_interop.h>
 #include <cuda_runtime.h>
+#include <string>
 
 /// Controls the output to the screen
 class surface_raii {
@@ -13,6 +14,8 @@ public:
 
     cudaSurfaceObject_t& getSurface() noexcept { return __cuda_surface; }
     void render_gl_texture() noexcept;
+
+    void save_as_png(const std::string& file_name) const;
 
 private:
     void __initialize_texture();

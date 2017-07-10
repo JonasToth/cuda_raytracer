@@ -28,6 +28,8 @@ add_definitions("--std=c++11 -Wall -Wextra -pedantic")
 include_directories(src)
 include_directories(lib)
 include_directories("${PROJECT_SOURCE_DIR}/lib/gsl-lite/include")
+include_directories("${PROJECT_SOURCE_DIR}/lib/CImg")
+
 set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} --std=c++11 -O3 -Wno-deprecated-gpu-targets --expt-extended-lambda -DTHRUST_DEBUG")
 
 # optimize in release

@@ -102,6 +102,7 @@ TEST(demo_materials, scene_visualisation) {
                              lights.data().get(), lights.size());
         std::this_thread::sleep_for(std::chrono::seconds(1));
         render_surface.render_gl_texture();
+        render_surface.save_as_png("Testfile.png");
         glfwSwapBuffers(w);
         std::clog << "World rendered" << std::endl;
         std::clog << "Camera Position: " << c.origin() << std::endl;

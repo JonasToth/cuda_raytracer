@@ -6,10 +6,10 @@
 #include "management/surface_raii.h"
 
 
-//TEST(visualization, basic_starting)
-//{
-    //vis(640, 480);
-//}
+TEST(surface, basic_properties)
+{
+    surface_raii vis(640, 480);
+}
 
 
 int main(int argc, char** argv)
