@@ -5,6 +5,7 @@
 #include <cuda_gl_interop.h>
 #include <cuda_runtime.h>
 #include <string>
+#include <vector>
 
 /// Controls the output to the screen
 class surface_raii {
@@ -20,6 +21,8 @@ public:
 private:
     void __initialize_texture();
     void __initialize_cuda_surface();
+
+    std::vector<uint8_t> __get_texture_memory() const;
 
     int __width;
     int __height;

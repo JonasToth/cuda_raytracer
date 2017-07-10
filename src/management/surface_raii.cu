@@ -1,11 +1,11 @@
 #include "surface_raii.h"
-#include "CImg.h"
 
 #include <chrono>
 #include <iostream>
+#include <png-plusplus/image.hpp>
+#include <png-plusplus/rgb_pixel.hpp>
 #include <stdexcept>
 #include <thread>
-#include <vector>
 
 
 surface_raii::surface_raii(int width, int height)
@@ -33,45 +33,32 @@ surface_raii::~surface_raii()
 
 }
 
+
 namespace {
-    /// Get correct memory ordering for 8 bit, 3 channel buffer for pixels, buffers preallocated
-    void untangle_texture(std::size_t width, std::size_t height, 
-                          const uint8_t* tangled, uint8_t* untangled)
+    png::image<png::rgb_pixel> memory_to_png(const std::vector<uint8_t>& memory, 
+                                             std::size_t width, std::size_t height)
     {
-        const auto n_pixels = width * height;
         const auto channels = 3;
-
-        for(std::size_t i = 0ul; i < n_pixels; ++i)
+        png::image<png::rgb_pixel> img(width, height);
+        for(std::size_t y = 0ul; y < height; ++y)
         {
-            const auto interleaved_index = channels * i;
-            untangled[i]                = tangled[interleaved_index];
-            untangled[n_pixels + i]     = tangled[interleaved_index + 1];
-            untangled[2 * n_pixels + i] = tangled[interleaved_index + 2];
+            for(std::size_t x = 0ul; x < width; ++x)
+            {
+                const auto idx = channels * (y * width + x);
+                const png::rgb_pixel pixel(memory[idx], memory[idx + 1], memory[idx + 2]);
+                img.set_pixel(x, y, pixel);
+            }
         }
+        return img;
     }
-}
+} // namespace
 
-/// https://stackoverflow.com/questions/6846762/glreadpixels-image-looks-dithered
 void surface_raii::save_as_png(const std::string& file_name) const
 {
-    // 3 channels
-    std::vector<uint8_t> gl_texture_data(__width * __height * 3);
-    glReadPixels(0, 0, __width, __height, GL_RGB, GL_UNSIGNED_BYTE, gl_texture_data.data());
-
-    // get memory ordering for CImg
-    std::vector<uint8_t> cimg_texture_data(__width * __height * 3);
-    untangle_texture(__width, __height, gl_texture_data.data(), cimg_texture_data.data());
-
-    using cimg_library::CImg;
-    using cimg_library::CImgDisplay;
-
-    // output image file with CImg
-    //CImg<uint8_t> image(untangle_texture.data(), __width, __height, 1, 3);
-
-    // test output
-    //CImgDisplay disp(image, "Test output");
-    //while(!disp.is_closed())
-        //disp.wait();
+    const auto memory = __get_texture_memory();
+    // const not allowed, IDK why
+    auto img = memory_to_png(memory, __width, __height);
+    img.write(file_name);
 }
 
 
@@ -108,6 +95,7 @@ void surface_raii::__initialize_texture() {
     cudaGraphicsMapResources(1, &__cuda_resource); 
 }
 
+
 void surface_raii::__initialize_cuda_surface()
 {
     // source: Internet :)
@@ -120,6 +108,7 @@ void surface_raii::__initialize_cuda_surface()
     // Surface creation
     cudaCreateSurfaceObject(&__cuda_surface, &__cuda_array_resource_desc); 
 }
+
 
 void surface_raii::render_gl_texture() noexcept
 {
@@ -137,3 +126,15 @@ void surface_raii::render_gl_texture() noexcept
     glBindTexture(GL_TEXTURE_2D, 0);
     glFinish();
 }
+
+
+std::vector<uint8_t> surface_raii::__get_texture_memory() const
+{
+    const auto channels = 3;
+    std::vector<uint8_t> gl_texture_data(__width * __height * channels);
+    glReadPixels(0, 0, __width, __height, GL_RGB, GL_UNSIGNED_BYTE, gl_texture_data.data());
+
+    return gl_texture_data;
+}
+
+

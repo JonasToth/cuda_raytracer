@@ -10,3 +10,6 @@
 [submodule "lib/gsl-lite"]
 	path = lib/gsl-lite
 	url = git@github.com:martinmoene/gsl-lite.git
+[submodule "lib/png-plusplus"]
+	path = lib/png-plusplus
+	url = git@github.com:mecwerks/png-plusplus.git
