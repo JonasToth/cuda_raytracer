@@ -24,9 +24,10 @@ find_package(OpenGL REQUIRED)
 
 # ----------------------------------------------------------------------------------------
 #                         ===== Compiler Configuration =====
-add_definitions("--std=c++11 -Wall -pedantic")
+add_definitions("--std=c++11 -Wall -Wextra -pedantic")
 include_directories(src)
 include_directories(lib)
+include_directories("${PROJECT_SOURCE_DIR}/lib/gsl-lite/include")
 set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} --std=c++11 -O3 -Wno-deprecated-gpu-targets --expt-extended-lambda -DTHRUST_DEBUG")
 
 # optimize in release

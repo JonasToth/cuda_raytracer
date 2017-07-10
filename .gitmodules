@@ -10,3 +10,6 @@
 [submodule "lib/CImg"]
 	path = lib/CImg
 	url = git@github.com:dtschump/CImg.git
+[submodule "lib/gsl-lite"]
+	path = lib/gsl-lite
+	url = git@github.com:martinmoene/gsl-lite.git
