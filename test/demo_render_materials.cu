@@ -67,7 +67,8 @@ static void raytrace_many_shaded(cudaSurfaceObject_t& surface, camera c,
                                                        c.width(), c.height());
 }
 
-TEST(demo_materials, scene_visualisation) {
+int main(int argc, char** argv)
+{
     window win(800, 600, "Material Scene");
     auto w = win.getWindow();
     glfwMakeContextCurrent(w);
@@ -100,6 +101,7 @@ TEST(demo_materials, scene_visualisation) {
         raytrace_many_shaded(render_surface.getSurface(), c,
                              triangles.data().get(), triangles.size(),
                              lights.data().get(), lights.size());
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
         render_surface.render_gl_texture();
         render_surface.save_as_png("Testfile.png");
         glfwSwapBuffers(w);
@@ -117,10 +119,4 @@ TEST(demo_materials, scene_visualisation) {
             render_lambda();
     } 
     input_manager::instance().clear();
-}
-
-int main(int argc, char** argv)
-{
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

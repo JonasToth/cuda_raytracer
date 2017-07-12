@@ -106,13 +106,13 @@ TEST(cube, no_normals)
 
 }
 
-TEST(cube, no_normals_no_materials)
+TEST(cube, DISABLED_no_normals_no_materials)
 {
     world_geometry w("cube_no_normals_no_materials.obj");
 
 }
 
-TEST(real, easy_scene) 
+TEST(real, DISABLED_easy_scene) 
 {
     world_geometry w;
     w.load("shapes.obj");
@@ -138,7 +138,7 @@ TEST(real, DISABLED_test_bad_input)
 }
 
 
-TEST(real, simple_scene)
+TEST(real, DISABLED_simple_scene)
 {
     world_geometry w("material_scene.obj");
     EXPECT_EQ(w.vertex_count(), 1044) << "Bad Number of Vertices";
@@ -161,6 +161,7 @@ TEST(real, DISABLED_massive_scene) {
 
 int main(int argc, char** argv)
 {
+    world_geometry w("cube_no_normals.obj");
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }

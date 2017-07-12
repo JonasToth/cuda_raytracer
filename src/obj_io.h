@@ -43,9 +43,7 @@ public:
 
     const thrust::device_vector<coord>& vertices() const noexcept { return __vertices; }
     const thrust::device_vector<coord>& normals() const noexcept { return __normals; }
-
     const thrust::device_vector<phong_material>& materials() const noexcept { return __materials; }
-
     const thrust::device_vector<triangle>& triangles() const noexcept { return __triangles; }
 
 private:
