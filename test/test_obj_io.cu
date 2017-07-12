@@ -138,7 +138,7 @@ TEST(obj_io, loading_complex) {
     w.load("mini_cooper.obj");
 
     EXPECT_EQ(w.vertex_count(), 234435) << "Bad Number of Vertices";
-    EXPECT_EQ(w.normal_count(), 6) << "Bad Number of Normals";
+    EXPECT_EQ(w.normal_count(), 347377) << "Bad Number of Normals";
     EXPECT_EQ(w.triangle_count(), 304135) << "Bad Number of Triangles";
     EXPECT_EQ(w.shape_count(), 49) << "Bad number of Shapes";
     EXPECT_EQ(w.material_count(), 15) << "Bad number of materials";

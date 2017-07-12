@@ -39,7 +39,7 @@ loaded_data load(const char* file_name) {
     }
     Ensures(result.attrib.vertices.size() % 3 == 0);
     Ensures(result.attrib.normals.size() % 3 == 0);
-    Ensures(result.attrib.texcoords.size() % 3 == 0);
+    Ensures(result.attrib.texcoords.size() % 2 == 0);
     return result;
 }
 
