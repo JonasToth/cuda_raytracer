@@ -38,9 +38,14 @@ TEST(obj_io, load_cube) {
     const thrust::host_vector<triangle> h_triangles = w.triangles();
     const std::vector<triangle> triangles(h_triangles.begin(), h_triangles.end());
 
+    // correct
     EXPECT_EQ(&triangles[0].p0(), (&w.vertices()[1]).get()) << "Bad triangle connection";
     EXPECT_EQ(&triangles[0].p1(), (&w.vertices()[3]).get()) << "Bad triangle connection";
     EXPECT_EQ(&triangles[0].p2(), (&w.vertices()[0]).get()) << "Bad triangle connection";
+    // incorrect should be checked as well, random choice
+    EXPECT_NE(&triangles[0].p0(), (&w.vertices()[0]).get()) << "Bad triangle connection";
+    EXPECT_NE(&triangles[0].p1(), (&w.vertices()[5]).get()) << "Bad triangle connection";
+    EXPECT_NE(&triangles[0].p2(), (&w.vertices()[2]).get()) << "Bad triangle connection";
 }
 
 TEST(obj_io, loading_simple) {
