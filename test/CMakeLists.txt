@@ -8,12 +8,17 @@ include_directories(${GTEST_INCLUDE_DIRS})
 # symbolic links to all test files
 add_custom_target(example_files
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube.obj ${PROJECT_BINARY_DIR}/test
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube.mtl ${PROJECT_BINARY_DIR}/test
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_no_normals.obj ${PROJECT_BINARY_DIR}/test
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_no_normals.mtl ${PROJECT_BINARY_DIR}/test
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_no_normals_no_materials.obj ${PROJECT_BINARY_DIR}/test
+
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/shapes.obj ${PROJECT_BINARY_DIR}/test
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/bad.obj ${PROJECT_BINARY_DIR}/test
+
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/mini_cooper.obj ${PROJECT_BINARY_DIR}/test
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/mini_cooper.mtl ${PROJECT_BINARY_DIR}/test
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/test_camera_light.obj ${PROJECT_BINARY_DIR}/test
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/test_camera_light.mtl ${PROJECT_BINARY_DIR}/test
+
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.obj ${PROJECT_BINARY_DIR}/test
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.mtl ${PROJECT_BINARY_DIR}/test
 )
