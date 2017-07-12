@@ -19,7 +19,7 @@ struct phong_material;
 class triangle {
 public:
     CUCALL triangle() = default;
-    CUCALL explicit triangle(coord p0, coord p1, coord p2) 
+    CUCALL explicit triangle(const coord* p0, const coord* p1, const coord* p2) 
         : __points{p0, p1, p2} 
         , __material{nullptr}
     {}
@@ -32,9 +32,9 @@ public:
 
     CUCALL ~triangle() = default;
 
-    CUCALL coord p0() const noexcept { return __points[0]; }
-    CUCALL coord p1() const noexcept { return __points[1]; }
-    CUCALL coord p2() const noexcept { return __points[2]; }
+    CUCALL const coord& p0() const noexcept { return *__points[0]; }
+    CUCALL const coord& p1() const noexcept { return *__points[1]; }
+    CUCALL const coord& p2() const noexcept { return *__points[2]; }
 
     CUCALL void material(const phong_material* m) noexcept { __material = m; }
     CUCALL const phong_material* material() const noexcept { return __material; }
@@ -58,10 +58,12 @@ public:
                dot(N, cross(E2, C2)) >= 0;
     }
 
-    CUCALL bool isValid() const noexcept { return spansArea(__points[0], __points[1], __points[2]); }
+    CUCALL bool isValid() const noexcept { return spansArea(*__points[0], 
+                                                            *__points[1], 
+                                                            *__points[2]); }
 
 private:
-    coord __points[3];                ///< optimization, triangles can share vertices
+    const coord* __points[3];                ///< optimization, triangles can share vertices
     const phong_material* __material; ///< triangles share materials
 };
 

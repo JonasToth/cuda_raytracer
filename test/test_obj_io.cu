@@ -4,10 +4,15 @@
 #include "obj_io.h"
 #include <algorithm>
 #include <vector>
+#include "thrust/logical.h"
 
 /** @file test/test_obj_io.cpp
  * Test if .obj - Files for geometry are correctly loaded and saved.
  */
+
+struct validityCheck {
+    CUCALL bool operator()(const triangle& t) { return t.isValid(); }
+};
 
 TEST(obj_io, load_cube) {
     world_geometry w("cube.obj");
@@ -32,6 +37,10 @@ TEST(obj_io, load_cube) {
 
     const thrust::host_vector<triangle> h_triangles = w.triangles();
     const std::vector<triangle> triangles(h_triangles.begin(), h_triangles.end());
+
+    EXPECT_EQ(&triangles[0].p0(), (&w.vertices()[1]).get()) << "Bad triangle connection";
+    EXPECT_EQ(&triangles[0].p1(), (&w.vertices()[3]).get()) << "Bad triangle connection";
+    EXPECT_EQ(&triangles[0].p2(), (&w.vertices()[0]).get()) << "Bad triangle connection";
 }
 
 TEST(obj_io, loading_simple) {
@@ -43,16 +52,9 @@ TEST(obj_io, loading_simple) {
     EXPECT_EQ(w.shape_count(), 4) << "Bad number of Shapes";
     EXPECT_EQ(w.material_count(), 0) << "Bad number of materials";
 
-    const thrust::host_vector<coord> h_vertices     = w.vertices();
-    const std::vector<coord> vertices(h_vertices.begin(), h_vertices.end());
-
-    const thrust::host_vector<triangle> h_triangles = w.triangles();
-    const std::vector<triangle> triangles(h_triangles.begin(), h_triangles.end());
-
-    std::clog << "Back conversion to host memory done" << std::endl;
-
-    const bool isValidRange = std::all_of(triangles.begin(), triangles.end(), 
-                                          [](const triangle& t) { return t.isValid(); });
+    const bool isValidRange = thrust::all_of(w.triangles().begin(), w.triangles().end(), 
+                                             validityCheck());
+    std::clog << "Tested on GPU" << std::endl;
     EXPECT_EQ(isValidRange, true) << "Invalid triangles found";
 }
 

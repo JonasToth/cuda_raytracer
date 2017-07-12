@@ -92,9 +92,9 @@ build_faces(const std::vector<tinyobj::shape_t>& shapes,
             const auto idx1 = shape.mesh.indices[index_offset + 1].vertex_index;
             const auto idx2 = shape.mesh.indices[index_offset + 2].vertex_index;
 
-            const auto& P0 = vertices[idx0];
-            const auto& P1 = vertices[idx1];
-            const auto& P2 = vertices[idx2];
+            const auto* P0 = (&vertices[idx0]).get();
+            const auto* P1 = (&vertices[idx1]).get();
+            const auto* P2 = (&vertices[idx2]).get();
             
             triangle t(P0, P1, P2);
             

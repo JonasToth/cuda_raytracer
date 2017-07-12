@@ -145,11 +145,11 @@ TEST(cuda_draw, drawing_traced_triangle)
     Vertices[3] = {1,-0.8,1};
     Vertices[4] = {-1,0.8,1};
 
-    const auto P0 = Vertices[0];
-    const auto P1 = Vertices[1];
-    const auto P2 = Vertices[2];
-    const auto P3 = Vertices[3];
-    const auto P4 = Vertices[4];
+    const auto* P0 = (&Vertices[0]).get();
+    const auto* P1 = (&Vertices[1]).get();
+    const auto* P2 = (&Vertices[2]).get();
+    const auto* P3 = (&Vertices[3]).get();
+    const auto* P4 = (&Vertices[4]).get();
 
     thrust::device_vector<triangle> Triangles(3);
     Triangles[0] = triangle(P0, P1, P2);
