@@ -75,7 +75,7 @@ TEST(demo_materials, scene_visualisation) {
 
     // Camera Setup similar to blender
     camera c(win.getWidth(), win.getHeight(), 
-             {-2.5f, 3.f, 3.f}, {0.0f, -0.0f, -1.f});
+             {-2.5f, 3.f, 3.f}, {0.0f, -0.1f, -1.f});
     surface_raii render_surface(win.getWidth(), win.getHeight());
 
     std::clog << "Setup Rendering Platform initialized" << std::endl;
@@ -100,8 +100,8 @@ TEST(demo_materials, scene_visualisation) {
         raytrace_many_shaded(render_surface.getSurface(), c,
                              triangles.data().get(), triangles.size(),
                              lights.data().get(), lights.size());
-        std::this_thread::sleep_for(std::chrono::seconds(15));
         render_surface.render_gl_texture();
+        render_surface.save_as_png("mini.png");
         glfwSwapBuffers(w);
         std::clog << "World rendered" << std::endl;
         std::clog << "Camera Position: " << c.origin() << std::endl;
