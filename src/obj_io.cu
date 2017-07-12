@@ -127,6 +127,7 @@ build_faces(const std::vector<tinyobj::shape_t>& shapes,
 
             triangle t(P0, P1, P2, n);
 
+            // normal not calculate means, it is loaded in
             if(!calc_normal) 
             {
                 // all vertex normals
@@ -182,7 +183,7 @@ void world_geometry::load(const std::string& file_name) {
     // Connect the triangles and give their surfaces a material, creates normals if
     // necessary!
     __triangles = __detail::build_faces(data.shapes, __vertices, __normals, __materials);
-    //Expects(__normals.size() > 0);
+    Expects(__normals.size() > 0);
 }
 
 

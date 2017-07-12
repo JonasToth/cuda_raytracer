@@ -254,7 +254,6 @@ TEST(cuda_draw, draw_phong_shaded)
     lights.push_back({phong_light(spec, diff, ambi), {-1.1f,  2.0f,  1.1f}});
     lights.push_back({phong_light(spec, diff, ambi), {-1.5f, -1.5f,  1.5f}});
 
-
     const auto& triangles = world.triangles();
 
     while(!glfwWindowShouldClose(w)) {

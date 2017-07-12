@@ -133,7 +133,7 @@ TEST(obj_io, test_scene)
     EXPECT_EQ(w.material_count(), 4) << "Bad number of materials";
 }
 
-TEST(obj_io, DISBALED_loading_complex) {
+TEST(obj_io, DISABLED_loading_complex) {
     world_geometry w;
     w.load("mini_cooper.obj");
 
