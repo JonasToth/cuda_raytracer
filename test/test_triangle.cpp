@@ -25,6 +25,11 @@ TEST(triangle_test, construction)
     ASSERT_EQ(N.y, 0);
     ASSERT_EQ(N.z, 1);
 
+    const auto p0_n = T.p0_normal();
+    ASSERT_EQ(p0_n.x, 0);
+    ASSERT_EQ(p0_n.y, 0);
+    ASSERT_EQ(p0_n.z, 1);
+
     ASSERT_EQ(T.material(), nullptr) << "Material shall be zero";
 }
 

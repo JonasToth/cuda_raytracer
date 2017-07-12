@@ -18,8 +18,7 @@ TEST(ray, intersection)
 
     const coord P0{0, -10, 10}, P1{-10, 10, 10}, P2{10, 10, 10};
     const coord normal = normalize(cross(P1 - P0, P2 - P1));
-    triangle T{&P0, &P1, &P2};
-    T.normal(&normal);
+    triangle T{&P0, &P1, &P2, &normal};
 
     bool DoesIntersect;
     intersect I;
@@ -103,8 +102,7 @@ TEST(ray, trace_many_successfull)
 {
     const coord P0{0, -1, 1}, P1{-1, 1, 1}, P2{1, 1, 1};
     const coord normal = normalize(cross(P1 - P0, P2 - P1));
-    triangle T{&P0, &P1, &P2};
-    T.normal(&normal);
+    triangle T{&P0, &P1, &P2, &normal};
     
     const coord Origin{0, 0, 0};
 
@@ -134,8 +132,7 @@ TEST(ray, trace_many_failing)
 {
     const coord P0{0, -1, 1}, P1{-1, 1, 1}, P2{1, 1, 1};
     const coord normal = normalize(cross(P1 - P0, P2 - P1));
-    triangle T{&P0, &P1, &P2};
-    T.normal(&normal);
+    triangle T{&P0, &P1, &P2, &normal};
     
     const coord Origin{0, 0, 10};
 

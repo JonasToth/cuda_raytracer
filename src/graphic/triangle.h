@@ -20,8 +20,9 @@ class triangle {
 public:
     CUCALL triangle() = default;
     CUCALL explicit triangle(const coord* p0, const coord* p1, const coord* p2, 
-                             const coord* normal = nullptr) 
+                             const coord* normal) 
         : __points{p0, p1, p2} 
+        , __normals{normal, normal, normal}
         , __normal{normal}
         , __material{nullptr}
     {}
@@ -35,8 +36,16 @@ public:
     CUCALL ~triangle() = default;
 
     CUCALL const coord& p0() const noexcept { return *__points[0]; }
+    CUCALL const coord& p0_normal() const noexcept { return *__normals[0]; }
+    CUCALL void p0_normal(const coord* p0_n) noexcept { __normals[0] = p0_n; }
+
     CUCALL const coord& p1() const noexcept { return *__points[1]; }
+    CUCALL const coord& p1_normal() const noexcept { return *__normals[1]; }
+    CUCALL void p1_normal(const coord* p1_n) noexcept { __normals[1] = p1_n; }
+
     CUCALL const coord& p2() const noexcept { return *__points[2]; }
+    CUCALL const coord& p2_normal() const noexcept { return *__normals[2]; }
+    CUCALL void p2_normal(const coord* p2_n) noexcept { __normals[2] = p2_n; }
 
     CUCALL void material(const phong_material* m) noexcept { __material = m; }
     CUCALL const phong_material* material() const noexcept { return __material; }
@@ -67,7 +76,8 @@ public:
 
 private:
     const coord* __points[3];         ///< optimization, triangles can share vertices
-    const coord* __normal;            ///< normal loaded in
+    const coord* __normals[3];        ///< vertex normals
+    const coord* __normal;            ///< triangle normal 
     const phong_material* __material; ///< triangles share materials
 };
 
