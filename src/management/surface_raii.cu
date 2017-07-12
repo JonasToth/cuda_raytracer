@@ -3,7 +3,7 @@
 #include <chrono>
 #include <iostream>
 #include <png-plusplus/image.hpp>
-#include <png-plusplus/rgb_pixel.hpp>
+#include <png-plusplus/rgba_pixel.hpp>
 #include <stdexcept>
 #include <thread>
 
@@ -35,17 +35,17 @@ surface_raii::~surface_raii()
 
 
 namespace {
-    png::image<png::rgb_pixel> memory_to_png(const std::vector<uint8_t>& memory, 
-                                             std::size_t width, std::size_t height)
+    png::image<png::rgba_pixel> memory_to_png(const std::vector<uint8_t>& memory, 
+                                              std::size_t width, std::size_t height)
     {
-        const auto channels = 3;
-        png::image<png::rgb_pixel> img(width, height);
+        const auto channels = 4;
+        png::image<png::rgba_pixel> img(width, height);
         for(std::size_t y = 0ul; y < height; ++y)
         {
             for(std::size_t x = 0ul; x < width; ++x)
             {
                 const auto idx = channels * (y * width + x);
-                const png::rgb_pixel pixel(memory[idx], memory[idx + 1], memory[idx + 2]);
+                const png::rgba_pixel pixel(memory[idx], memory[idx + 1], memory[idx + 2]);
                 // Otherwise its upside down, because opengl
                 img.set_pixel(x, height - y - 1, pixel);
             }
@@ -75,7 +75,7 @@ void surface_raii::__initialize_texture() {
     { // beauty stuff for opengl, maybe skip?
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, __width, __height, 0, GL_RGB, 
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, __width, __height, 0, GL_RGBA, 
 					 GL_UNSIGNED_BYTE, nullptr);
     }
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -131,9 +131,9 @@ void surface_raii::render_gl_texture() noexcept
 
 std::vector<uint8_t> surface_raii::__get_texture_memory() const
 {
-    const auto channels = 3;
+    const auto channels = 4;
     std::vector<uint8_t> gl_texture_data(__width * __height * channels);
-    glReadPixels(0, 0, __width, __height, GL_RGB, GL_UNSIGNED_BYTE, gl_texture_data.data());
+    glReadPixels(0, 0, __width, __height, GL_RGBA, GL_UNSIGNED_BYTE, gl_texture_data.data());
 
     return gl_texture_data;
 }

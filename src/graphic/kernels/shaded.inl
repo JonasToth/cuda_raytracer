@@ -55,7 +55,7 @@ __global__ void trace_many_triangles_shaded(cudaSurfaceObject_t surface, camera 
             pixel_color.y = 255 * clamp(0.f, float_color.g, 1.f);
             pixel_color.z = 255 * clamp(0.f, float_color.b, 1.f);
 
-            surf2Dwrite(pixel_color, surface, x * 4, y);
+            surf2Dwrite(pixel_color, surface, x * sizeof(pixel_color), y);
         }
     }
 }

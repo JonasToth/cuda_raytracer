@@ -112,6 +112,7 @@ build_faces(const std::vector<tinyobj::shape_t>& shapes,
 
             // index of the normal
             auto nidx = shape.mesh.indices[index_offset].normal_index;
+            bool calc_normal = false;
             // normals dont need to be saved -> calculate if not existing
             if(nidx < 0)
             {
@@ -120,10 +121,29 @@ build_faces(const std::vector<tinyobj::shape_t>& shapes,
                 const coord p2 = vertices[idx2];
                 normals.push_back(normalize(cross(p1 - p0, p2 - p1)));
                 nidx = normals.size() - 1;
+                calc_normal = true;
             }
             const auto* n  = (&normals[nidx]).get();
 
             triangle t(P0, P1, P2, n);
+
+            if(!calc_normal) 
+            {
+                // all vertex normals
+                const auto n_idx0 = shape.mesh.indices[index_offset + 0].normal_index;
+                const auto n_idx1 = shape.mesh.indices[index_offset + 1].normal_index;
+                const auto n_idx2 = shape.mesh.indices[index_offset + 2].normal_index;
+
+                Expects(n_idx0 < normals.size() && n_idx0 >= 0);
+                Expects(n_idx1 < normals.size() && n_idx1 >= 0);
+                Expects(n_idx2 < normals.size() && n_idx2 >= 0);
+
+                t.p0_normal((&normals[n_idx0]).get());
+                t.p1_normal((&normals[n_idx1]).get());
+                t.p2_normal((&normals[n_idx2]).get());
+            }
+
+
             
             // WARN: this writes the pointer on the device, as material pointer.
             // if you derefence material on the cpu, that results in a segfault
