@@ -19,8 +19,10 @@ struct phong_material;
 class triangle {
 public:
     CUCALL triangle() = default;
-    CUCALL explicit triangle(const coord* p0, const coord* p1, const coord* p2) 
+    CUCALL explicit triangle(const coord* p0, const coord* p1, const coord* p2, 
+                             const coord* normal = nullptr) 
         : __points{p0, p1, p2} 
+        , __normal{normal}
         , __material{nullptr}
     {}
 
@@ -39,8 +41,9 @@ public:
     CUCALL void material(const phong_material* m) noexcept { __material = m; }
     CUCALL const phong_material* material() const noexcept { return __material; }
 
-    /// Surface normal of the triangle, not normalized
-    CUCALL coord normal() const noexcept { return normalize(cross(p1() - p0(), p2() - p1())); }
+    CUCALL void normal(const coord* n) noexcept { __normal = n; }
+    /// Surface normal of the triangle, either returned from normal pool or calculated
+    CUCALL const coord& normal() const noexcept { return *__normal;  }
 
     CUCALL bool contains(const coord P) const noexcept {
         const auto E0 = p1() - p0();
@@ -63,7 +66,8 @@ public:
                                                             *__points[2]); }
 
 private:
-    const coord* __points[3];                ///< optimization, triangles can share vertices
+    const coord* __points[3];         ///< optimization, triangles can share vertices
+    const coord* __normal;            ///< normal loaded in
     const phong_material* __material; ///< triangles share materials
 };
 
