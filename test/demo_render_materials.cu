@@ -91,7 +91,7 @@ TEST(demo_materials, scene_visualisation) {
     lights.push_back({phong_light(spec, diff, ambi), {-1.7f, -1.5f, -1.5f}});
     lights.push_back({phong_light(spec, diff, ambi), { 1.3f, -1.8f, -1.2f}});
     lights.push_back({phong_light(spec, diff, ambi), {-1.1f,  2.0f,  1.1f}});
-    lights.push_back({phong_light(spec, diff, ambi), {-1.5f, -1.5f,  1.5f}});
+    lights.push_back({phong_light(spec, diff, no_ambi), {-1.5f, -1.5f,  1.5f}});
 
     std::clog << "World initialized" << std::endl;
 
