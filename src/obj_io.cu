@@ -62,10 +62,10 @@ build_materials(const std::vector<tinyobj::material_t>& materials)
 
     for(const auto& mat: materials)
     {
-        m.push_back({static_cast<const float*>(mat.specular), 
-                     static_cast<const float*>(mat.diffuse), 
-                     static_cast<const float*>(mat.ambient), 
-                     static_cast<float>(mat.shininess)});
+        m.push_back(phong_material(static_cast<const float*>(mat.specular), 
+                                   static_cast<const float*>(mat.diffuse), 
+                                   static_cast<const float*>(mat.ambient), 
+                                   static_cast<float>(mat.shininess)));
     }
     
     return m;

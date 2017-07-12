@@ -22,7 +22,7 @@ class world_geometry {
 public:
     /// Will leave everything empty, manually load with `load`
     world_geometry();
-    world_geometry(const std::string& file_name);
+    explicit world_geometry(const std::string& file_name);
 
     // Copy and move operations currently forbidden, might be allowed later.
     world_geometry(const world_geometry&) = delete;

@@ -19,7 +19,7 @@ struct phong_material;
 class triangle {
 public:
     CUCALL triangle() = default;
-    CUCALL triangle(coord p0, coord p1, coord p2) 
+    CUCALL explicit triangle(coord p0, coord p1, coord p2) 
         : __points{p0, p1, p2} 
         , __material{nullptr}
     {}

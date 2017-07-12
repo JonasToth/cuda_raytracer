@@ -11,7 +11,7 @@
 
 struct intersect {
     CUCALL intersect() = default;
-    CUCALL intersect(float depth, const coord hit, const coord n) 
+    CUCALL explicit intersect(float depth, const coord hit, const coord n) 
         : depth{depth}
         , hit{hit}
         , normal{n} {}
@@ -31,7 +31,7 @@ struct intersect {
 
 struct ray {
     CUCALL ray() = default;
-    CUCALL ray(const coord origin, const coord direction) 
+    CUCALL explicit ray(const coord origin, const coord direction) 
         : origin{origin}
         , direction{normalize(direction)} {}
 

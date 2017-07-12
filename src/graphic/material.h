@@ -6,8 +6,8 @@
 /// Implement the phong reflection model
 struct phong_material {
     
-    CUCALL phong_material(const float spec[3], const float diff[3], const float amb[3], 
-                          float shininess)
+    CUCALL explicit phong_material(const float spec[3], const float diff[3], const float amb[3], 
+                                   float shininess)
         : r{spec[0], diff[0], amb[0]}
         , g{spec[1], diff[1], amb[1]}
         , b{spec[2], diff[2], amb[2]}

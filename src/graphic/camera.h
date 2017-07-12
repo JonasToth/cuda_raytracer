@@ -6,8 +6,8 @@
 
 class camera {
 public:
-    CUCALL camera(int width, int height);
-    CUCALL camera(int width, int height, coord origin, coord steering);
+    CUCALL explicit camera(int width, int height);
+    CUCALL explicit camera(int width, int height, coord origin, coord steering);
 
     CUCALL ray rayAt(int u, int v) const noexcept;
 

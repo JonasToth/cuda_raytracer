@@ -8,7 +8,8 @@
 
 TEST(surface, basic_properties)
 {
-    surface_raii vis(640, 480);
+    ASSERT_THROW(surface_raii vis(640, 480), std::runtime_error) 
+                 << "No OpenGL context must be found";
 }
 
 

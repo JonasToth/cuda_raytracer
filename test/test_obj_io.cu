@@ -16,6 +16,22 @@ TEST(obj_io, load_cube) {
     EXPECT_EQ(w.triangle_count(), 12) << "Bad Number of Triangles";
     EXPECT_EQ(w.shape_count(), 1) << "Bad number of Shapes";
     EXPECT_EQ(w.material_count(), 0) << "Bad number of materials";
+
+    const thrust::host_vector<coord> h_vertices     = w.vertices();
+    const std::vector<coord> vertices(h_vertices.begin(), h_vertices.end());
+
+    EXPECT_EQ(vertices[0], coord(1.f,       -1.f, -1.f));
+    EXPECT_EQ(vertices[1], coord(1.f,       -1.f,  1.f));
+    EXPECT_EQ(vertices[2], coord(-1.f,      -1.f,  1.f));
+    EXPECT_EQ(vertices[3], coord(-1.f,      -1.f, -1.f));
+    EXPECT_EQ(vertices[4], coord(1.f,        1.f, -0.9999999f));
+    EXPECT_EQ(vertices[5], coord(0.999999f,  1.f,  1.000001f));
+    EXPECT_EQ(vertices[6], coord(-1.f,       1.f,  1.f));
+    EXPECT_EQ(vertices[7], coord(-1.f,       1.f, -1.f));
+
+
+    const thrust::host_vector<triangle> h_triangles = w.triangles();
+    const std::vector<triangle> triangles(h_triangles.begin(), h_triangles.end());
 }
 
 TEST(obj_io, loading_simple) {

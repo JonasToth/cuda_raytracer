@@ -152,9 +152,9 @@ TEST(cuda_draw, drawing_traced_triangle)
     const auto P4 = Vertices[4];
 
     thrust::device_vector<triangle> Triangles(3);
-    Triangles[0] = {P0, P1, P2};
-    Triangles[1] = {P0, P1, P3};
-    Triangles[2] = {P4, P2, P0};
+    Triangles[0] = triangle(P0, P1, P2);
+    Triangles[1] = triangle(P0, P1, P3);
+    Triangles[2] = triangle(P4, P2, P0);
 
     while(!glfwWindowShouldClose(w)) {
         dim3 dimBlock(32,32);
@@ -240,10 +240,10 @@ TEST(cuda_draw, draw_phong_shaded)
     float diff[3] = {0.1f, 0.9f, 0.7f};
     float ambi[3] = {0.1f, 0.1f, 0.1f};
     //light_source ls = ;
-    lights.push_back({{spec, diff, ambi}, {-1.7f, -1.5f, -1.5f}});
-    lights.push_back({{spec, diff, ambi}, { 1.3f, -1.8f, -1.2f}});
-    lights.push_back({{spec, diff, ambi}, {-1.1f,  2.0f,  1.1f}});
-    //lights.push_back({{spec, diff, ambi}, {-1.5f, -1.5f,  1.5f}});
+    lights.push_back({phong_light(spec, diff, ambi), {-1.7f, -1.5f, -1.5f}});
+    lights.push_back({phong_light(spec, diff, ambi), { 1.3f, -1.8f, -1.2f}});
+    lights.push_back({phong_light(spec, diff, ambi), {-1.1f,  2.0f,  1.1f}});
+    lights.push_back({phong_light(spec, diff, ambi), {-1.5f, -1.5f,  1.5f}});
 
 
     const auto& triangles = world.triangles();

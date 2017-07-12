@@ -7,7 +7,7 @@ inline CUCALL camera::camera(int width, int height, coord origin, coord steering
 {}
 
 inline CUCALL camera::camera(int width, int height)
-    : camera(width, height, {0.f, 0.f, 0.f}, {0.f, 0.f, 1.f})
+    : camera(width, height, coord(0.f, 0.f, 0.f), coord(0.f, 0.f, 1.f))
 {}
 
 inline CUCALL ray camera::rayAt(int u, int v) const noexcept {
@@ -25,7 +25,7 @@ inline CUCALL ray camera::rayAt(int u, int v) const noexcept {
     const coord dir(coeff * x, coeff * y, coeff);
 
     float R[9];
-    rotation({0.f, 0.f, 0.1f}, __steering, R);
+    rotation(coord(0.f, 0.f, 0.1f), __steering, R);
 
     // transform that direction into world coordinates (steering vector should do that)
     const coord rotated_dir(
