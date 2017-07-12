@@ -37,10 +37,12 @@ loaded_data load(const char* file_name) {
         throw std::invalid_argument{error_message + file_name};
     }
     Ensures(result.attrib.vertices.size() % 3 == 0);
+    Ensures(result.attrib.normals.size() % 3 == 0);
+    Ensures(result.attrib.texcoords.size() % 3 == 0);
     return result;
 }
 
-thrust::host_vector<coord> build_vertices(const std::vector<tinyobj::real_t>& vertices)
+thrust::host_vector<coord> build_coords(const std::vector<tinyobj::real_t>& vertices)
 {
     Expects(vertices.size() % 3 == 0);
 
@@ -74,6 +76,7 @@ build_materials(const std::vector<tinyobj::material_t>& materials)
 thrust::device_vector<triangle> 
 build_faces(const std::vector<tinyobj::shape_t>& shapes,
             const thrust::device_vector<coord>& vertices,
+            const thrust::device_vector<coord>& normals,
             const thrust::device_vector<phong_material>& materials)
 {
     thrust::device_vector<triangle> triangles;
@@ -120,15 +123,19 @@ void world_geometry::load(const std::string& file_name) {
     __shape_count = data.shapes.size();
 
     // Handle all Vertices
-    __vertices = __detail::build_vertices(data.attrib.vertices);
+    __vertices = __detail::build_coords(data.attrib.vertices);
     Expects(__vertices.size() == data.attrib.vertices.size() / 3);
+
+    // Handle all normals
+    __normals = __detail::build_coords(data.attrib.normals);
+    Expects(__normals.size() == data.attrib.normals.size() / 3);
 
     // Handle all Materials
     __materials = __detail::build_materials(data.materials);
     Expects(__materials.size() == data.materials.size());
 
     // Connect the triangles and give their surfaces a material
-    __triangles = __detail::build_faces(data.shapes, __vertices, __materials);
+    __triangles = __detail::build_faces(data.shapes, __vertices, __normals, __materials);
 }
 
 
