@@ -36,6 +36,7 @@ public:
     void load(const std::string& file_name);
 
     std::size_t vertex_count() const noexcept { return __vertices.size(); }
+    std::size_t normal_count() const noexcept { return __normals.size(); }
     std::size_t material_count() const noexcept { return __materials.size(); }
     std::size_t triangle_count() const noexcept { return __triangles.size(); }
     std::size_t shape_count() const noexcept { return __shape_count; }

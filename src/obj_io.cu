@@ -3,6 +3,7 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tinyobjloader/tiny_obj_loader.h"
 
+#include <algorithm>
 #include <gsl/gsl>
 #include <iostream>
 #include <stdexcept>
@@ -82,32 +83,55 @@ build_faces(const std::vector<tinyobj::shape_t>& shapes,
             const thrust::device_vector<phong_material>& materials)
 {
     thrust::device_vector<triangle> triangles;
+
     for(const auto& shape: shapes)
     {
+        // we will use only triangles
+        Expects(std::all_of(std::begin(shape.mesh.num_face_vertices),
+                            std::end(shape.mesh.num_face_vertices), 
+                            [](int i) { return i == 3; }));
+
         std::size_t index_offset = 0;
         // all faces of the shape
         for(std::size_t f = 0; f < shape.mesh.num_face_vertices.size(); ++f)
         {
             const auto fv = shape.mesh.num_face_vertices[f];
-            if(fv != 3) 
-                throw std::invalid_argument{"Found a polygon, need triangles only"};
 
             // all indices of the face
             const auto idx0 = shape.mesh.indices[index_offset + 0].vertex_index;
             const auto idx1 = shape.mesh.indices[index_offset + 1].vertex_index;
             const auto idx2 = shape.mesh.indices[index_offset + 2].vertex_index;
+            
+            Expects(idx0 < vertices.size() && idx0 >= 0);
+            Expects(idx1 < vertices.size() && idx1 >= 0);
+            Expects(idx2 < vertices.size() && idx2 >= 0);
 
             const auto* P0 = (&vertices[idx0]).get();
             const auto* P1 = (&vertices[idx1]).get();
             const auto* P2 = (&vertices[idx2]).get();
-            
-            triangle t(P0, P1, P2);
+
+            // index of the normal
+            auto nidx = shape.mesh.indices[index_offset].normal_index;
+            // normals dont need to be saved -> calculate if not existing
+            if(nidx < 0)
+            {
+                const coord p0 = vertices[idx0];
+                const coord p1 = vertices[idx1];
+                const coord p2 = vertices[idx2];
+                normals.push_back(normalize(cross(p1 - p0, p2 - p1)));
+                nidx = normals.size() - 1;
+            }
+            const auto* n  = (&normals[nidx]).get();
+
+            triangle t(P0, P1, P2, n);
             
             // WARN: this writes the pointer on the device, as material pointer.
             // if you derefence material on the cpu, that results in a segfault
             // on cuda devices!
-            auto m_ptr = &materials[shape.mesh.material_ids[f]];
-            t.material(m_ptr.get());
+            const phong_material* m_ptr = shape.mesh.material_ids[f] < 0 
+                                          ? nullptr
+                                          : (&materials[shape.mesh.material_ids[f]]).get();
+            t.material(m_ptr);
 
             triangles.push_back(t);
                 
@@ -130,7 +154,6 @@ void world_geometry::load(const std::string& file_name) {
 
     // Handle all normals
     __normals = __detail::build_coords(data.attrib.normals);
-    Expects(__normals.size() == data.attrib.normals.size() / 3);
 
     // Handle all Materials
     __materials = __detail::build_materials(data.materials);
@@ -139,6 +162,7 @@ void world_geometry::load(const std::string& file_name) {
     // Connect the triangles and give their surfaces a material, creates normals if
     // necessary!
     __triangles = __detail::build_faces(data.shapes, __vertices, __normals, __materials);
+    //Expects(__normals.size() > 0);
 }
 
 

@@ -18,6 +18,7 @@ TEST(obj_io, load_cube) {
     world_geometry w("cube.obj");
     
     EXPECT_EQ(w.vertex_count(), 8) << "Bad Number of Vertices";
+    EXPECT_EQ(w.normal_count(), 6) << "Bad Number of Normals";
     EXPECT_EQ(w.triangle_count(), 12) << "Bad Number of Triangles";
     EXPECT_EQ(w.shape_count(), 1) << "Bad number of Shapes";
     EXPECT_EQ(w.material_count(), 0) << "Bad number of materials";
@@ -51,6 +52,11 @@ TEST(obj_io, load_cube) {
     EXPECT_EQ(&triangles[0].p0(), (&w.vertices()[1]).get()) << "Bad triangle connection";
     EXPECT_EQ(&triangles[0].p1(), (&w.vertices()[3]).get()) << "Bad triangle connection";
     EXPECT_EQ(&triangles[0].p2(), (&w.vertices()[0]).get()) << "Bad triangle connection";
+
+    EXPECT_EQ(&triangles[0].normal(), (&w.normals()[0]).get()) << "Bad normal connection";
+
+    EXPECT_EQ(triangles[0].material(), nullptr) << "Bad material connection";
+
     // incorrect should be checked as well, random choice
     EXPECT_NE(&triangles[0].p0(), (&w.vertices()[0]).get()) << "Bad triangle connection";
     EXPECT_NE(&triangles[0].p1(), (&w.vertices()[5]).get()) << "Bad triangle connection";
@@ -62,6 +68,7 @@ TEST(obj_io, loading_simple) {
     w.load("shapes.obj");
 
     EXPECT_EQ(w.vertex_count(), 122) << "Bad Number of Vertices";
+    EXPECT_EQ(w.normal_count(), 126) << "Bad Number of Normals";
     EXPECT_EQ(w.triangle_count(), 228) << "Bad Number of Triangles";
     EXPECT_EQ(w.shape_count(), 4) << "Bad number of Shapes";
     EXPECT_EQ(w.material_count(), 0) << "Bad number of materials";
@@ -83,6 +90,7 @@ TEST(obj_io, test_simple_materials) {
     world_geometry w("test_camera_light.obj");
 
     EXPECT_EQ(w.vertex_count(), 8) << "Bad Number of Vertices";
+    EXPECT_EQ(w.normal_count(), 6) << "Bad Number of Normals";
     EXPECT_EQ(w.triangle_count(), 12) << "Bad Number of Triangles";
     EXPECT_EQ(w.shape_count(), 1) << "Bad number of Shapes";
     EXPECT_EQ(w.material_count(), 1) << "Bad number of materials";
@@ -115,11 +123,22 @@ TEST(obj_io, test_simple_materials) {
     EXPECT_EQ(t.material(), m_ptr.get()) << "Pointers to material differ, connection wrong";
 }
 
-TEST(obj_io, DISABLED_loading_complex) {
+TEST(obj_io, test_scene)
+{
+    world_geometry w("material_scene.obj");
+    EXPECT_EQ(w.vertex_count(), 1044) << "Bad Number of Vertices";
+    EXPECT_EQ(w.normal_count(), 2064) << "Bad Number of Normals";
+    EXPECT_EQ(w.triangle_count(), 2064) << "Bad Number of Triangles";
+    EXPECT_EQ(w.shape_count(), 5) << "Bad number of Shapes";
+    EXPECT_EQ(w.material_count(), 4) << "Bad number of materials";
+}
+
+TEST(obj_io, loading_complex) {
     world_geometry w;
     w.load("mini_cooper.obj");
 
     EXPECT_EQ(w.vertex_count(), 234435) << "Bad Number of Vertices";
+    EXPECT_EQ(w.normal_count(), 6) << "Bad Number of Normals";
     EXPECT_EQ(w.triangle_count(), 304135) << "Bad Number of Triangles";
     EXPECT_EQ(w.shape_count(), 49) << "Bad number of Shapes";
     EXPECT_EQ(w.material_count(), 15) << "Bad number of materials";
