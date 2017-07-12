@@ -7,7 +7,7 @@ __global__ void black_kernel(cudaSurfaceObject_t surface, int width, int height)
     black.x = 0;
     black.y = 0;
     black.z = 0;
-    black.z = 255;
+    black.w = 255;
 
     if(x < width && y < height)
         surf2Dwrite(black, surface, x * sizeof(black), y);

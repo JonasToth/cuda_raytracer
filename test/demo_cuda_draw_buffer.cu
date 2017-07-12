@@ -151,14 +151,19 @@ TEST(cuda_draw, drawing_traced_triangle)
     const auto* P3 = (&Vertices[3]).get();
     const auto* P4 = (&Vertices[4]).get();
 
-    const auto t0_n = normalize(cross(Vertices[1] - Vertices[0], Vertices[2] - Vertices[1]));
-    const auto t1_n = normalize(cross(Vertices[1] - Vertices[0], Vertices[3] - Vertices[0]));
-    const auto t2_n = normalize(cross(Vertices[2] - Vertices[4], Vertices[2] - Vertices[0]));
+    thrust::device_vector<coord> Normals(3);
+    Normals[0] = normalize(cross(Vertices[1] - Vertices[0], Vertices[2] - Vertices[1]));
+    Normals[1] = normalize(cross(Vertices[1] - Vertices[0], Vertices[3] - Vertices[0]));
+    Normals[2] = normalize(cross(Vertices[2] - Vertices[4], Vertices[2] - Vertices[0]));
+
+    const auto* t0_n = (&Normals[0]).get();
+    const auto* t1_n = (&Normals[1]).get();
+    const auto* t2_n = (&Normals[2]).get();
 
     thrust::device_vector<triangle> Triangles(3);
-    Triangles[0] = triangle(P0, P1, P2, &t0_n);
-    Triangles[1] = triangle(P0, P1, P3, &t1_n);
-    Triangles[2] = triangle(P4, P2, P0, &t2_n);
+    Triangles[0] = triangle(P0, P1, P2, t0_n);
+    Triangles[1] = triangle(P0, P1, P3, t1_n);
+    Triangles[2] = triangle(P4, P2, P0, t2_n);
 
     while(!glfwWindowShouldClose(w)) {
         dim3 dimBlock(32,32);

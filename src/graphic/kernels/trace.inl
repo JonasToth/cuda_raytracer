@@ -23,7 +23,7 @@ __global__ void trace_single_triangle(cudaSurfaceObject_t surface, const triangl
         const auto traced = r.intersects(*t);
 
         if(traced.first)
-            surf2Dwrite(pixel_color, surface, x * sizeof(pixel_color), y);
+            surf2Dwrite(pixel_color, surface, x * 4, y);
     }
 }
 
