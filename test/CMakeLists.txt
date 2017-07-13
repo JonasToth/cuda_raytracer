@@ -167,6 +167,6 @@ target_link_libraries(int_test_materials.x
 
 
 add_test(integration_cube 
-         COMMAND ./validate.sh int_test_cube.x cube.png expected_cube.rgba)
+         COMMAND ./validate.sh int_test_cube.x cube.png reference_cube.rgba)
 add_test(integration_materials
-         COMMAND ./validate.sh int_test_materials.x materials.png expected_materials.rgba)
+         COMMAND ./validate.sh int_test_materials.x materials.png reference_materials.rgba)

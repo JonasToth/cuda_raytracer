@@ -3,6 +3,8 @@
 #include "management/window.h"
 #include "obj_io.h"
 
+#include <thread>
+#include <chrono>
 
 static void raytrace_many_shaded(cudaSurfaceObject_t& surface, camera c,
                                  const triangle* triangles, std::size_t n_triangles,
@@ -20,13 +22,18 @@ static void raytrace_many_shaded(cudaSurfaceObject_t& surface, camera c,
 
 int main(int argc, char** argv)
 {
-    window win(800, 600, "Material Scene");
+    if(argc != 2)
+    {
+        std::cerr << "Give the ouputfile as argument, e.g. cube.png" << std::endl;
+        return 1;
+    }
+    window win(800, 600, "Cube Scene");
     auto w = win.getWindow();
     glfwMakeContextCurrent(w);
 
     // Camera Setup similar to blender
     camera c(win.getWidth(), win.getHeight(), 
-             {0.0f, 0.5f, 2.5f}, {0.1f, 0.f, -1.f});
+             {-1.5f, 1.2f, -1.5f}, {1.7f, -1.4f, 1.7f});
     surface_raii render_surface(win.getWidth(), win.getHeight());
 
     std::clog << "Setup Rendering Platform initialized" << std::endl;
@@ -50,7 +57,9 @@ int main(int argc, char** argv)
     raytrace_many_shaded(render_surface.getSurface(), c,
                          triangles.data().get(), triangles.size(),
                          lights.data().get(), lights.size());
-    render_surface.save_as_png("cube.png");
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    render_surface.render_gl_texture();
+    render_surface.save_as_png(argv[1]);
     std::clog << "World rendered" << std::endl;
 
     return 0;

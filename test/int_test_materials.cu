@@ -3,6 +3,8 @@
 #include "management/window.h"
 #include "obj_io.h"
 
+#include <thread>
+#include <chrono>
 
 static void raytrace_many_shaded(cudaSurfaceObject_t& surface, camera c,
                                  const triangle* triangles, std::size_t n_triangles,
@@ -20,6 +22,11 @@ static void raytrace_many_shaded(cudaSurfaceObject_t& surface, camera c,
 
 int main(int argc, char** argv)
 {
+    if(argc != 2)
+    {
+        std::cerr << "Give the ouputfile as argument, e.g. materials.png" << std::endl;
+        return 1;
+    }
     window win(800, 600, "Material Scene");
     auto w = win.getWindow();
     glfwMakeContextCurrent(w);
@@ -50,7 +57,10 @@ int main(int argc, char** argv)
     raytrace_many_shaded(render_surface.getSurface(), c,
                          triangles.data().get(), triangles.size(),
                          lights.data().get(), lights.size());
-    render_surface.save_as_png("materials.png");
+    // seems necessary, otherwise the png is empty :/
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    render_surface.render_gl_texture();
+    render_surface.save_as_png(argv[1]);
     std::clog << "World rendered" << std::endl;
 
     return 0;
