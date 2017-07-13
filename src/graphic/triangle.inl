@@ -72,7 +72,7 @@ CUCALL inline coord triangle::interpolated_normal(const coord P) const noexcept
                                   bary.z * p1_normal());
 
 #ifndef __CUDACC__
-    Ensures(norm(intp_n) - 1.f < 0.001f);
+    Ensures(std::fabs(norm(intp_n) - 1.f) < 0.00001f);
 #endif
     return intp_n;
 }
