@@ -58,10 +58,10 @@ static void BM_SceneRender(benchmark::State& state)
     float spec[3] = {0.8f, 0.8f, 0.8f};
     float diff[3] = {0.8f, 0.8f, 0.8f};
     thrust::device_vector<light_source> lights;
-    lights.push_back({phong_light(spec, diff), {0.8f, 0.9f, 1.5f}});
-    lights.push_back({phong_light(spec, diff), {1.7f, -1.1f, -0.3f}});
-    lights.push_back({phong_light(spec, diff), {-1.3f, 0.8f, 2.0f}});
-    lights.push_back({phong_light(spec, diff), {-1.7f, -1.7f, 0.8f}});
+    lights.push_back(light_source{phong_light(spec, diff), {0.8f, 0.9f, 1.5f}});
+    lights.push_back(light_source{phong_light(spec, diff), {1.7f, -1.1f, -0.3f}});
+    lights.push_back(light_source{phong_light(spec, diff), {-1.3f, 0.8f, 2.0f}});
+    lights.push_back(light_source{phong_light(spec, diff), {-1.7f, -1.7f, 0.8f}});
 
     const auto& triangles = scene.triangles();
 

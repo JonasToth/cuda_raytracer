@@ -59,7 +59,7 @@ auto BM_CubeRender = [](benchmark::State& state, std::string base_name)
     float spec[3] = {0.8f, 0.8f, 0.8f};
     float diff[3] = {0.8f, 0.8f, 0.8f};
     thrust::device_vector<light_source> lights;
-    lights.push_back({phong_light(spec, diff), {0.8f, 0.9f, 1.5f}});
+    lights.push_back(light_source{phong_light(spec, diff), {0.8f, 0.9f, 1.5f}});
 
     const auto& triangles = scene.triangles();
 
