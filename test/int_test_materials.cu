@@ -31,7 +31,7 @@ int main(int argc, char** argv)
 
     std::clog << "Setup Rendering Platform initialized" << std::endl;
     
-    world_geometry scene("cube.obj");
+    world_geometry scene("material_scene.obj");
 
     // Light Setup similar to blender (position and stuff taken from there)
     float spec[3] = {0.8f, 0.8f, 0.8f};
@@ -50,7 +50,7 @@ int main(int argc, char** argv)
     raytrace_many_shaded(render_surface.getSurface(), c,
                          triangles.data().get(), triangles.size(),
                          lights.data().get(), lights.size());
-    render_surface.save_as_png("cube.png");
+    render_surface.save_as_png("materials.png");
     std::clog << "World rendered" << std::endl;
 
     return 0;
