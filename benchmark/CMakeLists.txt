@@ -45,5 +45,7 @@ target_link_libraries(bench_cube_subdivision.x
 add_dependencies(bench_cube_subdivision.x benchmark_files)
 
 
-add_test(bench_basic_scene bench_basic_scene.x)
-add_test(bench_cube_subdivision bench_cube_subdivision.x)
+add_test(NAME bench_basic_scene 
+         COMMAND ./bench_basic_scene.x --benchmark_color=false --benchmark_counters_tabular=true)
+add_test(NAME bench_cube_subdivision 
+         COMMAND ./bench_cube_subdivision.x --benchmark_color=false --benchmark_counters_tabular=true)
