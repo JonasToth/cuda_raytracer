@@ -12,7 +12,12 @@ window::window(int width, int height, const std::string& title, bool visible)
 
     // invisible windows for test cases and only image rendering
     if(!visible)
-        glfwWindowHint(GLFW_VISIBLE, false);
+    {
+        glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+    }
+
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
     __w = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
 

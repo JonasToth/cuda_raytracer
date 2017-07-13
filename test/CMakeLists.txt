@@ -7,8 +7,12 @@ include_directories(${GTEST_INCLUDE_DIRS})
 
 # symbolic links to all test files
 add_custom_target(example_files
+    # necessary for integration tests
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/validate.sh ${PROJECT_BINARY_DIR}/test
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference_cube.rgba ${PROJECT_BINARY_DIR}/test
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference_materials.rgba ${PROJECT_BINARY_DIR}/test
 
+    # object files and materials necessary as testcases
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube.obj ${PROJECT_BINARY_DIR}/test
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube.mtl ${PROJECT_BINARY_DIR}/test
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_no_normals.obj ${PROJECT_BINARY_DIR}/test
@@ -166,7 +170,7 @@ target_link_libraries(int_test_materials.x
                       ${PNG_LIBRARIES})
 
 
-add_test(integration_cube 
-         COMMAND ./validate.sh int_test_cube.x cube.png reference_cube.rgba)
-add_test(integration_materials
-         COMMAND ./validate.sh int_test_materials.x materials.png reference_materials.rgba)
+add_test(NAME integration_cube 
+         COMMAND ./validate.sh ./int_test_cube.x cube.png reference_cube.rgba)
+add_test(NAME integration_materials
+         COMMAND ./validate.sh ./int_test_materials.x materials.png reference_materials.rgba)

@@ -43,3 +43,4 @@ Dependencies exist to common libraries and SDKs.
   `sudo apt-get install libglfw3-dev`
 - libPNG
   `sudo apt-get install libpng-dev`
+- ImageMagick suite for automated testing (integration tests)
