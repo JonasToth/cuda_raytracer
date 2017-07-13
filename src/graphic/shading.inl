@@ -4,8 +4,8 @@ inline CUCALL color phong_shading(const phong_material* m, const float ambient_c
                                   const light_source* lights, std::size_t light_count,
                                   const coord& ray_direction, const intersect& hit)
 {
-    //const auto N = normalize(hit.face->normal());
-    const auto N = hit.face->interpolated_normal(hit.hit);
+    const auto N = normalize(hit.face->normal());
+    //const auto N = hit.face->interpolated_normal(hit.hit);
     const auto V = normalize(coord(ray_direction.x, ray_direction.y, ray_direction.z));
 
     color c{0.f, 0.f, 0.f};
