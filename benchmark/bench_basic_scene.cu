@@ -8,6 +8,8 @@
 #include "management/window.h"
 #include "obj_io.h"
 
+#include <thread>
+#include <chrono>
 
 static void raytrace_many_shaded(cudaSurfaceObject_t& surface, camera c,
                                  const triangle* triangles, std::size_t n_triangles,
