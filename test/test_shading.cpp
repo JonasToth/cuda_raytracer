@@ -102,7 +102,7 @@ TEST(shading, specular_coeff)
               << "Valid directions result in nonzero";
 }
 
-TEST(shading, comple_shade_one_channel)
+TEST(shading, complex_shade_one_channel)
 {
     float spec[3] = {0.5f, 0.5f, 0.5f};
     float diff[3] = {0.5f, 0.5f, 0.5f};
@@ -110,8 +110,11 @@ TEST(shading, comple_shade_one_channel)
     const phong_material m(spec, diff, ambi, 1.f);
     const light_source ls = {phong_light(spec, diff), coord(2.f, 0.0f, 1.f)};
 
-    //const camera c(640, 480, {1.f, 1.f, 1.f}, {-1.f, -1.f, -1.f});
-    const intersect hit(1.f, coord(0.f, 0.f, 0.f), coord(0.f, 0.f, 1.f));
+    const coord P0{0, -1, 1}, P1{-1, 1, 1}, P2{1, 1, 1};
+    const coord normal = normalize(cross(P1 - P0, P2 - P1));
+    triangle T{&P0, &P1, &P2, &normal};
+
+    const intersect hit(1.f, coord(0.f, 0.f, 0.f), &T);
 
     for(float x_dir = 2.f; x_dir > 0.f; x_dir-= 0.5f)
     {

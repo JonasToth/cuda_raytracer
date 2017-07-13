@@ -11,10 +11,10 @@
 
 struct intersect {
     CUCALL intersect() = default;
-    CUCALL explicit intersect(float depth, const coord hit, const coord n) 
+    CUCALL explicit intersect(float depth, const coord hit, const triangle* t) 
         : depth{depth}
         , hit{hit}
-        , normal{n} {}
+        , face{t} {}
 
     CUCALL intersect(const intersect&) = default;
     CUCALL intersect(intersect&&) = default;
@@ -26,7 +26,7 @@ struct intersect {
 
     float depth = 0.f;
     coord hit;
-    coord normal;
+    const triangle* face;
 };
 
 struct ray {
@@ -65,9 +65,9 @@ struct ray {
         const coord Hit = origin + T * direction;
 
         if(T > 0.f)
-            return LIB::make_pair(Tri.contains(Hit), intersect{T, Hit, TNormal});
+            return LIB::make_pair(Tri.contains(Hit), intersect{T, Hit, &Tri});
         else
-            return LIB::make_pair(false, intersect{T, Hit, TNormal});
+            return LIB::make_pair(false, intersect{T, Hit, &Tri});
     }
 
     coord origin;

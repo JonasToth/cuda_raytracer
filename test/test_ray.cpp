@@ -27,8 +27,8 @@ TEST(ray, intersection)
     EXPECT_EQ(DoesIntersect, true) << "depth=" << I.depth;
     EXPECT_EQ(I.hit, coord(0.f, 0.f, 10.f)) << "Hit coordinates not correct " << I.hit;
     EXPECT_EQ(I.depth, 10.) << I.hit << "\n"
-                            << I.normal;
-    EXPECT_EQ(I.normal, coord(0., 0., -1.f)) << I.normal;
+                            << I.face->normal();
+    EXPECT_EQ(I.face->normal(), coord(0., 0., -1.f)) << I.face->normal();
 
     R.direction = normalize(coord{0.f, 0.5f, 1.f});
     std::tie(DoesIntersect, I) = R.intersects(T);
