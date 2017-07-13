@@ -108,6 +108,20 @@ TEST(triangle, normal_interpolation)
     EXPECT_EQ(T.interpolated_normal(P2), n);
 
     EXPECT_EQ(T.interpolated_normal(coord(0.5f, 0.5f, 0.f)), n);
+
+    coord n0(normalize({ 0.0f, 0.0f,  1.0f})), 
+          n1(normalize({-0.1f, 0.0f,  1.0f})), 
+          n2(normalize({ 0.1f, 0.0f,  1.0f}));
+    T.p0_normal(&n0);
+    T.p1_normal(&n1);
+    T.p2_normal(&n2);
+
+    const auto n_inter0 = T.interpolated_normal(coord(0.5f, 0.1f, 0.f));
+    std::clog << "New Normal p1 = " << n1 << '\n'
+              << "New Normal p2 = " << n2 << '\n'
+              << "Interpolated norm = " << n_inter0 << std::endl;
+    EXPECT_LT(norm(n_inter0) - 1.f, 0.0001f);
+    EXPECT_LT(norm(n_inter0 - coord(0.f, 0.0f, 1.0f)), 0.1f);
 }
 
 TEST(triangle, material)
