@@ -99,7 +99,6 @@ int main(int argc, char** argv)
                              lights.data().get(), lights.size());
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
         render_surface.render_gl_texture();
-        render_surface.save_as_png("Testfile.png");
         glfwSwapBuffers(w);
         std::clog << "World rendered" << std::endl;
         std::clog << "Camera Position: " << c.origin() << std::endl;

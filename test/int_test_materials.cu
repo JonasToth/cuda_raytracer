@@ -33,7 +33,7 @@ int main(int argc, char** argv)
 
     // Camera Setup similar to blender
     camera c(win.getWidth(), win.getHeight(), 
-             {0.0f, 0.5f, 2.5f}, {0.1f, 0.f, -1.f});
+             {0.0f, 0.5f, -2.0f}, {0.1f, 0.f, 1.f});
     surface_raii render_surface(win.getWidth(), win.getHeight());
 
     std::clog << "Setup Rendering Platform initialized" << std::endl;
@@ -44,10 +44,10 @@ int main(int argc, char** argv)
     float spec[3] = {0.8f, 0.8f, 0.8f};
     float diff[3] = {0.8f, 0.8f, 0.8f};
     thrust::device_vector<light_source> lights;
-    lights.push_back({phong_light(spec, diff), {-1.7f, -1.5f, -1.5f}});
-    lights.push_back({phong_light(spec, diff), { 1.3f, -1.8f, -1.2f}});
-    lights.push_back({phong_light(spec, diff), {-1.1f,  2.0f,  1.1f}});
-    lights.push_back({phong_light(spec, diff), {-1.5f, -1.5f,  1.5f}});
+    lights.push_back({phong_light(spec, diff), {-1.4f, -1.4f, -1.4f}});
+    lights.push_back({phong_light(spec, diff), { 1.4f, -1.4f, -1.4f}});
+    lights.push_back({phong_light(spec, diff), {-1.4f,  1.4f,  1.4f}});
+    lights.push_back({phong_light(spec, diff), {-1.4f, -1.4f,  1.4f}});
 
     std::clog << "World initialized" << std::endl;
 

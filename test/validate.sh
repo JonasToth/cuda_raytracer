@@ -15,14 +15,18 @@ OUT_FILE="$2"
 OUT_BASE="${OUT_FILE%.*}"
 
 REF_FILE="$3"
+REF_BASE="${REF_FILE%.*}"
 
 
 eval "$TEST_EXE $OUT_FILE"
 
 convert "$OUT_FILE" "$OUT_BASE.rgba"
-cmp "$OUT_BASE.rgba" "$REF_FILE"
+convert "$REF_FILE" "$REF_BASE.rgba"
+cmp "$OUT_BASE.rgba" "$REF_BASE.rgba"
 
 diff=$?
+
+rm "$OUT_BASE.rgba" "$REF_BASE.rgba"
 
 if [ $diff -eq 0 ]; then
     echo "Equality"
