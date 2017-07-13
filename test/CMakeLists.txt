@@ -167,6 +167,14 @@ target_link_libraries(int_test_cube.x
                       glfw ${OPENGL_gl_LIBRARY}
                       ${PNG_LIBRARIES})
 
+cuda_add_executable(int_test_cube_smooth.x int_test_cube_smooth.cu
+                    ${PROJECT_SOURCE_DIR}/src/obj_io.cu
+                    ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu
+                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp)
+target_link_libraries(int_test_cube_smooth.x 
+                      glfw ${OPENGL_gl_LIBRARY}
+                      ${PNG_LIBRARIES})
+
 cuda_add_executable(int_test_materials.x int_test_materials.cu
                     ${PROJECT_SOURCE_DIR}/src/obj_io.cu
                     ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu
@@ -187,6 +195,8 @@ target_link_libraries(int_test_materials_smooth.x
 
 add_test(NAME integration_cube 
          COMMAND ./validate.sh ./int_test_cube.x cube.png reference_cube.png)
+add_test(NAME integration_cube_smooth
+         COMMAND ./validate.sh ./int_test_cube_smooth.x cube_smooth.png reference_cube_smooth.png)
 add_test(NAME integration_materials
          COMMAND ./validate.sh ./int_test_materials.x materials.png reference_materials.png)
 add_test(NAME integration_materials_smooth
