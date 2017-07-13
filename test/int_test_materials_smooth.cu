@@ -6,7 +6,7 @@
 #include <thread>
 #include <chrono>
 
-static void raytrace_many_shaded(cudaSurfaceObject_t& surface, camera c,
+static void raytrace_many_shaded(cudaSurfaceObject_t surface, camera c,
                                  const triangle* triangles, std::size_t n_triangles,
                                  const light_source* lights, std::size_t n_lights)
 {
@@ -14,6 +14,9 @@ static void raytrace_many_shaded(cudaSurfaceObject_t& surface, camera c,
     dim3 dimGrid((c.width() + dimBlock.x) / dimBlock.x,
                  (c.height() + dimBlock.y) / dimBlock.y);
     black_kernel<<<dimGrid, dimBlock>>>(surface, c.width(), c.height());
+    std::clog << "Triangle ptr: " << triangles << "; " << n_triangles << std::endl
+              << "LightSrc ptr: " << lights << "; " << n_lights << std::endl
+              << "Surface     : " << surface << std::endl;
     trace_many_triangles_shaded<<<dimGrid, dimBlock>>>(surface, c,
                                                        triangles, n_triangles, 
                                                        lights, n_lights,
@@ -27,7 +30,8 @@ int main(int argc, char** argv)
         std::cerr << "Warning: Give the ouputfile as argument, e.g. materials_smooth.png" 
                   << std::endl;
     }
-    window win(800, 600, "Material Scene", false);
+
+    window win(800, 600, "Material Scene");
     auto w = win.getWindow();
     glfwMakeContextCurrent(w);
 
@@ -38,16 +42,16 @@ int main(int argc, char** argv)
 
     std::clog << "Setup Rendering Platform initialized" << std::endl;
     
-    world_geometry scene("material_scene_smooth.obj");
+    world_geometry scene("material_scene.obj");
 
     // Light Setup similar to blender (position and stuff taken from there)
     float spec[3] = {0.8f, 0.8f, 0.8f};
     float diff[3] = {0.8f, 0.8f, 0.8f};
-    thrust::device_vector<light_source> lights(4);
-    lights[0] = light_source{phong_light(spec, diff), {-1.4f, -1.4f, -1.4f}};
-    lights[1] = light_source{phong_light(spec, diff), { 1.4f, -1.4f, -1.4f}};
-    lights[2] = light_source{phong_light(spec, diff), {-1.4f,  1.4f,  1.4f}};
-    lights[3] = light_source{phong_light(spec, diff), {-1.4f, -1.4f,  1.4f}};
+    thrust::device_vector<light_source> lights(1);
+    lights[0] = light_source{phong_light(spec, diff), coord{-1.4f, -1.4f, -1.4f}};
+    //lights[1] = light_source{phong_light(spec, diff), coord{ 1.4f, -1.4f, -1.4f}};
+    //lights[2] = light_source{phong_light(spec, diff), coord{-1.4f,  1.4f,  1.4f}};
+    //lights[3] = light_source{phong_light(spec, diff), coord{-1.4f, -1.4f,  1.4f}};
 
     std::clog << "World initialized" << std::endl;
 
@@ -55,8 +59,9 @@ int main(int argc, char** argv)
     raytrace_many_shaded(render_surface.getSurface(), c,
                          triangles.data().get(), triangles.size(),
                          lights.data().get(), lights.size());
+    
     // seems necessary, otherwise the png is empty :/
-    std::this_thread::sleep_for(std::chrono::milliseconds(600));
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     render_surface.render_gl_texture();
 
     if(argc == 2)
@@ -65,4 +70,4 @@ int main(int argc, char** argv)
     std::clog << "World rendered" << std::endl;
 
     return 0;
-}
+} 

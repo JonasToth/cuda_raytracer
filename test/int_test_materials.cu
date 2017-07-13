@@ -27,7 +27,7 @@ int main(int argc, char** argv)
         std::cerr << "Give the ouputfile as argument, e.g. materials.png" << std::endl;
         return 1;
     }
-    window win(800, 600, "Material Scene", false);
+    window win(800, 600, "Material Scene");
     auto w = win.getWindow();
     glfwMakeContextCurrent(w);
 
