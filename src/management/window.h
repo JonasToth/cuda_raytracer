@@ -9,7 +9,7 @@
 
 class window {
 public:
-    window(int width, int height, const std::string& title);
+    window(int width, int height, const std::string& title, bool visible = true);
     ~window();
 
     GLFWwindow* getWindow() noexcept { return __w; }
