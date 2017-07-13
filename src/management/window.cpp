@@ -14,9 +14,10 @@ window::window(int width, int height, const std::string& title, bool visible)
     if(!visible)
     {
         glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+        glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
     }
 
+    glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
     __w = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);

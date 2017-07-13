@@ -55,10 +55,13 @@ static void BM_SceneRender(benchmark::State& state)
                              triangles.data().get(), triangles.size(),
                              lights.data().get(), lights.size());
     }
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    render_surface.render_gl_texture();
+    render_surface.save_as_png("material_scene.png");
 
 }
 
 BENCHMARK(BM_SceneRender)->Unit(benchmark::kMillisecond)
-                         ->MinTime(2.0);
+                         ->MinTime(1.0);
 
 BENCHMARK_MAIN()

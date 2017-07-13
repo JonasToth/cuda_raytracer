@@ -29,16 +29,20 @@ static void raytrace_many_shaded(cudaSurfaceObject_t& surface, camera c,
 
 
 
-static void BM_CubeRender(benchmark::State& state)
+auto BM_CubeRender = [](benchmark::State& state, std::string base_name)
 {
-    window win(800, 600, "Material Scene", false);
+    window win(800, 600, base_name);
     auto w = win.getWindow();
     glfwMakeContextCurrent(w);
 
     camera c(win.getWidth(), win.getHeight(), 
              {0.0f, 0.0f, 2.0f}, {0.01f, 0.f, -1.f});
     surface_raii render_surface(win.getWidth(), win.getHeight());
-    world_geometry scene("cube_subdiv_1.obj");
+    world_geometry scene(base_name + ".obj");
+
+    state.counters["vertices"]  = scene.vertex_count();
+    state.counters["normals"]   = scene.normal_count();
+    state.counters["triangles"] = scene.triangle_count();
 
     // Light Setup similar to blender (position and stuff taken from there)
     float spec[3] = {0.8f, 0.8f, 0.8f};
@@ -56,11 +60,21 @@ static void BM_CubeRender(benchmark::State& state)
                              lights.data().get(), lights.size());
     }
 
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
     render_surface.render_gl_texture();
-    render_surface.save_as_png("cube_subdiv1.png");
+    render_surface.save_as_png(base_name + ".png");
+};
+
+int main(int argc, char** argv)
+{
+    for(auto& name: {"cube_subdiv_1", "cube_subdiv_2", "cube_subdiv_3", "cube_subdiv_4"}) 
+                   /*,"cube_subdiv_5", "cube_subdiv_6"})*/
+    {
+        auto* b = benchmark::RegisterBenchmark(name, BM_CubeRender, name);
+        b->Unit(benchmark::kMicrosecond);
+        b->MinTime(0.8);
+    }
+    benchmark::Initialize(&argc, argv);
+    benchmark::RunSpecifiedBenchmarks();
+    return 0;
 }
-
-BENCHMARK(BM_CubeRender)->Unit(benchmark::kMicrosecond)
-                        ->MinTime(2.0);
-
-BENCHMARK_MAIN()
