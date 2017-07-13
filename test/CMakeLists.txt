@@ -11,6 +11,7 @@ add_custom_target(example_files
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/validate.sh ${PROJECT_BINARY_DIR}/test
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_cube.png ${PROJECT_BINARY_DIR}/test
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_materials.png ${PROJECT_BINARY_DIR}/test
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_materials_smooth.png ${PROJECT_BINARY_DIR}/test
 
     # object files and materials necessary as testcases
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube.obj ${PROJECT_BINARY_DIR}/test
@@ -27,6 +28,9 @@ add_custom_target(example_files
 
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.obj ${PROJECT_BINARY_DIR}/test
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.mtl ${PROJECT_BINARY_DIR}/test
+
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene_smooth.obj ${PROJECT_BINARY_DIR}/test
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene_smooth.mtl ${PROJECT_BINARY_DIR}/test
 )
 
 
@@ -169,8 +173,19 @@ target_link_libraries(int_test_materials.x
                       glfw ${OPENGL_gl_LIBRARY}
                       ${PNG_LIBRARIES})
 
+cuda_add_executable(int_test_materials_smooth.x int_test_materials_smooth.cu
+                    ${PROJECT_SOURCE_DIR}/src/obj_io.cu
+                    ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu
+                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp)
+target_link_libraries(int_test_materials_smooth.x 
+                      glfw ${OPENGL_gl_LIBRARY}
+                      ${PNG_LIBRARIES})
+
+
 
 add_test(NAME integration_cube 
          COMMAND ./validate.sh ./int_test_cube.x cube.png reference_cube.png)
 add_test(NAME integration_materials
          COMMAND ./validate.sh ./int_test_materials.x materials.png reference_materials.png)
+add_test(NAME integration_materials_smooth
+         COMMAND ./validate.sh ./int_test_materials_smooth.x materials_smooth.png reference_materials_smooth.png)
