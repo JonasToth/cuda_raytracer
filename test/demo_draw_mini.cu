@@ -67,7 +67,8 @@ static void raytrace_many_shaded(cudaSurfaceObject_t& surface, camera c,
                                                        c.width(), c.height());
 }
 
-TEST(demo_materials, scene_visualisation) {
+int main(int argc, char** argv)
+{
     window win(800, 600, "Material Scene");
     auto w = win.getWindow();
     glfwMakeContextCurrent(w);
@@ -102,7 +103,7 @@ TEST(demo_materials, scene_visualisation) {
                              lights.data().get(), lights.size());
         render_surface.render_gl_texture();
         render_surface.save_as_png("mini.png");
-        glfwSwapBuffers(w);
+        //glfwSwapBuffers(w);
         std::clog << "World rendered" << std::endl;
         std::clog << "Camera Position: " << c.origin() << std::endl;
         std::clog << "Camera Steering At: " << c.steering() << std::endl << std::endl;
@@ -110,17 +111,16 @@ TEST(demo_materials, scene_visualisation) {
     };
 
 
-    while(!glfwWindowShouldClose(w)) {
+    render_lambda();
+    /*while(!glfwWindowShouldClose(w)) {
         glfwWaitEvents();
         handle_keys(w, c);
         if(camera_changed)
             render_lambda();
     } 
+    */
     input_manager::instance().clear();
+    return 0;
 }
 
-int main(int argc, char** argv)
-{
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}
+

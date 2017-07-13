@@ -132,15 +132,24 @@ add_executable(test_vector.x test_vector.cpp)
 target_link_libraries(test_vector.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 
-add_test(test_build_cuda test_build_cuda.x)
-add_test(test_camera test_camera.x)
-add_test(test_camera_control test_camera_control.x)
-add_test(test_input_manager test_input_manager.x)
-add_test(test_light test_light.x)
-add_test(test_obj_io test_obj_io.x)
-add_test(test_material test_material.x)
-add_test(test_ray test_ray.x)
-add_test(test_shading test_shading.x)
-add_test(test_surface_raii test_surface_raii.x)
-add_test(test_triangle test_triangle.x)
-add_test(test_vector test_vector.x)
+add_test(unit_build_cuda test_build_cuda.x)
+add_test(unit_camera test_camera.x)
+add_test(unit_camera_control test_camera_control.x)
+add_test(unit_input_manager test_input_manager.x)
+add_test(unit_light test_light.x)
+add_test(unit_obj_io test_obj_io.x)
+add_test(unit_material test_material.x)
+add_test(unit_ray test_ray.x)
+add_test(unit_shading test_shading.x)
+add_test(unit_surface_raii test_surface_raii.x)
+add_test(unit_triangle test_triangle.x)
+add_test(unit_vector test_vector.x)
+
+# ====================== Integration tests for "real world" scenarios ====================
+
+cuda_add_executable(int_test_cube.x int_test_cube.cu
+                    ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu)
+
+
+add_test(integration_cube 
+         COMMAND ./validate.sh int_test_cube.x cube.rgba expected_cube.rgba)
