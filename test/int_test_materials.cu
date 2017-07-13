@@ -56,7 +56,7 @@ int main(int argc, char** argv)
                          triangles.data().get(), triangles.size(),
                          lights.data().get(), lights.size());
     // seems necessary, otherwise the png is empty :/
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    std::this_thread::sleep_for(std::chrono::milliseconds(600));
     render_surface.render_gl_texture();
     render_surface.save_as_png(argv[1]);
     std::clog << "World rendered" << std::endl;
