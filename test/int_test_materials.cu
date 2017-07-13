@@ -44,10 +44,10 @@ int main(int argc, char** argv)
     float spec[3] = {0.8f, 0.8f, 0.8f};
     float diff[3] = {0.8f, 0.8f, 0.8f};
     thrust::device_vector<light_source> lights;
-    lights.push_back({phong_light(spec, diff), {-1.4f, -1.4f, -1.4f}});
-    lights.push_back({phong_light(spec, diff), { 1.4f, -1.4f, -1.4f}});
-    lights.push_back({phong_light(spec, diff), {-1.4f,  1.4f,  1.4f}});
-    lights.push_back({phong_light(spec, diff), {-1.4f, -1.4f,  1.4f}});
+    lights.push_back(light_source{phong_light(spec, diff), {-1.4f, -1.4f, -1.4f}});
+    lights.push_back(light_source{phong_light(spec, diff), { 1.4f, -1.4f, -1.4f}});
+    lights.push_back(light_source{phong_light(spec, diff), {-1.4f,  1.4f,  1.4f}});
+    lights.push_back(light_source{phong_light(spec, diff), {-1.4f, -1.4f,  1.4f}});
 
     std::clog << "World initialized" << std::endl;
 
@@ -56,7 +56,7 @@ int main(int argc, char** argv)
                          triangles.data().get(), triangles.size(),
                          lights.data().get(), lights.size());
     // seems necessary, otherwise the png is empty :/
-    std::this_thread::sleep_for(std::chrono::milliseconds(600));
+    std::this_thread::sleep_for(std::chrono::milliseconds(1200));
     render_surface.render_gl_texture();
     render_surface.save_as_png(argv[1]);
     std::clog << "World rendered" << std::endl;

@@ -108,7 +108,7 @@ TEST(shading, complex_shade_one_channel)
     float diff[3] = {0.5f, 0.5f, 0.5f};
     float ambi[3] = {0.5f, 0.5f, 0.5f};
     const phong_material m(spec, diff, ambi, 1.f);
-    const light_source ls = {phong_light(spec, diff), coord(2.f, 0.0f, 1.f)};
+    const light_source ls{phong_light(spec, diff), coord(2.f, 0.0f, 1.f)};
 
     const coord P0{0, -1, 1}, P1{-1, 1, 1}, P2{1, 1, 1};
     const coord normal = normalize(cross(P1 - P0, P2 - P1));

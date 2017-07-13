@@ -24,8 +24,8 @@ int main(int argc, char** argv)
 {
     if(argc != 2)
     {
-        std::cerr << "Give the ouputfile as argument, e.g. materials_smooth.png" << std::endl;
-        return 1;
+        std::cerr << "Warning: Give the ouputfile as argument, e.g. materials_smooth.png" 
+                  << std::endl;
     }
     window win(800, 600, "Material Scene", false);
     auto w = win.getWindow();
@@ -43,11 +43,11 @@ int main(int argc, char** argv)
     // Light Setup similar to blender (position and stuff taken from there)
     float spec[3] = {0.8f, 0.8f, 0.8f};
     float diff[3] = {0.8f, 0.8f, 0.8f};
-    thrust::device_vector<light_source> lights;
-    lights.push_back({phong_light(spec, diff), {-1.4f, -1.4f, -1.4f}});
-    lights.push_back({phong_light(spec, diff), { 1.4f, -1.4f, -1.4f}});
-    lights.push_back({phong_light(spec, diff), {-1.4f,  1.4f,  1.4f}});
-    lights.push_back({phong_light(spec, diff), {-1.4f, -1.4f,  1.4f}});
+    thrust::device_vector<light_source> lights(4);
+    lights[0] = light_source{phong_light(spec, diff), {-1.4f, -1.4f, -1.4f}};
+    lights[1] = light_source{phong_light(spec, diff), { 1.4f, -1.4f, -1.4f}};
+    lights[2] = light_source{phong_light(spec, diff), {-1.4f,  1.4f,  1.4f}};
+    lights[3] = light_source{phong_light(spec, diff), {-1.4f, -1.4f,  1.4f}};
 
     std::clog << "World initialized" << std::endl;
 
@@ -58,7 +58,10 @@ int main(int argc, char** argv)
     // seems necessary, otherwise the png is empty :/
     std::this_thread::sleep_for(std::chrono::milliseconds(600));
     render_surface.render_gl_texture();
-    render_surface.save_as_png(argv[1]);
+
+    if(argc == 2)
+        render_surface.save_as_png(argv[1]);
+
     std::clog << "World rendered" << std::endl;
 
     return 0;

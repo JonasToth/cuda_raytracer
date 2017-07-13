@@ -2,6 +2,9 @@
 
 #include <chrono>
 #include <iostream>
+
+#pragma diagnostic push
+#pragma GCC diagnostic ignored "-Wignored-qualifiers"
 #include <png-plusplus/image.hpp>
 #include <png-plusplus/rgba_pixel.hpp>
 #include <stdexcept>
@@ -137,3 +140,4 @@ std::vector<uint8_t> surface_raii::__get_texture_memory() const
 }
 
 
+#pragma GCC diagnostic pop

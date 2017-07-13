@@ -51,7 +51,7 @@ TEST(light_source, basic_properties)
 {
     float spec[3] = {10.f, 10.f, 10.f};
     float diff[3] = {10.f, 10.f, 10.f};
-    light_source ls = {phong_light(spec, diff), {0.f, 0.f, 0.f}};
+    light_source ls{phong_light(spec, diff), {0.f, 0.f, 0.f}};
 
     EXPECT_FLOAT_EQ(ls.light.r.specular_color(), 10.f) << "Wrong specular color";
     EXPECT_FLOAT_EQ(ls.light.r.ks, 10.f) << "Wrong specular color";
