@@ -42,16 +42,16 @@ int main(int argc, char** argv)
 
     std::clog << "Setup Rendering Platform initialized" << std::endl;
     
-    world_geometry scene("material_scene.obj");
+    world_geometry scene("material_scene_smooth.obj");
 
     // Light Setup similar to blender (position and stuff taken from there)
     float spec[3] = {0.8f, 0.8f, 0.8f};
     float diff[3] = {0.8f, 0.8f, 0.8f};
-    thrust::device_vector<light_source> lights(1);
+    thrust::device_vector<light_source> lights(4);
     lights[0] = light_source{phong_light(spec, diff), coord{-1.4f, -1.4f, -1.4f}};
-    //lights[1] = light_source{phong_light(spec, diff), coord{ 1.4f, -1.4f, -1.4f}};
-    //lights[2] = light_source{phong_light(spec, diff), coord{-1.4f,  1.4f,  1.4f}};
-    //lights[3] = light_source{phong_light(spec, diff), coord{-1.4f, -1.4f,  1.4f}};
+    lights[1] = light_source{phong_light(spec, diff), coord{ 1.4f, -1.4f, -1.4f}};
+    lights[2] = light_source{phong_light(spec, diff), coord{-1.4f,  1.4f,  1.4f}};
+    lights[3] = light_source{phong_light(spec, diff), coord{-1.4f, -1.4f,  1.4f}};
 
     std::clog << "World initialized" << std::endl;
 

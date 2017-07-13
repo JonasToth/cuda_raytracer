@@ -8,6 +8,7 @@
 #include <iostream>
 #include <stdexcept>
 
+#define NDEBUG
 
 world_geometry::world_geometry() = default;
 world_geometry::world_geometry(const std::string& file_name) { load(file_name); }
@@ -136,7 +137,7 @@ NormalData normal_information(const thrust::device_vector<coord>& vertices,
 {
     NormalData nd;
 
-#if 0
+#ifdef NNDEBUG
     std::clog << "Input: " << vd.i0 << " " << vd.i1 << " " << vd.i2 << std::endl;
 
     for(const auto& i: indices)
@@ -211,6 +212,12 @@ NormalData normal_information(const thrust::device_vector<coord>& vertices,
             nd.i0 = n_idx0;
             nd.i1 = n_idx1;
             nd.i2 = n_idx2;
+
+#ifdef NDEBUG
+            std::clog << "i0: " << nd.i0 << "; n0: " << nd.n0 << '\t'
+                      << "i1: " << nd.i1 << "; n1: " << nd.n1 << '\t'
+                      << "i2: " << nd.i2 << "; n2: " << nd.n2 << '\n';
+#endif
 
             // calculate face normal
             const coord p0 = vertices[n_idx0];
@@ -301,6 +308,9 @@ void world_geometry::load(const std::string& file_name) {
 
     // Handle all normals
     __normals = __detail::build_coords(data.attrib.normals);
+
+    //__normals.reserve(__normals.size() + __normals.size() / 3);
+    __normals.reserve(1000);
 
     // Handle all Materials
     __materials = __detail::build_materials(data.materials);
