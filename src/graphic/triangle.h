@@ -8,6 +8,7 @@
 
 #include <array>
 #include <functional>
+#include <gsl/gsl>
 #include <stdexcept>
 
 #include "macros.h"
@@ -20,12 +21,7 @@ class triangle {
 public:
     CUCALL triangle() = default;
     CUCALL explicit triangle(const coord* p0, const coord* p1, const coord* p2, 
-                             const coord* normal) 
-        : __points{p0, p1, p2} 
-        , __normals{normal, normal, normal}
-        , __normal{normal}
-        , __material{nullptr}
-    {}
+                             const coord* normal) ;
 
     CUCALL triangle(const triangle&) = default;
     CUCALL triangle& operator=(const triangle&) = default;
@@ -54,25 +50,18 @@ public:
     /// Surface normal of the triangle, either returned from normal pool or calculated
     CUCALL const coord& normal() const noexcept { return *__normal;  }
 
-    CUCALL bool contains(const coord P) const noexcept {
-        const auto E0 = p1() - p0();
-        const auto E1 = p2() - p1();
-        const auto E2 = p0() - p2();
+    CUCALL bool contains(const coord P) const noexcept;
 
-        const auto C0 = P - p0();
-        const auto C1 = P - p1();
-        const auto C2 = P - p2();
+    // expects: Triangle contains P
+    // 
+    // first coefficient belongs to P0
+    // second coefficient belongs to P2
+    // third coefficient belongs to P1
+    CUCALL coord barycentric(coord P) const noexcept;
 
-        const auto N = cross(E0, E1);
+    CUCALL coord interpolated_normal(coord P) const noexcept;
 
-        return dot(N, cross(E0, C0)) >= 0 &&
-               dot(N, cross(E1, C1)) >= 0 &&
-               dot(N, cross(E2, C2)) >= 0;
-    }
-
-    CUCALL bool isValid() const noexcept { return spansArea(*__points[0], 
-                                                            *__points[1], 
-                                                            *__points[2]); }
+    CUCALL bool isValid() const noexcept;
 
 private:
     const coord* __points[3];         ///< optimization, triangles can share vertices
@@ -80,5 +69,7 @@ private:
     const coord* __normal;            ///< triangle normal 
     const phong_material* __material; ///< triangles share materials
 };
+
+#include "graphic/triangle.inl"
 
 #endif /* end of include guard: TRIANGLE_H_ESIZ1HBQ */

@@ -2,7 +2,7 @@
 #include "graphic/triangle.h"
 #include "graphic/material.h"
 
-TEST(triangle_test, construction)
+TEST(triangle, construction)
 {
     const coord P0{0, 0, 0}, P1{1, 0, 0}, P2{0, 1, 0};
     const coord n = normalize(cross(P1 - P0, P2 - P1));
@@ -45,7 +45,7 @@ TEST(triangle_test, construction)
     ASSERT_EQ(T.material(), nullptr) << "Material shall be zero";
 }
 
-TEST(triangle_test, validity)
+TEST(triangle, validity)
 {
     const coord P0{0, 0, 0}, P1{0, 0, 0}, P2{0, 0, 0};
     const coord n = normalize(cross(P1 - P0, P2 - P1));
@@ -53,32 +53,64 @@ TEST(triangle_test, validity)
     ASSERT_EQ(T.isValid(), false);
 }
 
-TEST(triangle_test, contains_point)
+TEST(triangle, contains_point)
 {
     const coord P0{0, 0, 0}, P1{1, 0, 0}, P2{0, 1, 0};
     const coord n = normalize(cross(P1 - P0, P2 - P1));
     triangle T{&P0, &P1, &P2, &n};
 
     // Edges and vertices seem not to match
-    EXPECT_EQ(T.contains(P0), true) << "P0";
-    EXPECT_EQ(T.contains(P1), true) << "P1";
-    EXPECT_EQ(T.contains(P2), true) << "P2";
+    EXPECT_TRUE(T.contains(P0)) << "P0";
+    EXPECT_TRUE(T.contains(P1)) << "P1";
+    EXPECT_TRUE(T.contains(P2)) << "P2";
 
-    EXPECT_EQ(T.contains({0.5, 0.5, 0}), true) << "0.5 0.5 0";
-    EXPECT_EQ(T.contains({0.5, 0.0, 0}), true) << "0.5 0 0";
+    EXPECT_TRUE(T.contains({0.5, 0.5, 0}))    << "0.5 0.5 0";
+    EXPECT_TRUE(T.contains({0.5, 0.0, 0}))    << "0.5 0 0";
 
-    EXPECT_EQ(T.contains({0.5, 0.5, 1}), true) << "0.5 0.5 1";
-    EXPECT_EQ(T.contains({0.5, -0.5, 0}), false) << "0.5 -0.5 0";
-    EXPECT_EQ(T.contains({-0.5, -0.5, 0}), false) << "-0.5 -0.5 0";
-    EXPECT_EQ(T.contains({-0.5, 0.5, 0}), false) << "-0.5 0.5 0";
+    EXPECT_TRUE(T.contains({0.5, 0.5, 1}))    << "0.5 0.5 1";
+    EXPECT_FALSE(T.contains({0.5, -0.5, 0}))  << "0.5 -0.5 0";
+    EXPECT_FALSE(T.contains({-0.5, -0.5, 0})) << "-0.5 -0.5 0";
+    EXPECT_FALSE(T.contains({-0.5, 0.5, 0}))  << "-0.5 0.5 0";
 
-    EXPECT_EQ(T.contains({-1, 0, 0}), false) << "-1 0 0";
-    EXPECT_EQ(T.contains({2, 0, 0}), false) << "2 0 0";
-    EXPECT_EQ(T.contains({0.5, -1, 0}), false) << "0.5 -1 0";
-    EXPECT_EQ(T.contains({0.5, 2, 0}), false) << "0.5 2 0";
+    EXPECT_FALSE(T.contains({-1, 0, 0}))      << "-1 0 0";
+    EXPECT_FALSE(T.contains({2, 0, 0}))       << "2 0 0";
+    EXPECT_FALSE(T.contains({0.5, -1, 0}))    << "0.5 -1 0";
+    EXPECT_FALSE(T.contains({0.5, 2, 0}))     << "0.5 2 0";
+    EXPECT_FALSE(T.contains({0.5, -1, 1}))    << "0.5 -1 0";
+    EXPECT_FALSE(T.contains({0.5, 2, -1}))    << "0.5 2 0";
 }
 
-TEST(triangle_test, material)
+TEST(triangle, barycentric)
+{
+    const coord P0{0, 0, 0}, P1{1, 0, 0}, P2{0, 1, 0};
+    const coord n = normalize(cross(P1 - P0, P2 - P1));
+    triangle T{&P0, &P1, &P2, &n};
+
+    // first coefficient belongs to P0
+    // second coefficient belongs to P2
+    // third coefficient belongs to P1
+    EXPECT_EQ(T.barycentric(P0), coord(1.f, 0.f, 0.f)) << "not weighed correctly";
+    EXPECT_EQ(T.barycentric(P1), coord(0.f, 0.f, 1.f)) << "not weighed correctly";
+    EXPECT_EQ(T.barycentric(P2), coord(0.f, 1.f, 0.f)) << "not weighed correctly";
+
+    EXPECT_EQ(T.barycentric(coord(0.5f, 0.5f, 0.f)), coord(0.f, 0.5f, 0.5f)) 
+              << "not weighed correctly";
+}
+
+TEST(triangle, normal_interpolation)
+{
+    const coord P0{0, 0, 0}, P1{1, 0, 0}, P2{0, 1, 0};
+    const coord n = normalize(cross(P1 - P0, P2 - P1));
+    triangle T{&P0, &P1, &P2, &n};
+
+    EXPECT_EQ(T.interpolated_normal(P0), n);
+    EXPECT_EQ(T.interpolated_normal(P1), n);
+    EXPECT_EQ(T.interpolated_normal(P2), n);
+
+    EXPECT_EQ(T.interpolated_normal(coord(0.5f, 0.5f, 0.f)), n);
+}
+
+TEST(triangle, material)
 {
     float spec[3] = {0.f, 0.f, 0.f};
     float diff[3] = {0.f, 0.f, 0.f};
