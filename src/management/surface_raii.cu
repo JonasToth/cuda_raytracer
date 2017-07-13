@@ -23,14 +23,12 @@ surface_raii::surface_raii(int width, int height)
 
 surface_raii::~surface_raii() 
 {
-    std::clog << "Destroying the surface and texture" << std::endl;
     // Destroy the opengl texture
     glDeleteTextures(1, &__texture);
 
     // Destroy all cuda and opengl connections
     cudaDestroySurfaceObject(__cuda_surface);
     cudaGraphicsUnmapResources(1, &__cuda_resource);
-
 }
 
 

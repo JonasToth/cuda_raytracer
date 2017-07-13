@@ -1,5 +1,3 @@
-#include "gtest/gtest.h"
-
 #include "graphic/kernels/utility.h"
 #include "graphic/kernels/trace.h"
 #include "graphic/kernels/shaded.h"

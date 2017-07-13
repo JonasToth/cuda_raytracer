@@ -148,8 +148,14 @@ add_test(unit_vector test_vector.x)
 # ====================== Integration tests for "real world" scenarios ====================
 
 cuda_add_executable(int_test_cube.x int_test_cube.cu
-                    ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu)
+                    ${PROJECT_SOURCE_DIR}/src/obj_io.cu
+                    ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu
+                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp)
+target_link_libraries(int_test_cube.x 
+                      glfw ${OPENGL_gl_LIBRARY}
+                      ${PNG_LIBRARIES})
+
 
 
 add_test(integration_cube 
-         COMMAND ./validate.sh int_test_cube.x cube.rgba expected_cube.rgba)
+         COMMAND ./validate.sh int_test_cube.x cube.png expected_cube.rgba)
