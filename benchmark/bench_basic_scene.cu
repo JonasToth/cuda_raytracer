@@ -18,11 +18,22 @@ static void raytrace_many_shaded(cudaSurfaceObject_t& surface, camera c,
     dim3 dimBlock(32,32);
     dim3 dimGrid((c.width() + dimBlock.x) / dimBlock.x,
                  (c.height() + dimBlock.y) / dimBlock.y);
-    black_kernel<<<dimGrid, dimBlock>>>(surface, c.width(), c.height());
     trace_many_triangles_shaded<<<dimGrid, dimBlock>>>(surface, c,
                                                        triangles, n_triangles, 
                                                        lights, n_lights,
                                                        c.width(), c.height());
+}
+
+void raytrace_many_cuda(cudaSurfaceObject_t& Surface, 
+                        const camera& c,
+                        const triangle* Triangles,
+                        int TriangleCount) {
+    dim3 dimBlock(32,32);
+    dim3 dimGrid((c.width() + dimBlock.x) / dimBlock.x,
+                 (c.height() + dimBlock.y) / dimBlock.y);
+    trace_many_triangles_with_camera<<<dimGrid, dimBlock>>>(Surface, c, 
+                                                            Triangles, TriangleCount, 
+                                                            c.width(), c.height());
 }
 
 
@@ -37,6 +48,11 @@ static void BM_SceneRender(benchmark::State& state)
              {0.0f, 0.5f, 2.5f}, {0.01f, 0.f, -1.f});
     surface_raii render_surface(win.getWidth(), win.getHeight());
     world_geometry scene("material_scene.obj");
+
+    state.counters["vertices"]  = scene.vertex_count();
+    state.counters["normals"]   = scene.normal_count();
+    state.counters["triangles"] = scene.triangle_count();
+    state.counters["lights"]    = 4;
 
     // Light Setup similar to blender (position and stuff taken from there)
     float spec[3] = {0.8f, 0.8f, 0.8f};
@@ -60,10 +76,38 @@ static void BM_SceneRender(benchmark::State& state)
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
     render_surface.render_gl_texture();
     render_surface.save_as_png("material_scene.png");
-
 }
 
-BENCHMARK(BM_SceneRender)->Unit(benchmark::kMillisecond)
+static void BM_SceneDepth(benchmark::State& state)
+{
+    window win(800, 600, "Material Scene");
+    auto w = win.getWindow();
+    glfwMakeContextCurrent(w);
+
+    camera c(win.getWidth(), win.getHeight(), 
+             {0.0f, 0.5f, 2.5f}, {0.01f, 0.f, -1.f});
+    surface_raii render_surface(win.getWidth(), win.getHeight());
+    world_geometry scene("material_scene.obj");
+
+    state.counters["vertices"]  = scene.vertex_count();
+    state.counters["normals"]   = scene.normal_count();
+    state.counters["triangles"] = scene.triangle_count();
+
+    const auto& triangles = scene.triangles();
+
+    while(state.KeepRunning())
+    {
+        raytrace_many_cuda(render_surface.getSurface(), c,
+                           triangles.data().get(), triangles.size());
+    }
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    render_surface.render_gl_texture();
+    render_surface.save_as_png("material_depth.png");
+}
+
+BENCHMARK(BM_SceneRender)->Unit(benchmark::kMicrosecond)
                          ->MinTime(1.0);
+BENCHMARK(BM_SceneDepth)->Unit(benchmark::kMicrosecond)
+                        ->MinTime(1.0);
 
 BENCHMARK_MAIN()
