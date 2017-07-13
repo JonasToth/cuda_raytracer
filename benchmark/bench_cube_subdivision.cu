@@ -58,9 +58,8 @@ auto BM_CubeRender = [](benchmark::State& state, std::string base_name)
     // Light Setup similar to blender (position and stuff taken from there)
     float spec[3] = {0.8f, 0.8f, 0.8f};
     float diff[3] = {0.8f, 0.8f, 0.8f};
-    float ambi[3] = {0.2f, 0.2f, 0.2f};
     thrust::device_vector<light_source> lights;
-    lights.push_back({phong_light(spec, diff, ambi), {0.8f, 0.9f, 1.5f}});
+    lights.push_back({phong_light(spec, diff), {0.8f, 0.9f, 1.5f}});
 
     const auto& triangles = scene.triangles();
 

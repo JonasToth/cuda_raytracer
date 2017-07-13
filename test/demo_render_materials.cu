@@ -84,13 +84,11 @@ int main(int argc, char** argv)
     // Light Setup similar to blender (position and stuff taken from there)
     float spec[3] = {0.8f, 0.8f, 0.8f};
     float diff[3] = {0.8f, 0.8f, 0.8f};
-    float ambi[3] = {0.2f, 0.2f, 0.2f};
-    float no_ambi[3] = {0.01f, 0.01f, 0.01f};
     thrust::device_vector<light_source> lights;
-    lights.push_back({phong_light(spec, diff, ambi), {-1.7f, -1.5f, -1.5f}});
-    lights.push_back({phong_light(spec, diff, ambi), { 1.3f, -1.8f, -1.2f}});
-    lights.push_back({phong_light(spec, diff, ambi), {-1.1f,  2.0f,  1.1f}});
-    lights.push_back({phong_light(spec, diff, no_ambi), {-1.5f, -1.5f,  1.5f}});
+    lights.push_back({phong_light(spec, diff), {-1.7f, -1.5f, -1.5f}});
+    lights.push_back({phong_light(spec, diff), { 1.3f, -1.8f, -1.2f}});
+    lights.push_back({phong_light(spec, diff), {-1.1f,  2.0f,  1.1f}});
+    lights.push_back({phong_light(spec, diff), {-1.5f, -1.5f,  1.5f}});
 
     std::clog << "World initialized" << std::endl;
 

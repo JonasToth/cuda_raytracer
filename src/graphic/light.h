@@ -5,15 +5,15 @@
 #include "graphic/vector.h"
 
 struct phong_light {
-    CUCALL explicit phong_light(const float spec[3], const float diff[3], const float amb[3])
-        : r{spec[0], diff[0], amb[0]}
-        , g{spec[1], diff[1], amb[1]}
-        , b{spec[2], diff[2], amb[2]}
+    CUCALL explicit phong_light(const float spec[3], const float diff[3])
+        : r{spec[0], diff[0]}
+        , g{spec[1], diff[1]}
+        , b{spec[2], diff[2]}
     {}
 
-    phong_param r;
-    phong_param g;
-    phong_param b;
+    phong_param_light r;
+    phong_param_light g;
+    phong_param_light b;
 };
 
 

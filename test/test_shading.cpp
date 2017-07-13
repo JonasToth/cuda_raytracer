@@ -108,14 +108,14 @@ TEST(shading, comple_shade_one_channel)
     float diff[3] = {0.5f, 0.5f, 0.5f};
     float ambi[3] = {0.5f, 0.5f, 0.5f};
     const phong_material m(spec, diff, ambi, 1.f);
-    const light_source ls = {phong_light(spec, diff, ambi), coord(2.f, 0.0f, 1.f)};
+    const light_source ls = {phong_light(spec, diff), coord(2.f, 0.0f, 1.f)};
 
     //const camera c(640, 480, {1.f, 1.f, 1.f}, {-1.f, -1.f, -1.f});
     const intersect hit(1.f, coord(0.f, 0.f, 0.f), coord(0.f, 0.f, 1.f));
 
     for(float x_dir = 2.f; x_dir > 0.f; x_dir-= 0.5f)
     {
-        const auto lv = phong_shading(&m, &ls, 1ul, normalize(coord(x_dir, 0.f, -1.f)), hit);
+        const auto lv = phong_shading(&m, 0.1, &ls, 1ul, normalize(coord(x_dir, 0.f, -1.f)), hit);
         EXPECT_GT(lv.r, 0.f) << "Light must be there";
         EXPECT_GT(lv.g, 0.f) << "Light must be there";
         EXPECT_GT(lv.b, 0.f) << "Light must be there";

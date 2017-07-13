@@ -17,9 +17,9 @@ struct phong_material {
     CUCALL void shininess(float s) noexcept { alpha = s; }
     CUCALL float shininess() const noexcept { return alpha; }
 
-    phong_param r;        ///< red channel
-    phong_param g;        ///< grenn channel
-    phong_param b;        ///< blue channel
+    phong_param_material r;        ///< red channel
+    phong_param_material g;        ///< grenn channel
+    phong_param_material b;        ///< blue channel
     float alpha;    ///< shininess constant
 };
 

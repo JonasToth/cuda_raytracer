@@ -47,7 +47,7 @@ __global__ void trace_many_triangles_shaded(cudaSurfaceObject_t surface, camera 
 
         if(nearest != nullptr) {
             const phong_material* hit_material = nearest->material();
-            const auto float_color = phong_shading(hit_material,
+            const auto float_color = phong_shading(hit_material, 0.1,
                                                    lights, n_lights,
                                                    normalize(r.direction), nearest_hit);
 

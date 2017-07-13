@@ -86,13 +86,11 @@ int main(int argc, char** argv)
     // Light Setup similar to blender (position and stuff taken from there)
     float spec[3] = {0.8f, 0.8f, 0.8f};
     float diff[3] = {0.8f, 0.8f, 0.8f};
-    float ambi[3] = {0.2f, 0.2f, 0.2f};
-    float no_ambi[3] = {0.01f, 0.01f, 0.01f};
     thrust::device_vector<light_source> lights;
-    lights.push_back({phong_light(spec, diff, ambi), coord(0.8f, 0.9f, 1.5f)});
-    lights.push_back({phong_light(spec, diff, no_ambi), coord(1.7f, -1.1f, -0.3f)});
-    lights.push_back({phong_light(spec, diff, no_ambi), coord(-1.3f, 0.8f, 2.0f)});
-    lights.push_back({phong_light(spec, diff, no_ambi), coord(-1.7f, -1.7f, 0.8f)});
+    lights.push_back({phong_light(spec, diff), coord(0.8f, 0.9f, 1.5f)});
+    lights.push_back({phong_light(spec, diff), coord(1.7f, -1.1f, -0.3f)});
+    lights.push_back({phong_light(spec, diff), coord(-1.3f, 0.8f, 2.0f)});
+    lights.push_back({phong_light(spec, diff), coord(-1.7f, -1.7f, 0.8f)});
 
     std::clog << "World initialized" << std::endl;
 
@@ -112,13 +110,13 @@ int main(int argc, char** argv)
 
 
     render_lambda();
-    /*while(!glfwWindowShouldClose(w)) {
+    while(!glfwWindowShouldClose(w)) {
         glfwWaitEvents();
         handle_keys(w, c);
         if(camera_changed)
             render_lambda();
     } 
-    */
+    
     input_manager::instance().clear();
     return 0;
 }

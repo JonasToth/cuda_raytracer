@@ -57,13 +57,11 @@ static void BM_SceneRender(benchmark::State& state)
     // Light Setup similar to blender (position and stuff taken from there)
     float spec[3] = {0.8f, 0.8f, 0.8f};
     float diff[3] = {0.8f, 0.8f, 0.8f};
-    float ambi[3] = {0.2f, 0.2f, 0.2f};
-    float no_ambi[3] = {0.01f, 0.01f, 0.01f};
     thrust::device_vector<light_source> lights;
-    lights.push_back({phong_light(spec, diff, ambi), {0.8f, 0.9f, 1.5f}});
-    lights.push_back({phong_light(spec, diff, no_ambi), {1.7f, -1.1f, -0.3f}});
-    lights.push_back({phong_light(spec, diff, no_ambi), {-1.3f, 0.8f, 2.0f}});
-    lights.push_back({phong_light(spec, diff, no_ambi), {-1.7f, -1.7f, 0.8f}});
+    lights.push_back({phong_light(spec, diff), {0.8f, 0.9f, 1.5f}});
+    lights.push_back({phong_light(spec, diff), {1.7f, -1.1f, -0.3f}});
+    lights.push_back({phong_light(spec, diff), {-1.3f, 0.8f, 2.0f}});
+    lights.push_back({phong_light(spec, diff), {-1.7f, -1.7f, 0.8f}});
 
     const auto& triangles = scene.triangles();
 

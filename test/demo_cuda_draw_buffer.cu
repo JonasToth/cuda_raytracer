@@ -247,12 +247,10 @@ TEST(cuda_draw, draw_phong_shaded)
     thrust::device_vector<light_source> lights;
     float spec[3] = {0.2f, 0.4f, 0.2f};
     float diff[3] = {0.1f, 0.9f, 0.7f};
-    float ambi[3] = {0.1f, 0.1f, 0.1f};
-    //light_source ls = ;
-    lights.push_back({phong_light(spec, diff, ambi), {-1.7f, -1.5f, -1.5f}});
-    lights.push_back({phong_light(spec, diff, ambi), { 1.3f, -1.8f, -1.2f}});
-    lights.push_back({phong_light(spec, diff, ambi), {-1.1f,  2.0f,  1.1f}});
-    lights.push_back({phong_light(spec, diff, ambi), {-1.5f, -1.5f,  1.5f}});
+    lights.push_back({phong_light(spec, diff), {-1.7f, -1.5f, -1.5f}});
+    lights.push_back({phong_light(spec, diff), { 1.3f, -1.8f, -1.2f}});
+    lights.push_back({phong_light(spec, diff), {-1.1f,  2.0f,  1.1f}});
+    lights.push_back({phong_light(spec, diff), {-1.5f, -1.5f,  1.5f}});
 
     const auto& triangles = world.triangles();
 

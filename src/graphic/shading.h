@@ -25,7 +25,7 @@ CUCALL ALWAYS_INLINE inline float specular(float ks, float is, float dot_product
 
 /// Calculate the whole shading formular for one channel
 /// This is C-Style, since it must run on the gpu as well, therefor no nice vectors
-CUCALL color phong_shading(const phong_material* m, 
+CUCALL color phong_shading(const phong_material* m, float ambient_constant,
                            const light_source* lights, std::size_t light_count,
                            const coord& ray_direction, const intersect& hit);
 
