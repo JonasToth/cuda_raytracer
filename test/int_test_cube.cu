@@ -27,7 +27,7 @@ int main(int argc, char** argv)
         std::cerr << "Give the ouputfile as argument, e.g. cube.png" << std::endl;
         return 1;
     }
-    window win(800, 600, "Cube Scene");
+    window win(800, 600, "Cube Scene", false);
     auto w = win.getWindow();
     glfwMakeContextCurrent(w);
 
