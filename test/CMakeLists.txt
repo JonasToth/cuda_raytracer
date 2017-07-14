@@ -4,6 +4,59 @@ enable_testing()
 find_package(GTest REQUIRED) 
 include_directories(${GTEST_INCLUDE_DIRS}) 
 
+
+# ======================== DEMOING ===================================
+
+add_custom_target(demo_files
+    # infrastructure
+    COMMAND mkdir -p ${PROJECT_BINARY_DIR}/test/demo_input/
+
+    # demo files
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.obj ${PROJECT_BINARY_DIR}/test/demo_input/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.mtl ${PROJECT_BINARY_DIR}/test/demo_input/
+)
+
+
+SET(DEMOS
+    cuda_draw_buffer
+    render_materials
+    draw_mini
+    )
+
+
+FOREACH(demo IN LISTS DEMOS)
+    cuda_add_executable(demo_${demo}.x demo_${demo}.cu)
+    target_link_libraries(demo_${demo}.x 
+                          management 
+                          ${GTEST_MAIN} ${GTEST_LIBRARIES} 
+                          pthread 
+                          glfw ${OPENGL_gl_LIBRARY}
+                          ${PNG_LIBRARIES})
+    add_dependencies(demo_${demo}.x demo_files)
+ENDFOREACH(demo)
+
+
+# =============================== UNIT TESTING ===================================
+
+SET(UNITTESTS_CUDA
+    build_cuda
+    world
+    surface_raii
+    )
+
+FOREACH(cuda_unit IN LISTS UNITTESTS_CUDA)
+    cuda_add_executable(test_${cuda_unit}.x test_${cuda_unit}.cu)
+    target_link_libraries(test_${cuda_unit}.x 
+                          management
+                          ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
+    add_test(unit_${cuda_unit} test_${cuda_unit}.x)
+ENDFOREACH(cuda_unit)
+
+# additional stuff, that is not done for all tests, but for some
+target_link_libraries(test_surface_raii.x 
+                      ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread 
+                      glfw ${OPENGL_gl_LIBRARY} ${PNG_LIBRARIES})
+
 # symbolic links to all test files
 add_custom_target(example_files
     # object files and materials necessary as testcases
@@ -29,47 +82,6 @@ add_custom_target(example_files
 )
 
 
-# ======================== DEMOING ===================================
-
-SET(DEMOS
-    cuda_draw_buffer
-    render_materials
-    draw_mini
-    )
-
-
-FOREACH(demo IN LISTS DEMOS)
-    cuda_add_executable(demo_${demo}.x demo_${demo}.cu)
-    target_link_libraries(demo_${demo}.x 
-                          management 
-                          ${GTEST_MAIN} ${GTEST_LIBRARIES} 
-                          pthread 
-                          glfw ${OPENGL_gl_LIBRARY}
-                          ${PNG_LIBRARIES})
-    add_dependencies(demo_${demo}.x example_files)
-ENDFOREACH(demo)
-
-
-# =============================== UNIT TESTING ===================================
-
-SET(UNITTESTS_CUDA
-    build_cuda
-    world
-    surface_raii
-    )
-
-FOREACH(cuda_unit IN LISTS UNITTESTS_CUDA)
-    cuda_add_executable(test_${cuda_unit}.x test_${cuda_unit}.cu)
-    target_link_libraries(test_${cuda_unit}.x 
-                          management
-                          ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
-    add_test(unit_${cuda_unit} test_${cuda_unit}.x)
-ENDFOREACH(cuda_unit)
-
-# additional stuff, that is not done for all tests, but for some
-target_link_libraries(test_surface_raii.x 
-                      ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread 
-                      glfw ${OPENGL_gl_LIBRARY} ${PNG_LIBRARIES})
 add_dependencies(test_world.x example_files)
 
 

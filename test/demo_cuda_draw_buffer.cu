@@ -7,6 +7,7 @@
 #include "management/input_manager.h"
 #include "management/window.h"
 #include "management/world.h"
+#include "util/demos/fps_demo.h"
 #include "util/kernel_launcher/world_shading.h"
 
 #include <iostream>
