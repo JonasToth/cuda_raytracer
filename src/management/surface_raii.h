@@ -8,7 +8,8 @@
 #include <vector>
 
 /// Controls the output to the screen
-class surface_raii {
+class surface_raii
+{
 public:
     surface_raii(int width, int height);
     ~surface_raii();

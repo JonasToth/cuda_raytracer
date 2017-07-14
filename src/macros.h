@@ -7,7 +7,7 @@
 #define CUCALL __host__ __device__
 #define LIB thrust
 #else
-#define CUCALL 
+#define CUCALL
 #define LIB std
 #endif
 

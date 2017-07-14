@@ -1,8 +1,8 @@
 #ifndef INPUT_MANAGER_H_ODDJW5OV
 #define INPUT_MANAGER_H_ODDJW5OV
 
-#include <unordered_map>
 #include <GLFW/glfw3.h>
+#include <unordered_map>
 
 /// Singleton, that manages the input from glfw
 class input_manager
@@ -33,8 +33,8 @@ private:
     input_manager() = default;
 
     std::unordered_map<int, bool> __key_mapping;
-    double __x_pos  = 0.; ///< stores current cursor x position
-    double __y_pos  = 0.; ///< stores current cursor y position
+    double __x_pos = 0.;  ///< stores current cursor x position
+    double __y_pos = 0.;  ///< stores current cursor y position
     double __x_diff = 0.; ///< stores difference to last cursor x position
     double __y_diff = 0.; ///< stores difference to last cursor y position
 };

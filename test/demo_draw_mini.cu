@@ -6,8 +6,8 @@
 #include "util/demos/fps_demo.h"
 #include "util/kernel_launcher/world_shading.h"
 
-#include <thread>
 #include <chrono>
+#include <thread>
 
 int main(int argc, char** argv)
 {
@@ -18,12 +18,11 @@ int main(int argc, char** argv)
     glfwSetKeyCallback(w, register_key_press);
 
     // Camera Setup similar to blender
-    camera c(win.getWidth(), win.getHeight(), 
-             {-2.5f, 3.f, 3.f}, {0.0f, -0.1f, -1.f});
+    camera c(win.getWidth(), win.getHeight(), {-2.5f, 3.f, 3.f}, {0.0f, -0.1f, -1.f});
     surface_raii render_surface(win.getWidth(), win.getHeight());
 
     std::clog << "Setup Rendering Platform initialized" << std::endl;
-    
+
     world_geometry scene("mini_cooper.obj");
 
     // Light Setup similar to blender (position and stuff taken from there)
@@ -50,15 +49,13 @@ int main(int argc, char** argv)
 
 
     render_lambda();
-    while(!glfwWindowShouldClose(w)) {
+    while (!glfwWindowShouldClose(w)) {
         glfwWaitEvents();
         camera_changed = handle_keys(w, c);
-        if(camera_changed)
+        if (camera_changed)
             render_lambda();
-    } 
-    
+    }
+
     input_manager::instance().clear();
     return 0;
 }
-
-

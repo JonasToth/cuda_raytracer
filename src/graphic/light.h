@@ -7,10 +7,11 @@
 struct phong_light {
     CUCALL phong_light() = default;
     CUCALL explicit phong_light(const float spec[3], const float diff[3])
-        : r{spec[0], diff[0]}
-        , g{spec[1], diff[1]}
-        , b{spec[2], diff[2]}
-    {}
+      : r{spec[0], diff[0]}
+      , g{spec[1], diff[1]}
+      , b{spec[2], diff[2]}
+    {
+    }
     CUCALL phong_light(const phong_light&) = default;
     CUCALL phong_light& operator=(const phong_light&) = default;
 
@@ -23,9 +24,10 @@ struct phong_light {
 struct light_source {
     CUCALL light_source() = default;
     CUCALL explicit light_source(phong_light l, coord p)
-        : light{l}
-        , position{p}
-    {}
+      : light{l}
+      , position{p}
+    {
+    }
 
     CUCALL light_source(const light_source&) = default;
     CUCALL light_source& operator=(const light_source&) = default;

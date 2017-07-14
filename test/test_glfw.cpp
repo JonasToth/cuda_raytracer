@@ -4,27 +4,30 @@
 
 #include "management/window.h"
 
-TEST(GLFW, init) {
+TEST(GLFW, init)
+{
     auto InitVal = glfwInit();
-    auto _ = gsl::finally([](){ glfwTerminate(); });
+    auto _ = gsl::finally([]() { glfwTerminate(); });
     ASSERT_NE(InitVal, 0) << "Could not initialize GLFW";
 
     glfwTerminate();
 }
 
-TEST(GLFW, window) {
+TEST(GLFW, window)
+{
     auto InitVal = glfwInit();
-    auto A = gsl::finally([](){ glfwTerminate(); });
+    auto A = gsl::finally([]() { glfwTerminate(); });
     ASSERT_NE(InitVal, 0) << "Could not initialize GLFW";
 
     gsl::owner<GLFWwindow*> Window = glfwCreateWindow(640, 480, "Test", nullptr, nullptr);
-    auto B = gsl::finally([Window](){ glfwDestroyWindow(Window); });
+    auto B = gsl::finally([Window]() { glfwDestroyWindow(Window); });
     ASSERT_NE(Window, nullptr) << "Window not created";
 
     glfwTerminate();
 }
 
-TEST(GLFW, wrapper) {
+TEST(GLFW, wrapper)
+{
     window w(640, 480, "Title");
     ASSERT_NE(w.getWindow(), nullptr) << "Could not create window";
 

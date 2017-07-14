@@ -55,7 +55,7 @@ SpacesInCStyleCastParentheses: false
 SpacesInContainerLiterals: true
 SpacesInParentheses: false
 SpacesInSquareBrackets: false
-Standard: Cpp14
+Standard: Cpp11
 SortIncludes: true
 TabWidth: 4
 UseTab: Never

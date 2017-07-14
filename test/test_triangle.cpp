@@ -1,6 +1,6 @@
-#include "gtest/gtest.h"
-#include "graphic/triangle.h"
 #include "graphic/material.h"
+#include "graphic/triangle.h"
+#include "gtest/gtest.h"
 
 TEST(triangle, construction)
 {
@@ -64,20 +64,20 @@ TEST(triangle, contains_point)
     EXPECT_TRUE(T.contains(P1)) << "P1";
     EXPECT_TRUE(T.contains(P2)) << "P2";
 
-    EXPECT_TRUE(T.contains({0.5, 0.5, 0}))    << "0.5 0.5 0";
-    EXPECT_TRUE(T.contains({0.5, 0.0, 0}))    << "0.5 0 0";
+    EXPECT_TRUE(T.contains({0.5, 0.5, 0})) << "0.5 0.5 0";
+    EXPECT_TRUE(T.contains({0.5, 0.0, 0})) << "0.5 0 0";
 
-    EXPECT_TRUE(T.contains({0.5, 0.5, 1}))    << "0.5 0.5 1";
-    EXPECT_FALSE(T.contains({0.5, -0.5, 0}))  << "0.5 -0.5 0";
+    EXPECT_TRUE(T.contains({0.5, 0.5, 1})) << "0.5 0.5 1";
+    EXPECT_FALSE(T.contains({0.5, -0.5, 0})) << "0.5 -0.5 0";
     EXPECT_FALSE(T.contains({-0.5, -0.5, 0})) << "-0.5 -0.5 0";
-    EXPECT_FALSE(T.contains({-0.5, 0.5, 0}))  << "-0.5 0.5 0";
+    EXPECT_FALSE(T.contains({-0.5, 0.5, 0})) << "-0.5 0.5 0";
 
-    EXPECT_FALSE(T.contains({-1, 0, 0}))      << "-1 0 0";
-    EXPECT_FALSE(T.contains({2, 0, 0}))       << "2 0 0";
-    EXPECT_FALSE(T.contains({0.5, -1, 0}))    << "0.5 -1 0";
-    EXPECT_FALSE(T.contains({0.5, 2, 0}))     << "0.5 2 0";
-    EXPECT_FALSE(T.contains({0.5, -1, 1}))    << "0.5 -1 0";
-    EXPECT_FALSE(T.contains({0.5, 2, -1}))    << "0.5 2 0";
+    EXPECT_FALSE(T.contains({-1, 0, 0})) << "-1 0 0";
+    EXPECT_FALSE(T.contains({2, 0, 0})) << "2 0 0";
+    EXPECT_FALSE(T.contains({0.5, -1, 0})) << "0.5 -1 0";
+    EXPECT_FALSE(T.contains({0.5, 2, 0})) << "0.5 2 0";
+    EXPECT_FALSE(T.contains({0.5, -1, 1})) << "0.5 -1 0";
+    EXPECT_FALSE(T.contains({0.5, 2, -1})) << "0.5 2 0";
 }
 
 TEST(triangle, barycentric)
@@ -93,8 +93,8 @@ TEST(triangle, barycentric)
     EXPECT_EQ(T.barycentric(P1), coord(0.f, 0.f, 1.f)) << "not weighed correctly";
     EXPECT_EQ(T.barycentric(P2), coord(0.f, 1.f, 0.f)) << "not weighed correctly";
 
-    EXPECT_EQ(T.barycentric(coord(0.5f, 0.5f, 0.f)), coord(0.f, 0.5f, 0.5f)) 
-              << "not weighed correctly";
+    EXPECT_EQ(T.barycentric(coord(0.5f, 0.5f, 0.f)), coord(0.f, 0.5f, 0.5f))
+        << "not weighed correctly";
 }
 
 TEST(triangle, normal_interpolation)
@@ -109,9 +109,8 @@ TEST(triangle, normal_interpolation)
 
     EXPECT_EQ(T.interpolated_normal(coord(0.5f, 0.5f, 0.f)), n);
 
-    coord n0(normalize({ 0.0f, 0.0f,  1.0f})), 
-          n1(normalize({-0.1f, 0.0f,  1.0f})), 
-          n2(normalize({ 0.1f, 0.0f,  1.0f}));
+    coord n0(normalize({0.0f, 0.0f, 1.0f})), n1(normalize({-0.1f, 0.0f, 1.0f})),
+        n2(normalize({0.1f, 0.0f, 1.0f}));
     T.p0_normal(&n0);
     T.p1_normal(&n1);
     T.p2_normal(&n2);

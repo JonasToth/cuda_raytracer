@@ -1,13 +1,14 @@
 
-CUCALL inline triangle::triangle(const coord* p0, const coord* p1, const coord* p2, 
-                                 const coord* normal) 
-        : __points{p0, p1, p2} 
-        , __normals{normal, normal, normal}
-        , __normal{normal}
-        , __material{nullptr}
-    {}
+CUCALL inline triangle::triangle(const coord* p0, const coord* p1, const coord* p2,
+                                 const coord* normal)
+  : __points{p0, p1, p2}
+  , __normals{normal, normal, normal}
+  , __normal{normal}
+  , __material{nullptr}
+{
+}
 
-CUCALL inline bool triangle::contains(const coord P) const noexcept 
+CUCALL inline bool triangle::contains(const coord P) const noexcept
 {
     const auto E0 = p1() - p0();
     const auto E1 = p2() - p1();
@@ -19,8 +20,7 @@ CUCALL inline bool triangle::contains(const coord P) const noexcept
 
     const auto N = cross(E0, E1);
 
-    return dot(N, cross(E0, C0)) >= 0 &&
-           dot(N, cross(E1, C1)) >= 0 &&
+    return dot(N, cross(E0, C0)) >= 0 && dot(N, cross(E1, C1)) >= 0 &&
            dot(N, cross(E2, C2)) >= 0;
 }
 
@@ -41,8 +41,7 @@ CUCALL inline coord triangle::barycentric(const coord P) const noexcept
     const float d20 = dot(v2, v0);
     const float d21 = dot(v2, v1);
 
-    const float v = den * (d11 * d20 - d01 * d21),
-                w = den * (d00 * d21 - d01 * d20),
+    const float v = den * (d11 * d20 - d01 * d21), w = den * (d00 * d21 - d01 * d20),
                 u = 1.f - v - w;
     const coord bary(v, w, u);
 
@@ -67,9 +66,8 @@ CUCALL inline coord triangle::interpolated_normal(const coord P) const noexcept
     // first coeff  -> P0
     // second coeff -> P2
     // third coeff  -> P1
-    const auto intp_n = normalize(bary.x * p0_normal() + 
-                                  bary.y * p2_normal() + 
-                                  bary.z * p1_normal());
+    const auto intp_n =
+        normalize(bary.x * p0_normal() + bary.y * p2_normal() + bary.z * p1_normal());
 
 #ifndef __CUDACC__
     Ensures(std::fabs(norm(intp_n) - 1.f) < 0.00001f);
@@ -77,9 +75,7 @@ CUCALL inline coord triangle::interpolated_normal(const coord P) const noexcept
     return intp_n;
 }
 
-CUCALL inline bool triangle::isValid() const noexcept 
-{ 
-    return spansArea(*__points[0], *__points[1], *__points[2]); 
+CUCALL inline bool triangle::isValid() const noexcept
+{
+    return spansArea(*__points[0], *__points[1], *__points[2]);
 }
-
-

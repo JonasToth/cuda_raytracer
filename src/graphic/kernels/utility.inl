@@ -1,5 +1,6 @@
 /// Surface gets all black
-__global__ void black_kernel(cudaSurfaceObject_t surface, int width, int height) {
+__global__ void black_kernel(cudaSurfaceObject_t surface, int width, int height)
+{
     const auto x = blockIdx.x * blockDim.x + threadIdx.x;
     const auto y = blockIdx.y * blockDim.y + threadIdx.y;
 
@@ -9,7 +10,7 @@ __global__ void black_kernel(cudaSurfaceObject_t surface, int width, int height)
     black.z = 0;
     black.w = 255;
 
-    if(x < width && y < height)
+    if (x < width && y < height)
         surf2Dwrite(black, surface, x * sizeof(black), y);
 }
 
@@ -19,8 +20,7 @@ __global__ void stupid_colors(cudaSurfaceObject_t surface, int width, int height
     auto x = blockIdx.x * blockDim.x + threadIdx.x;
     auto y = blockIdx.y * blockDim.y + threadIdx.y;
 
-    if(x < width && y < height)
-    {
+    if (x < width && y < height) {
         uchar4 color;
         char new_t = t;
         color.x = x - new_t;

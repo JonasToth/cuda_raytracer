@@ -18,7 +18,7 @@ TEST(phong_material, basic_properties)
 
     EXPECT_FLOAT_EQ(m.r.ambient_reflection(), 0.f) << "Wrong ambient reflection";
     EXPECT_FLOAT_EQ(m.r.ka, 0.f) << "Wrong ambient reflection";
-    
+
     // green
     EXPECT_FLOAT_EQ(m.g.specular_reflection(), 0.f) << "Wrong specular reflection";
     EXPECT_FLOAT_EQ(m.g.ks, 0.f) << "Wrong specular reflection";
@@ -65,7 +65,7 @@ TEST(phong_material, property_change)
 
     EXPECT_FLOAT_EQ(m.r.ambient_reflection(), 10.f) << "Wrong ambient reflection";
     EXPECT_FLOAT_EQ(m.r.ka, 10.f) << "Wrong ambient reflection";
-    
+
     EXPECT_FLOAT_EQ(m.shininess(), 10.f) << "Wrong shininess factor";
     EXPECT_FLOAT_EQ(m.alpha, 10.f) << "Wrong shininess factor";
 }

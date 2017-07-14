@@ -1,5 +1,5 @@
-#include "gtest/gtest.h"
 #include "graphic/vector.h"
+#include "gtest/gtest.h"
 
 TEST(vector, construction)
 {
@@ -19,20 +19,20 @@ TEST(vector, construction)
 
 TEST(vector, products)
 {
-    coord V1{1, 0, 0}, V2{0,1,0}, V3{0,0,1};
+    coord V1{1, 0, 0}, V2{0, 1, 0}, V3{0, 0, 1};
 
     // DOT Product will be zero if vectors are perpendicular
-    ASSERT_EQ(dot(V1,V2), 0);
-    ASSERT_EQ(dot(V2,V3), 0);
-    ASSERT_EQ(dot(V1,V3), 0);
+    ASSERT_EQ(dot(V1, V2), 0);
+    ASSERT_EQ(dot(V2, V3), 0);
+    ASSERT_EQ(dot(V1, V3), 0);
 
     // Basic check if the result is sane
-    ASSERT_EQ(dot(V1,V1), 1);
-    ASSERT_EQ(dot(V2,V2), 1);
-    ASSERT_EQ(dot(V3,V3), 1);
+    ASSERT_EQ(dot(V1, V1), 1);
+    ASSERT_EQ(dot(V2, V2), 1);
+    ASSERT_EQ(dot(V3, V3), 1);
 
     // Crossproduct results in perpendicular vector
-    auto E3 = cross(V1,V2);
+    auto E3 = cross(V1, V2);
     ASSERT_EQ(E3.x, 0);
     ASSERT_EQ(E3.y, 0);
     ASSERT_EQ(E3.z, 1);
@@ -85,12 +85,9 @@ TEST(vector, rotation)
 {
     float R[9] = {0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f};
     coord Vectors[] = {
-        {1.f, 0.f, 0.f}, {0.f, 1.f, 0.f}, {0.f, 0.f, 1.f},
-        {10.5f, -12.f, 14.f}
-    };
+        {1.f, 0.f, 0.f}, {0.f, 1.f, 0.f}, {0.f, 0.f, 1.f}, {10.5f, -12.f, 14.f}};
 
-    for(const auto& v: Vectors)
-    {
+    for (const auto& v : Vectors) {
         rotation({0.f, 0.f, 1.f}, v, R);
         std::clog << R[0] << ',' << R[1] << ',' << R[2] << std::endl;
         std::clog << R[3] << ',' << R[4] << ',' << R[5] << std::endl;

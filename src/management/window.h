@@ -2,12 +2,13 @@
 #define WINDOW_H_VVLXZ4IZ
 
 
-#include <gsl/gsl>
 #include <GLFW/glfw3.h>
+#include <gsl/gsl>
 #include <string>
 
 
-class window {
+class window
+{
 public:
     window(int width, int height, const std::string& title);
     ~window();

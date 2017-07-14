@@ -5,22 +5,22 @@
 
 /// Implement the phong reflection model
 struct phong_material {
-    
-    CUCALL explicit phong_material(const float spec[3], const float diff[3], const float amb[3], 
-                                   float shininess)
-        : r{spec[0], diff[0], amb[0]}
-        , g{spec[1], diff[1], amb[1]}
-        , b{spec[2], diff[2], amb[2]}
-        , alpha{shininess}
-    {}
+    CUCALL explicit phong_material(const float spec[3], const float diff[3],
+                                   const float amb[3], float shininess)
+      : r{spec[0], diff[0], amb[0]}
+      , g{spec[1], diff[1], amb[1]}
+      , b{spec[2], diff[2], amb[2]}
+      , alpha{shininess}
+    {
+    }
 
     CUCALL void shininess(float s) noexcept { alpha = s; }
     CUCALL float shininess() const noexcept { return alpha; }
 
-    phong_param_material r;        ///< red channel
-    phong_param_material g;        ///< grenn channel
-    phong_param_material b;        ///< blue channel
-    float alpha;    ///< shininess constant
+    phong_param_material r; ///< red channel
+    phong_param_material g; ///< grenn channel
+    phong_param_material b; ///< blue channel
+    float alpha;            ///< shininess constant
 };
 
 

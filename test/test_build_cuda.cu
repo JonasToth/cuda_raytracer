@@ -1,33 +1,35 @@
 #include "gtest/gtest.h"
-#include <gsl/gsl>
 #include <cuda.h>
 #include <cuda_runtime.h>
+#include <gsl/gsl>
 
-#include <thrust/device_malloc.h>
+#include <thrust/copy.h>
 #include <thrust/device_free.h>
+#include <thrust/device_malloc.h>
 #include <thrust/device_new.h>
 #include <thrust/device_vector.h>
 #include <thrust/fill.h>
 #include <thrust/generate.h>
 #include <thrust/host_vector.h>
 #include <thrust/sort.h>
-#include <thrust/copy.h>
 
-#include <algorithm>
 #include "macros.h"
+#include <algorithm>
 
 /** @file test/test_build_cuda.cpp
  * Test if cuda is found on the system and is useable on the machine.
  */
 
-TEST(CUDA, init) {
+TEST(CUDA, init)
+{
     int NbrDevices;
     cudaGetDeviceCount(&NbrDevices);
     ASSERT_GT(NbrDevices, 0) << "No Cuda devices were found";
 }
 
-// copied from 
-TEST(CUDA, thrust_call) {
+// copied from
+TEST(CUDA, thrust_call)
+{
     constexpr std::size_t VectorSize = 10000000u;
 
     // generate many random numbers
@@ -39,7 +41,7 @@ TEST(CUDA, thrust_call) {
     thrust::device_vector<int> DVec = HVec;
     ASSERT_EQ(DVec.size(), VectorSize) << "Device Vector not created with correct size";
 
-    // sort data on the device 
+    // sort data on the device
     thrust::sort(DVec.begin(), DVec.end());
     ASSERT_TRUE(thrust::is_sorted(DVec.begin(), DVec.end())) << "Sorted on GPU";
 
@@ -49,43 +51,64 @@ TEST(CUDA, thrust_call) {
 }
 
 struct ASimpleClass {
-    __host__ __device__ ASimpleClass(int value) : value{value} {}
+    __host__ __device__ ASimpleClass(int value)
+      : value{value}
+    {
+    }
     int value;
 };
 
 struct SimpleClass {
-    __host__ __device__ SimpleClass(ASimpleClass* common_constant) 
-        : value{0}, common_constant{common_constant} {}
+    __host__ __device__ SimpleClass(ASimpleClass* common_constant)
+      : value{0}
+      , common_constant{common_constant}
+    {
+    }
 
-    __host__ __device__ SimpleClass(int v, ASimpleClass* common_constant) 
-        : value{v}, common_constant{common_constant} {}
+    __host__ __device__ SimpleClass(int v, ASimpleClass* common_constant)
+      : value{v}
+      , common_constant{common_constant}
+    {
+    }
 
-    __host__ __device__ SimpleClass(const SimpleClass& o) : value{o.value}, common_constant{o.common_constant} {}
+    __host__ __device__ SimpleClass(const SimpleClass& o)
+      : value{o.value}
+      , common_constant{o.common_constant}
+    {
+    }
 
     int value;
     ASimpleClass* common_constant;
 };
 
 struct Square {
-    CUCALL SimpleClass operator()(const SimpleClass& o) { return SimpleClass{o.value * o.value + o.common_constant->value, o.common_constant}; }
+    CUCALL SimpleClass operator()(const SimpleClass& o)
+    {
+        return SimpleClass{o.value * o.value + o.common_constant->value, o.common_constant};
+    }
 };
 
-TEST(CUDA, thrust_with_object) {
-    const auto cvptr= thrust::device_malloc<ASimpleClass>(1);
-    const auto csptr= thrust::device_new(cvptr, ASimpleClass{42});
+TEST(CUDA, thrust_with_object)
+{
+    const auto cvptr = thrust::device_malloc<ASimpleClass>(1);
+    const auto csptr = thrust::device_new(cvptr, ASimpleClass{42});
 
     const auto vptr = thrust::device_malloc<SimpleClass>(100);
     const auto sptr = thrust::device_new(vptr, SimpleClass{csptr.get()}, 100);
 
-    auto _ = gsl::finally([&cvptr,&vptr]() { thrust::device_free(cvptr); thrust::device_free(vptr); });
+    auto _ = gsl::finally([&cvptr, &vptr]() {
+        thrust::device_free(cvptr);
+        thrust::device_free(vptr);
+    });
 
     thrust::fill(sptr, sptr + 100, SimpleClass{15, csptr.get()});
     thrust::transform(sptr, sptr + 100, sptr, Square{});
 }
 
-TEST(CUDA, thrust_with_vector) {
-    const auto cvptr= thrust::device_malloc<ASimpleClass>(1);
-    const auto csptr= thrust::device_new(cvptr, ASimpleClass{42});
+TEST(CUDA, thrust_with_vector)
+{
+    const auto cvptr = thrust::device_malloc<ASimpleClass>(1);
+    const auto csptr = thrust::device_new(cvptr, ASimpleClass{42});
     auto _ = gsl::finally([&cvptr]() { thrust::device_free(cvptr); });
 
     thrust::device_vector<SimpleClass> vec(100, SimpleClass{15, csptr.get()});

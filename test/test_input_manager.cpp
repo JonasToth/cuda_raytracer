@@ -1,5 +1,5 @@
-#include "gtest/gtest.h"
 #include "management/input_manager.h"
+#include "gtest/gtest.h"
 #include <GLFW/glfw3.h>
 
 TEST(input_manager, key_handling)
@@ -28,7 +28,7 @@ TEST(input_manager, mouse_handling)
     EXPECT_DOUBLE_EQ(m.mouse_y(), 0.f) << "Bad initial mouse position";
     EXPECT_DOUBLE_EQ(m.mouse_diff_x(), 0.f) << "Bad initial mouse position";
     EXPECT_DOUBLE_EQ(m.mouse_diff_y(), 0.f) << "Bad initial mouse position";
-    
+
     m.move_mouse(100., 200.);
     EXPECT_DOUBLE_EQ(m.mouse_x(), 100.) << "Movement not accounted";
     EXPECT_DOUBLE_EQ(m.mouse_y(), 200.) << "Movement not accounted";

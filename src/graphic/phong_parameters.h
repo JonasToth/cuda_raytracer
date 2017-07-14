@@ -7,16 +7,17 @@
 struct phong_param_material {
     // See https://en.wikipedia.org/wiki/Phong_reflection_model
     // for each coefficient
-    float ks;     ///< specular reflection
-    float kd;     ///< diffuse reflection
-    float ka;     ///< ambient reflection
+    float ks; ///< specular reflection
+    float kd; ///< diffuse reflection
+    float ka; ///< ambient reflection
 
     CUCALL phong_param_material() = default;
     CUCALL explicit phong_param_material(float s, float d, float a)
-        : ks{s}
-        , kd{d}
-        , ka{a}
-    {}
+      : ks{s}
+      , kd{d}
+      , ka{a}
+    {
+    }
     CUCALL phong_param_material(const phong_param_material&) = default;
     CUCALL phong_param_material& operator=(const phong_param_material&) = default;
 
@@ -33,14 +34,15 @@ struct phong_param_material {
 struct phong_param_light {
     // See https://en.wikipedia.org/wiki/Phong_reflection_model
     // for each coefficient
-    float ks;     ///< specular reflection
-    float kd;     ///< diffuse reflection
+    float ks; ///< specular reflection
+    float kd; ///< diffuse reflection
 
     CUCALL phong_param_light() = default;
     CUCALL explicit phong_param_light(float s, float d)
-        : ks{s}
-        , kd{d}
-    {}
+      : ks{s}
+      , kd{d}
+    {
+    }
     CUCALL phong_param_light(const phong_param_light&) = default;
     CUCALL phong_param_light& operator=(const phong_param_light&) = default;
 

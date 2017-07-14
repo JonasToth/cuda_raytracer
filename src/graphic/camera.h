@@ -1,10 +1,11 @@
 #ifndef CAMERA_H_5RCCQYDN
 #define CAMERA_H_5RCCQYDN
 
-#include "graphic/vector.h"
 #include "graphic/ray.h"
+#include "graphic/vector.h"
 
-class camera {
+class camera
+{
 public:
     CUCALL camera();
     CUCALL explicit camera(int width, int height);

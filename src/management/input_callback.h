@@ -7,7 +7,8 @@ struct GLFWwindow;
 /// Callback for glfw to handle key events, that are simply registered in input_manager
 void register_key_press(GLFWwindow* w, int key, int scancode, int action, int mods);
 
-/// Callback for glfw to handle mouse movement, that are simply registered in input_manager
+/// Callback for glfw to handle mouse movement, that are simply registered in
+/// input_manager
 void register_mouse_movement(GLFWwindow* w, double xpos, double ypos);
 
 

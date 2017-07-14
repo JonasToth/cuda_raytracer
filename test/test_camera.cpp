@@ -5,23 +5,23 @@
 TEST(camera, properties)
 {
     {
-    camera c(640, 480);
+        camera c(640, 480);
 
-    EXPECT_EQ(c.width(), 640) << "Bad width";
-    EXPECT_EQ(c.height(), 480) << "Bad height";
-    EXPECT_EQ(c.origin(), coord(0.f, 0.f, 0.f)) << "Bad origin";
-    EXPECT_EQ(c.steering(), coord(0.f, 0.f, 1.f)) << "Bad steering";
+        EXPECT_EQ(c.width(), 640) << "Bad width";
+        EXPECT_EQ(c.height(), 480) << "Bad height";
+        EXPECT_EQ(c.origin(), coord(0.f, 0.f, 0.f)) << "Bad origin";
+        EXPECT_EQ(c.steering(), coord(0.f, 0.f, 1.f)) << "Bad steering";
     }
 
     {
-    camera c(640, 480, {1.f, 1.f, 1.f}, {-1.f, -1.f, -1.f});
-    EXPECT_EQ(c.width(), 640) << "Bad width";
-    EXPECT_EQ(c.height(), 480) << "Bad height";
-    EXPECT_EQ(c.origin(), coord(1.f, 1.f, 1.f)) << "Bad origin";
-    EXPECT_EQ(c.steering(), normalize(coord(-1.f, -1.f, -1.f))) << "Bad steering";
+        camera c(640, 480, {1.f, 1.f, 1.f}, {-1.f, -1.f, -1.f});
+        EXPECT_EQ(c.width(), 640) << "Bad width";
+        EXPECT_EQ(c.height(), 480) << "Bad height";
+        EXPECT_EQ(c.origin(), coord(1.f, 1.f, 1.f)) << "Bad origin";
+        EXPECT_EQ(c.steering(), normalize(coord(-1.f, -1.f, -1.f))) << "Bad steering";
 
-    c.move({5.f, 0.f, 0.f});
-    EXPECT_EQ(c.origin(), coord(6.f, 1.f, 1.f)) << "Bad origin";
+        c.move({5.f, 0.f, 0.f});
+        EXPECT_EQ(c.origin(), coord(6.f, 1.f, 1.f)) << "Bad origin";
     }
 }
 
@@ -88,8 +88,8 @@ TEST(camera, rays_moved_camera)
 
     auto r = c.rayAt(320, 240);
     ASSERT_EQ(r.origin, coord(10.f, 10.f, 10.f)) << "Not from center of camera";
-    ASSERT_EQ(r.direction, normalize(coord(-1.f, -1.f, -1.f))) 
-              << "Centered ray not in optical axis";
+    ASSERT_EQ(r.direction, normalize(coord(-1.f, -1.f, -1.f)))
+        << "Centered ray not in optical axis";
 
     std::clog << c.rayAt(0, 0).direction << std::endl;
     std::clog << c.rayAt(640, 0).direction << std::endl;
@@ -99,8 +99,8 @@ TEST(camera, rays_moved_camera)
     c.move({5.f, 0.f, 0.f});
     r = c.rayAt(320, 240);
     ASSERT_EQ(r.origin, coord(15.f, 10.f, 10.f)) << "Not from moved center of camera";
-    ASSERT_EQ(r.direction, normalize(coord(-1.f, -1.f, -1.f))) 
-              << "Centered ray not in optical axis";
+    ASSERT_EQ(r.direction, normalize(coord(-1.f, -1.f, -1.f)))
+        << "Centered ray not in optical axis";
 
     std::clog << c.rayAt(0, 0).direction << std::endl;
     std::clog << c.rayAt(640, 0).direction << std::endl;

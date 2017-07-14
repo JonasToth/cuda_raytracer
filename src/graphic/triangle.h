@@ -11,17 +11,18 @@
 #include <gsl/gsl>
 #include <stdexcept>
 
-#include "macros.h"
 #include "graphic/vector.h"
+#include "macros.h"
 
 struct phong_material;
 
 /// A triangle is a set of 3 __points, the order of the __points defines the orientation.
-class triangle {
+class triangle
+{
 public:
     CUCALL triangle() = default;
-    CUCALL explicit triangle(const coord* p0, const coord* p1, const coord* p2, 
-                             const coord* normal) ;
+    CUCALL explicit triangle(const coord* p0, const coord* p1, const coord* p2,
+                             const coord* normal);
 
     CUCALL triangle(const triangle&) = default;
     CUCALL triangle& operator=(const triangle&) = default;
@@ -48,12 +49,12 @@ public:
 
     CUCALL void normal(const coord* n) noexcept { __normal = n; }
     /// Surface normal of the triangle, either returned from normal pool or calculated
-    CUCALL const coord& normal() const noexcept { return *__normal;  }
+    CUCALL const coord& normal() const noexcept { return *__normal; }
 
     CUCALL bool contains(const coord P) const noexcept;
 
     // expects: Triangle contains P
-    // 
+    //
     // first coefficient belongs to P0
     // second coefficient belongs to P2
     // third coefficient belongs to P1
@@ -66,7 +67,7 @@ public:
 private:
     const coord* __points[3];         ///< optimization, triangles can share vertices
     const coord* __normals[3];        ///< vertex normals
-    const coord* __normal;            ///< triangle normal 
+    const coord* __normal;            ///< triangle normal
     const phong_material* __material; ///< triangles share materials
 };
 
