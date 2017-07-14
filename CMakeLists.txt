@@ -50,9 +50,15 @@ endif()
 # ----------------------------------------------------------------------------------------
 #                              ===== Build targets =====
 
+cuda_add_library(management 
+                 ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp
+                 ${PROJECT_SOURCE_DIR}/src/management/input_callback.cpp
+                 ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu 
+                 ${PROJECT_SOURCE_DIR}/src/management/window.cpp
+                 ${PROJECT_SOURCE_DIR}/src/management/world.cu)
+
 # executable raytracer
 cuda_add_executable(raytracer.x src/main.cpp)
-
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/lib/googletest/googletest)
 add_subdirectory(test)

@@ -38,166 +38,88 @@ add_custom_target(example_files
 
 # ======================== DEMOING ===================================
 
-
-cuda_add_executable(demo_cuda_draw_buffer.x demo_cuda_draw_buffer.cu
-                    ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp
-                    ${PROJECT_SOURCE_DIR}/src/management/input_callback.cpp
-                    ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu 
-                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp
-                    ${PROJECT_SOURCE_DIR}/src/management/world.cu)
-target_link_libraries(demo_cuda_draw_buffer.x 
-                      ${GTEST_MAIN} ${GTEST_LIBRARIES} 
-                      pthread 
-                      glfw ${OPENGL_gl_LIBRARY}
-                      ${PNG_LIBRARIES})
-add_dependencies(demo_cuda_draw_buffer.x example_files)
+SET(DEMOS
+    cuda_draw_buffer
+    render_materials
+    draw_mini
+    )
 
 
-cuda_add_executable(demo_render_materials.x demo_render_materials.cu
-                    ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp
-                    ${PROJECT_SOURCE_DIR}/src/management/input_callback.cpp
-                    ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu 
-                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp
-                    ${PROJECT_SOURCE_DIR}/src/management/world.cu)
-target_link_libraries(demo_render_materials.x 
-    ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread
-    glfw ${OPENGL_gl_LIBRARY}
-    ${PNG_LIBRARIES})
-add_dependencies(demo_render_materials.x example_files)
+FOREACH(demo IN LISTS DEMOS)
+    cuda_add_executable(demo_${demo}.x demo_${demo}.cu)
+    target_link_libraries(demo_${demo}.x 
+                          management
+                          ${GTEST_MAIN} ${GTEST_LIBRARIES} 
+                          pthread 
+                          glfw ${OPENGL_gl_LIBRARY}
+                          ${PNG_LIBRARIES})
+    add_dependencies(demo_${demo}.x example_files)
+ENDFOREACH(demo)
 
 
-cuda_add_executable(demo_draw_mini.x demo_draw_mini.cu
-                    ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp
-                    ${PROJECT_SOURCE_DIR}/src/management/input_callback.cpp
-                    ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu 
-                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp
-                    ${PROJECT_SOURCE_DIR}/src/management/world.cu)
-target_link_libraries(demo_draw_mini.x 
-                      ${GTEST_MAIN} ${GTEST_LIBRARIES} 
-                      pthread 
-                      glfw ${OPENGL_gl_LIBRARY}
-                      ${PNG_LIBRARIES})
-add_dependencies(demo_draw_mini.x example_files)
+# =============================== UNIT TESTING ===================================
 
+SET(UNITTESTS_CUDA
+    build_cuda
+    world
+    surface_raii
+    )
 
+FOREACH(cuda_unit IN LISTS UNITTESTS_CUDA)
+    cuda_add_executable(test_${cuda_unit}.x test_${cuda_unit}.cu)
+    target_link_libraries(test_${cuda_unit}.x 
+                          management
+                          ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
+    add_test(unit_${cuda_unit} test_${cuda_unit}.x)
+ENDFOREACH(cuda_unit)
 
-# ======================== TESTING ===================================
-
-
-# unit tests
-cuda_add_executable(test_build_cuda.x test_build_cuda.cu)
-target_link_libraries(test_build_cuda.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
-
-
-add_executable(test_camera.x test_camera.cpp)
-target_link_libraries(test_camera.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
-
-
-add_executable(test_camera_control.x test_camera_control.cpp
-                ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp)
-target_link_libraries(test_camera_control.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
-
-
-add_executable(test_glfw.x test_glfw.cpp
-               ${PROJECT_SOURCE_DIR}/src/management/window.cpp)
-target_link_libraries(test_glfw.x ${GTEST_MAIN} ${GTEST_LIBRARIES} glfw ${OPENGL_gl_LIBRARY} pthread)
-
-
-add_executable(test_input_manager.x test_input_manager.cpp
-               ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp)
-target_link_libraries(test_input_manager.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
-
-
-add_executable(test_light.x test_light.cpp)
-target_link_libraries(test_light.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
-
-
-add_executable(test_material.x test_material.cpp)
-target_link_libraries(test_material.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
-
-
-cuda_add_executable(test_world.x test_world.cu 
-                    ${PROJECT_SOURCE_DIR}/src/management/world.cu)
-target_link_libraries(test_world.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
+# additional stuff, that is not done for all tests, but for some
+target_link_libraries(test_surface_raii.x 
+                      ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread 
+                      glfw ${OPENGL_gl_LIBRARY} ${PNG_LIBRARIES})
 add_dependencies(test_world.x example_files)
 
 
-add_executable(test_ray.x test_ray.cpp)
-target_link_libraries(test_ray.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
+# unit tests, that are plain c++ are more isolated
+SET(UNITTESTS_PLAIN
+    camera
+    camera_control
+    glfw
+    input_manager
+    light
+    material
+    ray
+    triangle
+    shading
+    vector
+    )
 
-
-cuda_add_executable(test_surface_raii.x test_surface_raii.cu
-                    ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu)
-target_link_libraries(test_surface_raii.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread glfw ${OPENGL_gl_LIBRARY} ${PNG_LIBRARIES})
-
-
-add_executable(test_triangle.x test_triangle.cpp)
-target_link_libraries(test_triangle.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
-
-
-add_executable(test_shading.x test_shading.cpp)
-target_link_libraries(test_shading.x 
-                      ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
-
-
-add_executable(test_vector.x test_vector.cpp)
-target_link_libraries(test_vector.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
-
-
-add_test(unit_build_cuda test_build_cuda.x)
-add_test(unit_camera test_camera.x)
-add_test(unit_camera_control test_camera_control.x)
-add_test(unit_input_manager test_input_manager.x)
-add_test(unit_light test_light.x)
-add_test(unit_world test_world.x)
-add_test(unit_material test_material.x)
-add_test(unit_ray test_ray.x)
-add_test(unit_shading test_shading.x)
-add_test(unit_surface_raii test_surface_raii.x)
-add_test(unit_triangle test_triangle.x)
-add_test(unit_vector test_vector.x)
+FOREACH(unit_test IN LISTS UNITTESTS_PLAIN)
+    add_executable(test_${unit_test}.x test_${unit_test}.cpp)
+    target_link_libraries(test_${unit_test}.x 
+                          management
+                          glfw ${OPENGL_gl_LIBRARY}
+                          ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
+    add_test(unit_${unit_test} test_${unit_test}.x)
+ENDFOREACH(unit_test)
 
 # ====================== Integration tests for "real world" scenarios ====================
 
-cuda_add_executable(int_test_cube.x int_test_cube.cu
-                    ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu
-                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp
-                    ${PROJECT_SOURCE_DIR}/src/management/world.cu)
-target_link_libraries(int_test_cube.x 
-                      glfw ${OPENGL_gl_LIBRARY}
-                      ${PNG_LIBRARIES})
+SET(INTEGRATION_TESTS
+    cube
+    cube_smooth
+    materials
+    materials_smooth
+    )
+    
 
-cuda_add_executable(int_test_cube_smooth.x int_test_cube_smooth.cu
-                    ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu
-                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp
-                    ${PROJECT_SOURCE_DIR}/src/management/world.cu)
-target_link_libraries(int_test_cube_smooth.x 
-                      glfw ${OPENGL_gl_LIBRARY}
-                      ${PNG_LIBRARIES})
+FOREACH(test IN LISTS INTEGRATION_TESTS)
+    cuda_add_executable(int_test_${test}.x int_test_${test}.cu)
+    target_link_libraries(int_test_${test}.x
+                          management
+                          glfw ${OPENGL_gl_LIBRARY}
+                          ${PNG_LIBRARIES})
 
-cuda_add_executable(int_test_materials.x int_test_materials.cu
-                    ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu
-                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp
-                    ${PROJECT_SOURCE_DIR}/src/management/world.cu)
-target_link_libraries(int_test_materials.x 
-                      glfw ${OPENGL_gl_LIBRARY}
-                      ${PNG_LIBRARIES})
-
-cuda_add_executable(int_test_materials_smooth.x int_test_materials_smooth.cu
-                    ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu
-                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp
-                    ${PROJECT_SOURCE_DIR}/src/management/world.cu)
-target_link_libraries(int_test_materials_smooth.x 
-                      glfw ${OPENGL_gl_LIBRARY}
-                      ${PNG_LIBRARIES})
-
-
-
-add_test(NAME integration_cube 
-         COMMAND ./validate.sh ./int_test_cube.x cube.png reference_cube.png)
-add_test(NAME integration_cube_smooth
-         COMMAND ./validate.sh ./int_test_cube_smooth.x cube_smooth.png reference_cube_smooth.png)
-add_test(NAME integration_materials
-         COMMAND ./validate.sh ./int_test_materials.x materials.png reference_materials.png)
-add_test(NAME integration_materials_smooth
-         COMMAND ./validate.sh ./int_test_materials_smooth.x materials_smooth.png reference_materials_smooth.png)
+    add_test(NAME integration_${test}
+             COMMAND ./validate.sh ./int_test_${test}.x ${test}.png reference_${test}.png)
+ENDFOREACH(test)

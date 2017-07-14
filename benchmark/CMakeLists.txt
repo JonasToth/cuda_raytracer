@@ -27,20 +27,16 @@ add_custom_target(benchmark_files
 
 # benchmarks
 
-cuda_add_executable(bench_basic_scene.x bench_basic_scene.cu
-                    ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu 
-                    ${PROJECT_SOURCE_DIR}/src/management/world.cu
-                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp)
+cuda_add_executable(bench_basic_scene.x bench_basic_scene.cu)
 target_link_libraries(bench_basic_scene.x 
+                      management
                       benchmark pthread glfw ${OPENGL_gl_LIBRARY} ${PNG_LIBRARIES})
 add_dependencies(bench_basic_scene.x benchmark_files)
 
 
-cuda_add_executable(bench_cube_subdivision.x bench_cube_subdivision.cu
-                    ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu 
-                    ${PROJECT_SOURCE_DIR}/src/management/world.cu
-                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp)
+cuda_add_executable(bench_cube_subdivision.x bench_cube_subdivision.cu)
 target_link_libraries(bench_cube_subdivision.x 
+                      management
                       benchmark pthread glfw ${OPENGL_gl_LIBRARY} ${PNG_LIBRARIES})
 add_dependencies(bench_cube_subdivision.x benchmark_files)
 
