@@ -117,6 +117,7 @@ FOREACH(test IN LISTS INTEGRATION_TESTS)
     cuda_add_executable(int_test_${test}.x int_test_${test}.cu)
     target_link_libraries(int_test_${test}.x
                           management
+                          utility
                           glfw ${OPENGL_gl_LIBRARY}
                           ${PNG_LIBRARIES})
 

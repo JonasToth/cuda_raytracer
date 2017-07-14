@@ -2,26 +2,10 @@
 #include "graphic/kernels/shaded.h"
 #include "management/window.h"
 #include "management/world.h"
+#include "util/kernel_launcher/world_shading.h"
 
 #include <thread>
 #include <chrono>
-
-static void raytrace_many_shaded(cudaSurfaceObject_t surface, camera c,
-                                 const triangle* triangles, std::size_t n_triangles,
-                                 const light_source* lights, std::size_t n_lights)
-{
-    dim3 dimBlock(32,32);
-    dim3 dimGrid((c.width() + dimBlock.x) / dimBlock.x,
-                 (c.height() + dimBlock.y) / dimBlock.y);
-    black_kernel<<<dimGrid, dimBlock>>>(surface, c.width(), c.height());
-    std::clog << "Triangle ptr: " << triangles << "; " << n_triangles << std::endl
-              << "LightSrc ptr: " << lights << "; " << n_lights << std::endl
-              << "Surface     : " << surface << std::endl;
-    trace_many_triangles_shaded<<<dimGrid, dimBlock>>>(surface, c,
-                                                       triangles, n_triangles, 
-                                                       lights, n_lights,
-                                                       c.width(), c.height());
-}
 
 int main(int argc, char** argv)
 {
