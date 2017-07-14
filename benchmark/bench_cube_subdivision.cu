@@ -6,7 +6,7 @@
 #include "graphic/kernels/trace.h"
 #include "graphic/kernels/shaded.h"
 #include "management/window.h"
-#include "world.h"
+#include "management/world.h"
 
 #include <thread>
 #include <chrono>

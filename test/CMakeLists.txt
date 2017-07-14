@@ -40,11 +40,11 @@ add_custom_target(example_files
 
 
 cuda_add_executable(demo_cuda_draw_buffer.x demo_cuda_draw_buffer.cu
-                    ${PROJECT_SOURCE_DIR}/src/world.cu
                     ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp
                     ${PROJECT_SOURCE_DIR}/src/management/input_callback.cpp
                     ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu 
-                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp)
+                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp
+                    ${PROJECT_SOURCE_DIR}/src/management/world.cu)
 target_link_libraries(demo_cuda_draw_buffer.x 
                       ${GTEST_MAIN} ${GTEST_LIBRARIES} 
                       pthread 
@@ -54,11 +54,11 @@ add_dependencies(demo_cuda_draw_buffer.x example_files)
 
 
 cuda_add_executable(demo_render_materials.x demo_render_materials.cu
-                    ${PROJECT_SOURCE_DIR}/src/world.cu
                     ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp
                     ${PROJECT_SOURCE_DIR}/src/management/input_callback.cpp
                     ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu 
-                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp)
+                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp
+                    ${PROJECT_SOURCE_DIR}/src/management/world.cu)
 target_link_libraries(demo_render_materials.x 
     ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread
     glfw ${OPENGL_gl_LIBRARY}
@@ -67,11 +67,11 @@ add_dependencies(demo_render_materials.x example_files)
 
 
 cuda_add_executable(demo_draw_mini.x demo_draw_mini.cu
-                    ${PROJECT_SOURCE_DIR}/src/world.cu
                     ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp
                     ${PROJECT_SOURCE_DIR}/src/management/input_callback.cpp
                     ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu 
-                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp)
+                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp
+                    ${PROJECT_SOURCE_DIR}/src/management/world.cu)
 target_link_libraries(demo_draw_mini.x 
                       ${GTEST_MAIN} ${GTEST_LIBRARIES} 
                       pthread 
@@ -117,7 +117,7 @@ target_link_libraries(test_material.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 
 cuda_add_executable(test_world.x test_world.cu 
-                    ${PROJECT_SOURCE_DIR}/src/world.cu)
+                    ${PROJECT_SOURCE_DIR}/src/management/world.cu)
 target_link_libraries(test_world.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
 add_dependencies(test_world.x example_files)
 
@@ -160,33 +160,33 @@ add_test(unit_vector test_vector.x)
 # ====================== Integration tests for "real world" scenarios ====================
 
 cuda_add_executable(int_test_cube.x int_test_cube.cu
-                    ${PROJECT_SOURCE_DIR}/src/world.cu
                     ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu
-                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp)
+                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp
+                    ${PROJECT_SOURCE_DIR}/src/management/world.cu)
 target_link_libraries(int_test_cube.x 
                       glfw ${OPENGL_gl_LIBRARY}
                       ${PNG_LIBRARIES})
 
 cuda_add_executable(int_test_cube_smooth.x int_test_cube_smooth.cu
-                    ${PROJECT_SOURCE_DIR}/src/world.cu
                     ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu
-                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp)
+                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp
+                    ${PROJECT_SOURCE_DIR}/src/management/world.cu)
 target_link_libraries(int_test_cube_smooth.x 
                       glfw ${OPENGL_gl_LIBRARY}
                       ${PNG_LIBRARIES})
 
 cuda_add_executable(int_test_materials.x int_test_materials.cu
-                    ${PROJECT_SOURCE_DIR}/src/world.cu
                     ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu
-                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp)
+                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp
+                    ${PROJECT_SOURCE_DIR}/src/management/world.cu)
 target_link_libraries(int_test_materials.x 
                       glfw ${OPENGL_gl_LIBRARY}
                       ${PNG_LIBRARIES})
 
 cuda_add_executable(int_test_materials_smooth.x int_test_materials_smooth.cu
-                    ${PROJECT_SOURCE_DIR}/src/world.cu
                     ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu
-                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp)
+                    ${PROJECT_SOURCE_DIR}/src/management/window.cpp
+                    ${PROJECT_SOURCE_DIR}/src/management/world.cu)
 target_link_libraries(int_test_materials_smooth.x 
                       glfw ${OPENGL_gl_LIBRARY}
                       ${PNG_LIBRARIES})
