@@ -3,7 +3,7 @@ integration_render::integration_render(std::string name)
     , w(800, 600, test_name + " Scene")
     , render_surface(w.getWidth(), w.getHeight())
     , c(w.getWidth(), w.getHeight(), {-1.5f, 1.2f, -1.5f}, {1.7f, -1.4f, 1.7f})
-    , scene(test_name + ".obj")
+    , scene(in_prefix + test_name + ".obj")
 {
     auto w_ptr = w.getWindow();
     glfwMakeContextCurrent(w_ptr);
@@ -26,12 +26,15 @@ void integration_render::init_default()
 
 void integration_render::run()
 {
+
     const auto& triangles = scene.triangles();
     raytrace_many_shaded(render_surface.getSurface(), c,
                          triangles.data().get(), triangles.size(),
                          scene.lights().data().get(), scene.light_count());
+
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
     render_surface.render_gl_texture();
-    render_surface.save_as_png(test_name + ".png");
     std::clog << "World rendered" << std::endl;
+
+    render_surface.save_as_png(out_prefix + test_name + ".png");
 }

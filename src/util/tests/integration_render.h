@@ -26,7 +26,9 @@ public:
     void run();
 
 private:
-    std::string test_name;
+    const std::string test_name;
+    const std::string out_prefix = "./int_test_output/";
+    const std::string in_prefix  = "./int_test_input/";
 
     window w;
     surface_raii render_surface;

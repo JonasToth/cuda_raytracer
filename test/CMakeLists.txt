@@ -4,15 +4,8 @@ enable_testing()
 find_package(GTest REQUIRED) 
 include_directories(${GTEST_INCLUDE_DIRS}) 
 
-
 # symbolic links to all test files
 add_custom_target(example_files
-    # necessary for integration tests
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/validate.sh ${PROJECT_BINARY_DIR}/test
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_cube.png ${PROJECT_BINARY_DIR}/test
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_materials.png ${PROJECT_BINARY_DIR}/test
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_materials_smooth.png ${PROJECT_BINARY_DIR}/test
-
     # object files and materials necessary as testcases
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube.obj ${PROJECT_BINARY_DIR}/test
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_subdiv_1.obj ${PROJECT_BINARY_DIR}/test
@@ -104,6 +97,25 @@ FOREACH(unit_test IN LISTS UNITTESTS_PLAIN)
 ENDFOREACH(unit_test)
 
 # ====================== Integration tests for "real world" scenarios ====================
+add_custom_target(integration_test_files
+    # necessary for integration tests
+    
+    # infrastructure
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/validate.sh ${PROJECT_BINARY_DIR}/test
+    COMMAND mkdir -p ${PROJECT_BINARY_DIR}/test/int_test_output/
+    COMMAND mkdir -p ${PROJECT_BINARY_DIR}/test/int_test_input/
+    COMMAND mkdir -p ${PROJECT_BINARY_DIR}/test/int_test_ref/
+
+    # actual test files
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube.obj ${PROJECT_BINARY_DIR}/test/int_test_input/
+
+    # reference as ground truth
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_cube.png ${PROJECT_BINARY_DIR}/test/int_test_ref/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_cube_smooth.png ${PROJECT_BINARY_DIR}/test/int_test_ref/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_materials.png ${PROJECT_BINARY_DIR}/test/int_test_ref/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_materials_smooth.png ${PROJECT_BINARY_DIR}/test/int_test_ref/
+)
+
 
 SET(INTEGRATION_TESTS
     cube
@@ -119,7 +131,8 @@ FOREACH(test IN LISTS INTEGRATION_TESTS)
                           management 
                           glfw ${OPENGL_gl_LIBRARY}
                           ${PNG_LIBRARIES})
+    add_dependencies(int_test_${test}.x integration_test_files)
 
     add_test(NAME integration_${test}
-             COMMAND ./validate.sh ./int_test_${test}.x ${test}.png reference_${test}.png)
+             COMMAND ./validate.sh ./int_test_${test}.x ${test} reference_${test})
 ENDFOREACH(test)

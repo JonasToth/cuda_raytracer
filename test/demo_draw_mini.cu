@@ -1,5 +1,3 @@
-#include "gtest/gtest.h"
-
 #include "graphic/kernels/trace.h"
 #include "management/input_callback.h"
 #include "management/input_manager.h"
