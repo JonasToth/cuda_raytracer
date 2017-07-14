@@ -1,7 +1,7 @@
 ---
 Checks:          'clang-diagnostic-*,*,-hicpp-*'
 WarningsAsErrors: ''
-HeaderFilterRegex: ''
+HeaderFilterRegex: 'src/*'
 AnalyzeTemporaryDtors: false
 FormatStyle:     none
 User:            jonas
