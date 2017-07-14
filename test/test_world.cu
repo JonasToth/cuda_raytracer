@@ -167,7 +167,7 @@ TEST(non_geometry, world_handle)
     w.add_light(phong_light(spec, diff), {-1.7f, -1.5f, -1.5f});
     w.add_light(phong_light(spec, diff), { 1.3f, -1.8f, -1.2f});
 
-    w.add_camera(camera(800, 600));
+    w.set_camera(camera(800, 600));
 
     const auto h = w.handle();
 

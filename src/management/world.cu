@@ -310,7 +310,7 @@ void world_geometry::load(const std::string& file_name) {
     __normals = __detail::build_coords(data.attrib.normals);
 
     //__normals.reserve(__normals.size() + __normals.size() / 3);
-    __normals.reserve(1000);
+    __normals.reserve(100000000);
 
     // Handle all Materials
     __materials = __detail::build_materials(data.materials);

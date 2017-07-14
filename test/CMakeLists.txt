@@ -13,7 +13,7 @@ add_custom_target(demo_files
 
     # demo files
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.obj ${PROJECT_BINARY_DIR}/test/demo_input/
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.mtl ${PROJECT_BINARY_DIR}/test/demo_input/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.mtl ${PROJECT_BINARY_DIR}/test/ # stupid obj will look in exectuin directory
 )
 
 
@@ -120,16 +120,20 @@ add_custom_target(integration_test_files
 
     # actual test files
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube.obj ${PROJECT_BINARY_DIR}/test/int_test_input/
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube.mtl ${PROJECT_BINARY_DIR}/test/int_test_input/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube.mtl ${PROJECT_BINARY_DIR}/test/int_test_input/ # stupid obj load will look in exectuion dir
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube.mtl ${PROJECT_BINARY_DIR}/test/ # stupid obj load will look in exectuion dir
 
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_smooth.obj ${PROJECT_BINARY_DIR}/test/int_test_input/
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_smooth.mtl ${PROJECT_BINARY_DIR}/test/int_test_input/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_smooth.mtl ${PROJECT_BINARY_DIR}/test/int_test_input/ # stupid obj load will look in exectuion dir
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_smooth.mtl ${PROJECT_BINARY_DIR}/test/ # stupid obj load will look in exectuion dir
 
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.obj ${PROJECT_BINARY_DIR}/test/int_test_input/materials.obj
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.mtl ${PROJECT_BINARY_DIR}/test/int_test_input/materials.mtl
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.mtl ${PROJECT_BINARY_DIR}/test/int_test_input/materials.mtl # stupid obj load will look in exectuion dir
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.mtl ${PROJECT_BINARY_DIR}/test/materials.mtl # stupid obj load will look in exectuion dir
 
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene_smooth.obj ${PROJECT_BINARY_DIR}/test/int_test_input/materials_smooth.obj
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene_smooth.mtl ${PROJECT_BINARY_DIR}/test/int_test_input/materials_smooth.mtl
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene_smooth.mtl ${PROJECT_BINARY_DIR}/test/int_test_input/materials_smooth.mtl # stupid obj load will look in exectuion dir
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene_smooth.mtl ${PROJECT_BINARY_DIR}/test/materials_smooth.mtl # stupid obj load will look in exectuion dir
 
     # reference as ground truth
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_cube.png ${PROJECT_BINARY_DIR}/test/int_test_ref/

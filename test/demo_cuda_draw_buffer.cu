@@ -223,9 +223,7 @@ TEST(cuda_draw, draw_phong_shaded)
     const auto& triangles = world.triangles();
 
     while(!glfwWindowShouldClose(w)) {
-        raytrace_many_shaded(vis.getSurface(), c,
-                             triangles.data().get(), triangles.size(),
-                             world.lights().data().get(), world.light_count());
+        raytrace_many_shaded(vis.getSurface(), world.handle());
         vis.render_gl_texture();
 
         glfwSwapBuffers(w);

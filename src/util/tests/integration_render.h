@@ -25,6 +25,9 @@ public:
     // render the scene and write output file
     void run();
 
+    // give possibility to adjust the scene if necessary
+    world_geometry& getScene() noexcept { return scene; }
+
 private:
     const std::string test_name;
     const std::string out_prefix = "./int_test_output/";

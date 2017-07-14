@@ -38,9 +38,7 @@ int main(int argc, char** argv)
 
     auto render_lambda = [&]() {
         const auto& triangles = scene.triangles();
-        raytrace_many_shaded(render_surface.getSurface(), c,
-                             triangles.data().get(), triangles.size(),
-                             scene.lights().data().get(), scene.light_count());
+        raytrace_many_shaded(render_surface.getSurface(), scene.handle());
         render_surface.render_gl_texture();
         render_surface.save_as_png("mini.png");
         glfwSwapBuffers(w);

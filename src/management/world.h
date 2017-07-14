@@ -38,7 +38,7 @@ public:
 
     void add_light(phong_light l, coord position);
 
-    void add_camera(camera c) noexcept { __c = c; }
+    void set_camera(camera c) noexcept { __c = c; }
 
     std::size_t vertex_count() const noexcept { return __vertices.size(); }
     std::size_t normal_count() const noexcept { return __normals.size(); }
@@ -48,10 +48,15 @@ public:
     std::size_t light_count() const noexcept { return __lights.size(); }
 
     const thrust::device_vector<coord>& vertices() const noexcept { return __vertices; }
+
     const thrust::device_vector<coord>& normals() const noexcept { return __normals; }
+
     const thrust::device_vector<phong_material>& materials() const noexcept { return __materials; }
+
     const thrust::device_vector<triangle>& triangles() const noexcept { return __triangles; }
+
     const thrust::device_vector<light_source>& lights() const noexcept { return __lights; }
+    thrust::device_vector<light_source>& lights() noexcept { return __lights; }
 
     /// Helper struct to get the device pointers for all gpu data, 
     /// kernel call simplification

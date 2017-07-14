@@ -18,7 +18,7 @@ void integration_render::init_default()
     scene.add_light(phong_light(spec, diff), {-1.1f,  2.0f,  1.1f});
     scene.add_light(phong_light(spec, diff), {-1.5f, -1.5f,  1.5f});
 
-    scene.add_camera(camera(w.getWidth(), w.getHeight(), 
+    scene.set_camera(camera(w.getWidth(), w.getHeight(), 
                             {-1.5f, 1.2f, -1.5f}, 
                             {1.7f, -1.4f, 1.7f}));
 
@@ -27,10 +27,7 @@ void integration_render::init_default()
 
 void integration_render::run()
 {
-    const auto& triangles = scene.triangles();
-    raytrace_many_shaded(render_surface.getSurface(), c,
-                         triangles.data().get(), triangles.size(),
-                         scene.lights().data().get(), scene.light_count());
+    raytrace_many_shaded(render_surface.getSurface(), scene.handle());
 
     std::this_thread::sleep_for(std::chrono::seconds(2));
     render_surface.render_gl_texture();

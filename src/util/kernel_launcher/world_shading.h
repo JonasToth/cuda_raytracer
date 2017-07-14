@@ -6,9 +6,7 @@
 #include "graphic/kernels/shaded.h"
 #include "management/world.h"
 
-static void raytrace_many_shaded(cudaSurfaceObject_t surface, camera c,
-                                 const triangle* triangles, std::size_t n_triangles,
-                                 const light_source* lights, std::size_t n_lights);
+void raytrace_many_shaded(cudaSurfaceObject_t surface, world_geometry::data_handle dh);
 
 
 #include "util/kernel_launcher/world_shading.inl"
