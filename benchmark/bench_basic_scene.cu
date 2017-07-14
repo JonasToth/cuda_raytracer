@@ -52,9 +52,7 @@ static void BM_SceneRender(benchmark::State& state)
 
     while(state.KeepRunning())
     {
-        raytrace_many_shaded(render_surface.getSurface(), c,
-                             triangles.data().get(), triangles.size(),
-                             scene.lights().data().get(), scene.light_count());
+        raytrace_many_shaded(render_surface.getSurface(), scene.handle());
     }
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
     render_surface.render_gl_texture();
