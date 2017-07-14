@@ -40,7 +40,7 @@ add_custom_target(example_files
 
 
 cuda_add_executable(demo_cuda_draw_buffer.x demo_cuda_draw_buffer.cu
-                    ${PROJECT_SOURCE_DIR}/src/obj_io.cu
+                    ${PROJECT_SOURCE_DIR}/src/world.cu
                     ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp
                     ${PROJECT_SOURCE_DIR}/src/management/input_callback.cpp
                     ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu 
@@ -54,7 +54,7 @@ add_dependencies(demo_cuda_draw_buffer.x example_files)
 
 
 cuda_add_executable(demo_render_materials.x demo_render_materials.cu
-                    ${PROJECT_SOURCE_DIR}/src/obj_io.cu
+                    ${PROJECT_SOURCE_DIR}/src/world.cu
                     ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp
                     ${PROJECT_SOURCE_DIR}/src/management/input_callback.cpp
                     ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu 
@@ -67,7 +67,7 @@ add_dependencies(demo_render_materials.x example_files)
 
 
 cuda_add_executable(demo_draw_mini.x demo_draw_mini.cu
-                    ${PROJECT_SOURCE_DIR}/src/obj_io.cu
+                    ${PROJECT_SOURCE_DIR}/src/world.cu
                     ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp
                     ${PROJECT_SOURCE_DIR}/src/management/input_callback.cpp
                     ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu 
@@ -116,10 +116,10 @@ add_executable(test_material.x test_material.cpp)
 target_link_libraries(test_material.x ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
 
 
-cuda_add_executable(test_obj_io.x test_obj_io.cu 
-                    ${PROJECT_SOURCE_DIR}/src/obj_io.cu)
-target_link_libraries(test_obj_io.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
-add_dependencies(test_obj_io.x example_files)
+cuda_add_executable(test_world.x test_world.cu 
+                    ${PROJECT_SOURCE_DIR}/src/world.cu)
+target_link_libraries(test_world.x ${GTEST_MAIN} ${GTEST_LIBRARIES} pthread)
+add_dependencies(test_world.x example_files)
 
 
 add_executable(test_ray.x test_ray.cpp)
@@ -149,7 +149,7 @@ add_test(unit_camera test_camera.x)
 add_test(unit_camera_control test_camera_control.x)
 add_test(unit_input_manager test_input_manager.x)
 add_test(unit_light test_light.x)
-add_test(unit_obj_io test_obj_io.x)
+add_test(unit_world test_world.x)
 add_test(unit_material test_material.x)
 add_test(unit_ray test_ray.x)
 add_test(unit_shading test_shading.x)
@@ -160,7 +160,7 @@ add_test(unit_vector test_vector.x)
 # ====================== Integration tests for "real world" scenarios ====================
 
 cuda_add_executable(int_test_cube.x int_test_cube.cu
-                    ${PROJECT_SOURCE_DIR}/src/obj_io.cu
+                    ${PROJECT_SOURCE_DIR}/src/world.cu
                     ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu
                     ${PROJECT_SOURCE_DIR}/src/management/window.cpp)
 target_link_libraries(int_test_cube.x 
@@ -168,7 +168,7 @@ target_link_libraries(int_test_cube.x
                       ${PNG_LIBRARIES})
 
 cuda_add_executable(int_test_cube_smooth.x int_test_cube_smooth.cu
-                    ${PROJECT_SOURCE_DIR}/src/obj_io.cu
+                    ${PROJECT_SOURCE_DIR}/src/world.cu
                     ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu
                     ${PROJECT_SOURCE_DIR}/src/management/window.cpp)
 target_link_libraries(int_test_cube_smooth.x 
@@ -176,7 +176,7 @@ target_link_libraries(int_test_cube_smooth.x
                       ${PNG_LIBRARIES})
 
 cuda_add_executable(int_test_materials.x int_test_materials.cu
-                    ${PROJECT_SOURCE_DIR}/src/obj_io.cu
+                    ${PROJECT_SOURCE_DIR}/src/world.cu
                     ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu
                     ${PROJECT_SOURCE_DIR}/src/management/window.cpp)
 target_link_libraries(int_test_materials.x 
@@ -184,7 +184,7 @@ target_link_libraries(int_test_materials.x
                       ${PNG_LIBRARIES})
 
 cuda_add_executable(int_test_materials_smooth.x int_test_materials_smooth.cu
-                    ${PROJECT_SOURCE_DIR}/src/obj_io.cu
+                    ${PROJECT_SOURCE_DIR}/src/world.cu
                     ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu
                     ${PROJECT_SOURCE_DIR}/src/management/window.cpp)
 target_link_libraries(int_test_materials_smooth.x 

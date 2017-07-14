@@ -31,7 +31,6 @@ public:
     world_geometry(world_geometry&&) = delete;
     world_geometry& operator=(world_geometry&&) = delete;
 
-
     /// Load data from disk and upload to thrust::device, throws exception on data error.
     void load(const std::string& file_name);
 
