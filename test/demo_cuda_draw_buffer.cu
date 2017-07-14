@@ -1,7 +1,5 @@
 #include "gtest/gtest.h"
 
-#include "graphic/kernels/utility.h"
-#include "graphic/kernels/trace.h"
 #include "graphic/kernels/shaded.h"
 #include "management/input_callback.h"
 #include "management/input_manager.h"
@@ -9,6 +7,7 @@
 #include "management/world.h"
 #include "util/demos/fps_demo.h"
 #include "util/kernel_launcher/world_shading.h"
+#include "util/kernel_launcher/world_depth.h"
 
 #include <iostream>
 
@@ -94,26 +93,6 @@ TEST(cuda_draw, basic_drawing) {
     input_manager::instance().clear();
 }
 
-void raytrace_cuda(cudaSurfaceObject_t& Surface, const triangle* T) {
-    dim3 dimBlock(32,32);
-    dim3 dimGrid((Width + dimBlock.x) / dimBlock.x,
-                 (Height+ dimBlock.y) / dimBlock.y);
-    trace_single_triangle<<<dimGrid, dimBlock>>>(Surface, T, Width, Height);
-}
-
-
-void raytrace_many_cuda(cudaSurfaceObject_t& Surface, 
-                        const camera& c,
-                        const triangle* Triangles,
-                        int TriangleCount) {
-    dim3 dimBlock(32,32);
-    dim3 dimGrid((c.width() + dimBlock.x) / dimBlock.x,
-                 (c.height() + dimBlock.y) / dimBlock.y);
-    black_kernel<<<dimGrid, dimBlock>>>(Surface, c.width(), c.height());
-    trace_many_triangles_with_camera<<<dimGrid, dimBlock>>>(Surface, c, 
-                                                            Triangles, TriangleCount, 
-                                                            c.width(), c.height());
-}
 
 TEST(cuda_draw, drawing_traced_triangle) 
 {
@@ -162,13 +141,15 @@ TEST(cuda_draw, drawing_traced_triangle)
         for(std::size_t i = 0; i < Triangles.size(); ++i)
         {
             const thrust::device_ptr<triangle> T = &Triangles[i];
-            raytrace_cuda(vis.getSurface(), T.get());
+            raytrace_cuda(vis.getSurface(), win.getWidth(), win.getHeight(), T.get());
         }
 
         vis.render_gl_texture();
 
         glfwSwapBuffers(w);
-        glfwWaitEvents(); handle_keys(w); } 
+        glfwWaitEvents(); 
+        handle_keys(w); 
+    } 
     input_manager::instance().clear();
 }
 

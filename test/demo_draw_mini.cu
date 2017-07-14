@@ -3,55 +3,15 @@
 #include "management/input_manager.h"
 #include "management/window.h"
 #include "management/world.h"
+#include "util/demos/fps_demo.h"
 #include "util/kernel_launcher/world_shading.h"
 
 #include <thread>
 #include <chrono>
 
-bool camera_changed = true;
-
-static void handle_keys(GLFWwindow* w, camera& c)
-{
-    const auto& im = input_manager::instance();
-
-    const float dP = 0.5;
-    if(im.isPressed(GLFW_KEY_ESCAPE))
-        glfwSetWindowShouldClose(w, GLFW_TRUE);
-
-    else if(im.isPressed(GLFW_KEY_A))
-    {
-        c.move({-dP, 0.f, 0.f});
-        camera_changed = true;
-    }
-    else if(im.isPressed(GLFW_KEY_D))
-    {
-        c.move({dP, 0.f, 0.f});
-        camera_changed = true;
-    }
-    else if(im.isPressed(GLFW_KEY_W))
-    {
-        c.move({0.f, dP, 0.f});
-        camera_changed = true;
-    }
-    else if(im.isPressed(GLFW_KEY_S))
-    {
-        c.move({0.f, -dP, 0.f});
-        camera_changed = true;
-    }
-    else if(im.isPressed(GLFW_KEY_Q))
-    {
-        c.move({0.f, 0.f, dP});
-        camera_changed = true;
-    }
-    else if(im.isPressed(GLFW_KEY_E))
-    {
-        c.move({0.f, 0.f, -dP});
-        camera_changed = true;
-    }
-}
-
 int main(int argc, char** argv)
 {
+    bool camera_changed = true;
     window win(800, 600, "Material Scene");
     auto w = win.getWindow();
     glfwMakeContextCurrent(w);
@@ -83,7 +43,7 @@ int main(int argc, char** argv)
                              scene.lights().data().get(), scene.light_count());
         render_surface.render_gl_texture();
         render_surface.save_as_png("mini.png");
-        //glfwSwapBuffers(w);
+        glfwSwapBuffers(w);
         std::clog << "World rendered" << std::endl;
         std::clog << "Camera Position: " << c.origin() << std::endl;
         std::clog << "Camera Steering At: " << c.steering() << std::endl << std::endl;
@@ -94,7 +54,7 @@ int main(int argc, char** argv)
     render_lambda();
     while(!glfwWindowShouldClose(w)) {
         glfwWaitEvents();
-        handle_keys(w, c);
+        camera_changed = handle_keys(w, c);
         if(camera_changed)
             render_lambda();
     } 
