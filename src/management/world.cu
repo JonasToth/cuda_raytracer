@@ -327,3 +327,25 @@ void world_geometry::add_light(phong_light l, coord position)
 {
     __lights.push_back(light_source(l, position));
 }
+
+
+world_geometry::data_handle::data_handle(const thrust::device_vector<coord>& vert,
+                                         const thrust::device_vector<coord>& norm,
+                                         const thrust::device_vector<triangle>& tria,
+                                         const thrust::device_vector<phong_material>& mat,
+                                         const thrust::device_vector<light_source>& light)
+    : vertices{vert.data().get()}
+    , vertex_count{vert.size()}
+    , normals{norm.data().get()}
+    , normal_count{norm.size()}
+    , triangles{tria.data().get()}
+    , triangle_count{tria.size()}
+    , materials{mat.data().get()}
+    , material_count{mat.size()}
+    , lights{light.data().get()}
+    , light_count{light.size()}
+{}
+
+world_geometry::data_handle world_geometry::handle() const noexcept {
+    return data_handle(__vertices, __normals, __triangles, __materials, __lights);
+}

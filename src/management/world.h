@@ -50,6 +50,25 @@ public:
     const thrust::device_vector<triangle>& triangles() const noexcept { return __triangles; }
     const thrust::device_vector<light_source>& lights() const noexcept { return __lights; }
 
+    /// Helper struct to get the device pointers for all gpu data, 
+    /// kernel call simplification
+    struct data_handle {
+        const coord* const vertices;      const std::size_t vertex_count;
+        const coord* const normals;       const std::size_t normal_count;
+        const triangle* const triangles;  const std::size_t triangle_count;
+
+        const phong_material* const materials;    const std::size_t material_count;
+        const light_source* const lights;         const std::size_t light_count;
+
+        data_handle(const thrust::device_vector<coord>& vert,
+                    const thrust::device_vector<coord>& norm,
+                    const thrust::device_vector<triangle>& tria,
+                    const thrust::device_vector<phong_material>& mat,
+                    const thrust::device_vector<light_source>& light);
+    };
+
+    data_handle handle() const noexcept;
+
 private:
     thrust::device_vector<coord> __vertices;            ///< vertices in the world
     thrust::device_vector<coord> __normals;             ///< normals for vertices and faces

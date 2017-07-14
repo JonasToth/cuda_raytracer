@@ -159,6 +159,37 @@ TEST(cube, no_normals_no_materials)
 
 }
 
+TEST(non_geometry, world_handle)
+{
+    world_geometry w("cube.obj");
+    float spec[3] = {0.8f, 0.8f, 0.8f};
+    float diff[3] = {0.8f, 0.8f, 0.8f};
+    w.add_light(phong_light(spec, diff), {-1.7f, -1.5f, -1.5f});
+    w.add_light(phong_light(spec, diff), { 1.3f, -1.8f, -1.2f});
+
+    const auto h = w.handle();
+
+    EXPECT_NE(h.vertices, nullptr);
+    EXPECT_EQ(h.vertices, w.vertices().data().get());
+    EXPECT_EQ(h.vertex_count, 8);
+
+    EXPECT_NE(h.normals, nullptr);
+    EXPECT_EQ(h.normals, w.normals().data().get());
+    EXPECT_EQ(h.normal_count, 6);
+
+    EXPECT_NE(h.triangles, nullptr);
+    EXPECT_EQ(h.triangles, w.triangles().data().get());
+    EXPECT_EQ(h.triangle_count, 12);
+
+    EXPECT_NE(h.materials, nullptr);
+    EXPECT_EQ(h.materials, w.materials().data().get());
+    EXPECT_EQ(h.material_count, 1);
+
+    EXPECT_NE(h.lights, nullptr);
+    EXPECT_EQ(h.lights, w.lights().data().get());
+    EXPECT_EQ(h.light_count, 2);
+}
+
 TEST(non_geometry, lights)
 {
     world_geometry w;
