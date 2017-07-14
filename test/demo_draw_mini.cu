@@ -6,7 +6,7 @@
 #include "management/input_callback.h"
 #include "management/input_manager.h"
 #include "management/window.h"
-#include "obj_io.h"
+#include "world.h"
 
 #include <thread>
 #include <chrono>

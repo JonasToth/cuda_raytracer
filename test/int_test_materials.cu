@@ -1,7 +1,7 @@
 #include "graphic/kernels/utility.h"
 #include "graphic/kernels/shaded.h"
 #include "management/window.h"
-#include "obj_io.h"
+#include "world.h"
 
 #include <thread>
 #include <chrono>

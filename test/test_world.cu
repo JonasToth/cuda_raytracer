@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 
 #include "graphic/material.h"
-#include "obj_io.h"
+#include "world.h"
 #include <algorithm>
 #include <vector>
 #include "thrust/logical.h"
