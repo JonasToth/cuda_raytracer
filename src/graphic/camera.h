@@ -6,6 +6,7 @@
 
 class camera {
 public:
+    CUCALL camera();
     CUCALL explicit camera(int width, int height);
     CUCALL explicit camera(int width, int height, coord origin, coord steering);
 

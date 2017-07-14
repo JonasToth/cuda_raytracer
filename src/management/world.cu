@@ -333,7 +333,8 @@ world_geometry::data_handle::data_handle(const thrust::device_vector<coord>& ver
                                          const thrust::device_vector<coord>& norm,
                                          const thrust::device_vector<triangle>& tria,
                                          const thrust::device_vector<phong_material>& mat,
-                                         const thrust::device_vector<light_source>& light)
+                                         const thrust::device_vector<light_source>& light,
+                                         const camera c)
     : vertices{vert.data().get()}
     , vertex_count{vert.size()}
     , normals{norm.data().get()}
@@ -344,8 +345,9 @@ world_geometry::data_handle::data_handle(const thrust::device_vector<coord>& ver
     , material_count{mat.size()}
     , lights{light.data().get()}
     , light_count{light.size()}
+    , cam{c}
 {}
 
 world_geometry::data_handle world_geometry::handle() const noexcept {
-    return data_handle(__vertices, __normals, __triangles, __materials, __lights);
+    return data_handle(__vertices, __normals, __triangles, __materials, __lights, __c);
 }

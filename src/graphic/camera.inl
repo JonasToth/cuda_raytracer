@@ -1,3 +1,6 @@
+inline CUCALL camera::camera()
+    : camera(800, 600, coord(0.f, 0.f, 0.f), coord(0.f, 0.f, 1.f))
+{}
 
 inline CUCALL camera::camera(int width, int height, coord origin, coord steering)
     : __origin{origin}

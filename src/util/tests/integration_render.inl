@@ -2,7 +2,6 @@ integration_render::integration_render(std::string name)
     : test_name(name)
     , w(800, 600, test_name + " Scene")
     , render_surface(w.getWidth(), w.getHeight())
-    , c(w.getWidth(), w.getHeight(), {-1.5f, 1.2f, -1.5f}, {1.7f, -1.4f, 1.7f})
     , scene(in_prefix + test_name + ".obj")
 {
     std::clog << "Setup Rendering Platform initialized" << std::endl;
@@ -18,6 +17,10 @@ void integration_render::init_default()
     scene.add_light(phong_light(spec, diff), { 1.3f, -1.8f, -1.2f});
     scene.add_light(phong_light(spec, diff), {-1.1f,  2.0f,  1.1f});
     scene.add_light(phong_light(spec, diff), {-1.5f, -1.5f,  1.5f});
+
+    scene.add_camera(camera(w.getWidth(), w.getHeight(), 
+                            {-1.5f, 1.2f, -1.5f}, 
+                            {1.7f, -1.4f, 1.7f}));
 
     std::clog << "World initialized" << std::endl;
 }

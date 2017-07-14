@@ -167,6 +167,8 @@ TEST(non_geometry, world_handle)
     w.add_light(phong_light(spec, diff), {-1.7f, -1.5f, -1.5f});
     w.add_light(phong_light(spec, diff), { 1.3f, -1.8f, -1.2f});
 
+    w.add_camera(camera(800, 600));
+
     const auto h = w.handle();
 
     EXPECT_NE(h.vertices, nullptr);
@@ -188,6 +190,11 @@ TEST(non_geometry, world_handle)
     EXPECT_NE(h.lights, nullptr);
     EXPECT_EQ(h.lights, w.lights().data().get());
     EXPECT_EQ(h.light_count, 2);
+
+    EXPECT_EQ(h.cam.width(), 800);
+    EXPECT_EQ(h.cam.height(), 600);
+    EXPECT_EQ(h.cam.origin(),   coord(0.f, 0.f, 0.f));
+    EXPECT_EQ(h.cam.steering(), coord(0.f, 0.f, 1.f));
 }
 
 TEST(non_geometry, lights)
