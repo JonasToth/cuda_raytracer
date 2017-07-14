@@ -5,8 +5,6 @@ integration_render::integration_render(std::string name)
     , c(w.getWidth(), w.getHeight(), {-1.5f, 1.2f, -1.5f}, {1.7f, -1.4f, 1.7f})
     , scene(in_prefix + test_name + ".obj")
 {
-    auto w_ptr = w.getWindow();
-    glfwMakeContextCurrent(w_ptr);
     std::clog << "Setup Rendering Platform initialized" << std::endl;
 }
 
@@ -26,13 +24,12 @@ void integration_render::init_default()
 
 void integration_render::run()
 {
-
     const auto& triangles = scene.triangles();
     raytrace_many_shaded(render_surface.getSurface(), c,
                          triangles.data().get(), triangles.size(),
                          scene.lights().data().get(), scene.light_count());
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    std::this_thread::sleep_for(std::chrono::seconds(2));
     render_surface.render_gl_texture();
     std::clog << "World rendered" << std::endl;
 

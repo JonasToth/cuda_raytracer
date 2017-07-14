@@ -108,6 +108,16 @@ add_custom_target(integration_test_files
 
     # actual test files
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube.obj ${PROJECT_BINARY_DIR}/test/int_test_input/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube.mtl ${PROJECT_BINARY_DIR}/test/int_test_input/
+
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_smooth.obj ${PROJECT_BINARY_DIR}/test/int_test_input/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_smooth.mtl ${PROJECT_BINARY_DIR}/test/int_test_input/
+
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.obj ${PROJECT_BINARY_DIR}/test/int_test_input/materials.obj
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.mtl ${PROJECT_BINARY_DIR}/test/int_test_input/materials.mtl
+
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene_smooth.obj ${PROJECT_BINARY_DIR}/test/int_test_input/materials_smooth.obj
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene_smooth.mtl ${PROJECT_BINARY_DIR}/test/int_test_input/materials_smooth.mtl
 
     # reference as ground truth
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_cube.png ${PROJECT_BINARY_DIR}/test/int_test_ref/

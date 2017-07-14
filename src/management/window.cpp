@@ -1,7 +1,7 @@
 #include "window.h"
 #include <stdexcept>
 
-window::window(int width, int height, const std::string& title, bool visible)
+window::window(int width, int height, const std::string& title)
     : __width{width}
     , __height{height}
 {
@@ -9,13 +9,6 @@ window::window(int width, int height, const std::string& title, bool visible)
 
     if(init == 0)
         throw std::runtime_error{"Could not initialize glfw"};
-
-    // invisible windows for test cases and only image rendering
-    if(!visible)
-    {
-        glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-        glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
-    }
 
     glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
@@ -27,6 +20,7 @@ window::window(int width, int height, const std::string& title, bool visible)
         glfwTerminate();
         throw std::runtime_error{"Could not create a window"};
     }
+    glfwMakeContextCurrent(__w);
 }
 
 window::~window() 
