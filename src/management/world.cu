@@ -323,3 +323,7 @@ void world_geometry::load(const std::string& file_name) {
 }
 
 
+void world_geometry::add_light(phong_light l, coord position)
+{
+    __lights.push_back(light_source(l, position));
+}

@@ -58,8 +58,7 @@ auto BM_CubeRender = [](benchmark::State& state, std::string base_name)
     // Light Setup similar to blender (position and stuff taken from there)
     float spec[3] = {0.8f, 0.8f, 0.8f};
     float diff[3] = {0.8f, 0.8f, 0.8f};
-    thrust::device_vector<light_source> lights;
-    lights.push_back(light_source{phong_light(spec, diff), {0.8f, 0.9f, 1.5f}});
+    scene.add_light(phong_light(spec, diff), {0.8f, 0.9f, 1.5f});
 
     const auto& triangles = scene.triangles();
 
@@ -67,7 +66,7 @@ auto BM_CubeRender = [](benchmark::State& state, std::string base_name)
     {
         raytrace_many_shaded(render_surface.getSurface(), c,
                              triangles.data().get(), triangles.size(),
-                             lights.data().get(), lights.size());
+                             scene.lights().data().get(), scene.light_count());
     }
 
     std::this_thread::sleep_for(std::chrono::milliseconds(500));

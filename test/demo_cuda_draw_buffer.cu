@@ -244,20 +244,19 @@ TEST(cuda_draw, draw_phong_shaded)
     // 3D Stuff
     world_geometry world("test_camera_light.obj");
 
-    thrust::device_vector<light_source> lights;
     float spec[3] = {0.2f, 0.4f, 0.2f};
     float diff[3] = {0.1f, 0.9f, 0.7f};
-    lights.push_back(light_source{phong_light(spec, diff), {-1.7f, -1.5f, -1.5f}});
-    lights.push_back(light_source{phong_light(spec, diff), { 1.3f, -1.8f, -1.2f}});
-    lights.push_back(light_source{phong_light(spec, diff), {-1.1f,  2.0f,  1.1f}});
-    lights.push_back(light_source{phong_light(spec, diff), {-1.5f, -1.5f,  1.5f}});
+    world.add_light(phong_light(spec, diff), {-1.7f, -1.5f, -1.5f});
+    world.add_light(phong_light(spec, diff), { 1.3f, -1.8f, -1.2f});
+    world.add_light(phong_light(spec, diff), {-1.1f,  2.0f,  1.1f});
+    world.add_light(phong_light(spec, diff), {-1.5f, -1.5f,  1.5f});
 
     const auto& triangles = world.triangles();
 
     while(!glfwWindowShouldClose(w)) {
         raytrace_many_shaded(vis.getSurface(), c,
                              triangles.data().get(), triangles.size(),
-                             lights.data().get(), lights.size());
+                             world.lights().data().get(), world.light_count());
         vis.render_gl_texture();
 
         glfwSwapBuffers(w);

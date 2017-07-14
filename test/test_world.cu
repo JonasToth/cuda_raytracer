@@ -159,6 +159,23 @@ TEST(cube, no_normals_no_materials)
 
 }
 
+TEST(non_geometry, lights)
+{
+    world_geometry w;
+
+    float spec[3] = {0.8f, 0.8f, 0.8f};
+    float diff[3] = {0.8f, 0.8f, 0.8f};
+
+    w.add_light(phong_light(spec, diff), coord(-1.7f, -1.5f, -1.5f));
+
+    EXPECT_EQ(w.light_count(), 1);
+}
+
+TEST(non_geometry, camera)
+{
+
+}
+
 TEST(real, easy_scene) 
 {
     world_geometry w;

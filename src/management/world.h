@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+#include "graphic/light.h"
 #include "graphic/material.h"
 #include "graphic/triangle.h"
 #include "graphic/vector.h"
@@ -34,16 +35,20 @@ public:
     /// Load data from disk and upload to thrust::device, throws exception on data error.
     void load(const std::string& file_name);
 
+    void add_light(phong_light l, coord position);
+
     std::size_t vertex_count() const noexcept { return __vertices.size(); }
     std::size_t normal_count() const noexcept { return __normals.size(); }
     std::size_t material_count() const noexcept { return __materials.size(); }
     std::size_t triangle_count() const noexcept { return __triangles.size(); }
     std::size_t shape_count() const noexcept { return __shape_count; }
+    std::size_t light_count() const noexcept { return __lights.size(); }
 
     const thrust::device_vector<coord>& vertices() const noexcept { return __vertices; }
     const thrust::device_vector<coord>& normals() const noexcept { return __normals; }
     const thrust::device_vector<phong_material>& materials() const noexcept { return __materials; }
     const thrust::device_vector<triangle>& triangles() const noexcept { return __triangles; }
+    const thrust::device_vector<light_source>& lights() const noexcept { return __lights; }
 
 private:
     thrust::device_vector<coord> __vertices;            ///< vertices in the world
@@ -52,6 +57,8 @@ private:
 
     thrust::device_vector<triangle> __triangles;    ///< references the __vertices 
                                                     ///< and __materials
+                                                    
+    thrust::device_vector<light_source> __lights;   ///< lights in the scene
 
     std::size_t __shape_count;                      ///< number of shapes(objects) in scene
 };
