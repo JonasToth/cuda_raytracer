@@ -48,7 +48,7 @@ SET(DEMOS
 FOREACH(demo IN LISTS DEMOS)
     cuda_add_executable(demo_${demo}.x demo_${demo}.cu)
     target_link_libraries(demo_${demo}.x 
-                          management
+                          management 
                           ${GTEST_MAIN} ${GTEST_LIBRARIES} 
                           pthread 
                           glfw ${OPENGL_gl_LIBRARY}
@@ -116,8 +116,7 @@ SET(INTEGRATION_TESTS
 FOREACH(test IN LISTS INTEGRATION_TESTS)
     cuda_add_executable(int_test_${test}.x int_test_${test}.cu)
     target_link_libraries(int_test_${test}.x
-                          management
-                          utility
+                          management 
                           glfw ${OPENGL_gl_LIBRARY}
                           ${PNG_LIBRARIES})
 

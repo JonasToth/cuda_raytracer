@@ -5,6 +5,7 @@
 #include "management/input_manager.h"
 #include "management/window.h"
 #include "management/world.h"
+#include "util/kernel_launcher/world_shading.h"
 
 #include <thread>
 #include <chrono>
@@ -49,20 +50,6 @@ static void handle_keys(GLFWwindow* w, camera& c)
         c.move({0.f, 0.f, -dP});
         camera_changed = true;
     }
-}
-
-static void raytrace_many_shaded(cudaSurfaceObject_t& surface, camera c,
-                                 const triangle* triangles, std::size_t n_triangles,
-                                 const light_source* lights, std::size_t n_lights)
-{
-    dim3 dimBlock(32,32);
-    dim3 dimGrid((c.width() + dimBlock.x) / dimBlock.x,
-                 (c.height() + dimBlock.y) / dimBlock.y);
-    black_kernel<<<dimGrid, dimBlock>>>(surface, c.width(), c.height());
-    trace_many_triangles_shaded<<<dimGrid, dimBlock>>>(surface, c,
-                                                       triangles, n_triangles, 
-                                                       lights, n_lights,
-                                                       c.width(), c.height());
 }
 
 int main(int argc, char** argv)
@@ -113,4 +100,6 @@ int main(int argc, char** argv)
             render_lambda();
     } 
     input_manager::instance().clear();
+
+    return 0;
 }

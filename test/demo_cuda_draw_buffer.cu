@@ -7,6 +7,7 @@
 #include "management/input_manager.h"
 #include "management/window.h"
 #include "management/world.h"
+#include "util/kernel_launcher/world_shading.h"
 
 #include <iostream>
 
@@ -111,20 +112,6 @@ void raytrace_many_cuda(cudaSurfaceObject_t& Surface,
     trace_many_triangles_with_camera<<<dimGrid, dimBlock>>>(Surface, c, 
                                                             Triangles, TriangleCount, 
                                                             c.width(), c.height());
-}
-
-void raytrace_many_shaded(cudaSurfaceObject_t& surface, camera c,
-                          const triangle* triangles, std::size_t n_triangles,
-                          const light_source* lights, std::size_t n_lights)
-{
-    dim3 dimBlock(32,32);
-    dim3 dimGrid((c.width() + dimBlock.x) / dimBlock.x,
-                 (c.height() + dimBlock.y) / dimBlock.y);
-    black_kernel<<<dimGrid, dimBlock>>>(surface, c.width(), c.height());
-    trace_many_triangles_shaded<<<dimGrid, dimBlock>>>(surface, c,
-                                                       triangles, n_triangles, 
-                                                       lights, n_lights,
-                                                       c.width(), c.height());
 }
 
 TEST(cuda_draw, drawing_traced_triangle) 

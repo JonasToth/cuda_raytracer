@@ -57,9 +57,6 @@ cuda_add_library(management
                  ${PROJECT_SOURCE_DIR}/src/management/window.cpp
                  ${PROJECT_SOURCE_DIR}/src/management/world.cu)
 
-cuda_add_library(utility
-                 ${PROJECT_SOURCE_DIR}/src/util/kernel_launcher/world_shading.cu)
-
 # executable raytracer
 cuda_add_executable(raytracer.x src/main.cpp)
 

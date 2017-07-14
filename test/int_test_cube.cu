@@ -1,5 +1,3 @@
-#include "graphic/kernels/utility.h"
-#include "graphic/kernels/shaded.h"
 #include "management/window.h"
 #include "management/world.h"
 #include "util/kernel_launcher/world_shading.h"
