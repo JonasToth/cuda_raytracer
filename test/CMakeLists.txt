@@ -91,7 +91,7 @@ SET(UNITTESTS_PLAIN
     camera_control
     glfw
     input_manager
-    kernel_from_cpp
+    #kernel_from_cpp
     light
     material
     ray
