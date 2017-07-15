@@ -1,4 +1,5 @@
 #include "graphic/kernels/shaded.h"
+#include "image_loop_macro.h"
 
 void trace_triangles_shaded(memory_surface& surface, camera c,
                             const triangle* triangles, std::size_t n_triangles,

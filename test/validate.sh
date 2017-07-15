@@ -1,24 +1,26 @@
 #!/bin/bash
 
 # run a test file and compare the result against the expected result
-if [ $# -ne 3  ]; then
+if [ $# -ne 4  ]; then
     echo "Incorrect argument count!"
     echo
-    echo "Usage: $0 test_executable.x output_image reference_image"
+    echo "Usage: $0 test_executable.x obj_file output_image reference_image"
     echo
     exit 1
 fi
 
 TEST_EXE="$1"
 
-OUT_BASE="$2"
-OUT_FILE="$2.png"
+OBJ_BASE="$2"
 
-REF_BASE="$3"
-REF_FILE="$3.png"
+OUT_BASE="$3"
+OUT_FILE="$3.png"
+
+REF_BASE="$4"
+REF_FILE="$4.png"
 
 
-eval "$TEST_EXE $OUT_BASE"
+eval "$TEST_EXE $OBJ_BASE $OUT_BASE"
 
 convert "./int_test_output/$OUT_FILE" "./int_test_output/$OUT_BASE.rgba"
 convert "./int_test_ref/$REF_FILE" "./int_test_output/$REF_BASE.rgba"
