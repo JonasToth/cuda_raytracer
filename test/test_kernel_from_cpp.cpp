@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "graphic/kernels/utility.h"
+#include "graphic/kernels/trace.h"
 #include "graphic/kernels/utility.h"
 #include "graphic/ray.h"
 #include "graphic/triangle.h"
@@ -44,6 +44,9 @@ TEST(test_kernel, draw_triangle)
 
     black_kernel(vis);
     stupid_colors(vis, 15.f);
+
+    for (const auto& t : Triangles)
+        trace_single_triangle(vis, t);
 
 
     vis.save_as_png("test_cpp_kernel.png");
