@@ -4,7 +4,6 @@
 #include "graphic/triangle.h"
 #include "management/memory_surface.h"
 #include "management/window.h"
-#include <vector>
 
 TEST(test_kernel, draw_triangle)
 {
@@ -42,17 +41,14 @@ TEST(test_kernel, draw_triangle)
     Triangles[2] = triangle(P4, P2, P0, t2_n);
 
     /*
-    dim3 dimBlock(32, 32);
-    dim3 dimGrid((width + dimBlock.x) / dimBlock.x, (height + dimBlock.y) / dimBlock.y);
     black_kernel(vis.getSurface(), width, height);
 
     for (std::size_t i = 0; i < Triangles.size(); ++i) {
-        const thrust::device_ptr<triangle> T = &Triangles[i];
         raytrace_cuda(vis.getSurface(), win.getWidth(), win.getHeight(), T.get());
     }
     */
 
-    vis.save_as_png("test_cpp_kernel.png");
+    //vis.save_as_png("test_cpp_kernel.png");
 }
 
 

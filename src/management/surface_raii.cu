@@ -1,23 +1,15 @@
 #include "surface_raii.h"
 
-#include <chrono>
 #include <gsl/gsl>
-#include <iostream>
-
-#pragma diagnostic push
-#pragma GCC diagnostic ignored "-Wignored-qualifiers"
-#include <png-plusplus/image.hpp>
-#include <png-plusplus/rgba_pixel.hpp>
 #include <stdexcept>
-#include <thread>
+#include "management/png_helper.h"
 
-surface_raii::surface_raii(int width, int height, render_target target)
-  : __target{target}
-  , __width{width}
+surface_raii::surface_raii(int width, int height)
+  : __width{width}
   , __height{height}
   , __texture{0}
 {
-    __initialize_render_target();
+    __initialize_opengl_texture();
     __initialize_cuda_surface();
 }
 
@@ -31,38 +23,12 @@ surface_raii::~surface_raii()
     cudaDestroySurfaceObject(__cuda_surface);
 }
 
-namespace
-{
-png::image<png::rgba_pixel> memory_to_png(const std::vector<uint8_t>& memory,
-                                          std::size_t width, std::size_t height,
-                                          const int channels)
-{
-    png::image<png::rgba_pixel> img(width, height);
-    for (std::size_t y = 0ul; y < height; ++y) {
-        for (std::size_t x = 0ul; x < width; ++x) {
-            const auto idx = channels * (y * width + x);
-            const png::rgba_pixel pixel(memory[idx], memory[idx + 1], memory[idx + 2]);
-            // Otherwise its upside down, because opengl
-            img.set_pixel(x, height - y - 1, pixel);
-        }
-    }
-    return img;
-}
-} // namespace
-
 void surface_raii::save_as_png(const std::string& file_name) const
 {
     const auto memory = __get_texture_memory();
     // const not allowed, IDK why
     auto img = memory_to_png(memory, __width, __height, __channels);
     img.write(file_name);
-}
-
-void surface_raii::__initialize_render_target()
-{
-    // https://stackoverflow.com/questions/19244191/
-    // cuda-opengl-interop-draw-to-opengl-texture-with-cuda
-    __initialize_opengl_texture();
 }
 
 
@@ -103,12 +69,6 @@ void surface_raii::__initialize_opengl_texture()
 
     // Memory mapping
     cudaGraphicsMapResources(1, &__cuda_resource);
-}
-
-void surface_raii::__initialize_memory_texture()
-{
-    // Allocate memory in RAM
-    __memory_texture.resize(__channels * __width * __height);
 }
 
 void surface_raii::__initialize_cuda_surface()
@@ -155,4 +115,3 @@ std::vector<uint8_t> surface_raii::__get_texture_memory() const
     return gl_texture_data;
 }
 
-#pragma GCC diagnostic pop
