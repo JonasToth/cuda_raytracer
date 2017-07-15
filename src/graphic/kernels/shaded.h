@@ -22,6 +22,8 @@ __global__ void trace_triangles_shaded(cudaSurfaceObject_t surface, camera c,
                                        const light_source* lights, std::size_t n_lights,
                                        int width, int height);
 
+#ifdef __CUDACC__
 #include "graphic/kernels/shaded.inl"
+#endif
 
 #endif /* end of include guard: SHADED_H_KK3H1DCZ */

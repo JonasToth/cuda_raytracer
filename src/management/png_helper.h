@@ -1,8 +1,9 @@
 #ifndef PNG_HELPER_H_7QDZO3IN
 #define PNG_HELPER_H_7QDZO3IN
 
-#pragma diagnostic push
+#pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wignored-qualifiers"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 #include <png-plusplus/image.hpp>
 #include <png-plusplus/rgba_pixel.hpp>
 

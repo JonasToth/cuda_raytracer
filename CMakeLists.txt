@@ -53,6 +53,7 @@ endif()
 cuda_add_library(management 
                  ${PROJECT_SOURCE_DIR}/src/management/input_manager.cpp
                  ${PROJECT_SOURCE_DIR}/src/management/input_callback.cpp
+                 ${PROJECT_SOURCE_DIR}/src/management/memory_surface.cpp
                  ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu 
                  ${PROJECT_SOURCE_DIR}/src/management/window.cpp
                  ${PROJECT_SOURCE_DIR}/src/management/world.cu)

@@ -91,6 +91,7 @@ SET(UNITTESTS_PLAIN
     camera_control
     glfw
     input_manager
+    #kernel_from_cpp
     light
     material
     ray
@@ -108,12 +109,13 @@ FOREACH(unit_test IN LISTS UNITTESTS_PLAIN)
     add_test(unit_${unit_test} test_${unit_test}.x)
 ENDFOREACH(unit_test)
 
-# additional stuff, that can not be handled by the foreach loop
 add_executable(test_kernel_from_cpp.x test_kernel_from_cpp.cpp
-               ${PROJECT_SOURCE_DIR}/src/management/memory_surface.cpp)
-target_link_libraries(test_kernel_from_cpp.x ${PNG_LIBRARIES}
-                      ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
-add_test(unit_kernel_from_cpp test_kernel_from_cpp.x)
+               ${PROJECT_SOURCE_DIR}/src/graphic/kernels/utility.cpp)
+target_link_libraries(test_kernel_from_cpp.x 
+                      management
+                      ${GEST_MAIN} ${GTEST_LIBRARIES} pthread
+                      ${PNG_LIBRARIES})
+add_test(unit_test_kernel_from_cpp test_kernel_from_cpp.x)
 
 # ====================== Integration tests for "real world" scenarios ====================
 add_custom_target(integration_test_files

@@ -1,5 +1,7 @@
 #include "gtest/gtest.h"
 
+#include "graphic/kernels/utility.h"
+#include "graphic/kernels/utility.h"
 #include "graphic/ray.h"
 #include "graphic/triangle.h"
 #include "management/memory_surface.h"
@@ -40,15 +42,11 @@ TEST(test_kernel, draw_triangle)
     Triangles[1] = triangle(P0, P1, P3, t1_n);
     Triangles[2] = triangle(P4, P2, P0, t2_n);
 
-    /*
-    black_kernel(vis.getSurface(), width, height);
+    black_kernel(vis);
+    stupid_colors(vis, 15.f);
 
-    for (std::size_t i = 0; i < Triangles.size(); ++i) {
-        raytrace_cuda(vis.getSurface(), win.getWidth(), win.getHeight(), T.get());
-    }
-    */
 
-    //vis.save_as_png("test_cpp_kernel.png");
+    vis.save_as_png("test_cpp_kernel.png");
 }
 
 

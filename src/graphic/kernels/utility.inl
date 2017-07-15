@@ -1,3 +1,4 @@
+
 /// Surface gets all black
 __global__ void black_kernel(cudaSurfaceObject_t surface, int width, int height)
 {
@@ -30,3 +31,5 @@ __global__ void stupid_colors(cudaSurfaceObject_t surface, int width, int height
         surf2Dwrite(color, surface, x * sizeof(color), y);
     }
 }
+
+
