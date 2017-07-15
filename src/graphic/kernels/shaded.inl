@@ -1,12 +1,3 @@
-CUCALL inline float clamp(float lowest, float value, float highest)
-{
-    if (value < lowest)
-        return lowest;
-    else if (value > highest)
-        return highest;
-    else
-        return value;
-}
 
 __global__ void trace_triangles_shaded(cudaSurfaceObject_t surface, camera c,
                                        const triangle* triangles, std::size_t n_triangles,

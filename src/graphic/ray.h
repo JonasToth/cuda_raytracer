@@ -1,8 +1,11 @@
 #ifndef RAY_H_COAY6AFS
 #define RAY_H_COAY6AFS
 
+#ifdef __CUDACC__
 #include <thrust/pair.h>
 #include <thrust/tuple.h>
+#endif
+
 #include <utility>
 
 #include "graphic/triangle.h"

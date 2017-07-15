@@ -110,6 +110,7 @@ FOREACH(unit_test IN LISTS UNITTESTS_PLAIN)
 ENDFOREACH(unit_test)
 
 add_executable(test_kernel_from_cpp.x test_kernel_from_cpp.cpp
+               ${PROJECT_SOURCE_DIR}/src/graphic/kernels/trace.cpp
                ${PROJECT_SOURCE_DIR}/src/graphic/kernels/utility.cpp)
 target_link_libraries(test_kernel_from_cpp.x 
                       management
