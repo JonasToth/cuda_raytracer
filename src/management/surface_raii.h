@@ -1,9 +1,14 @@
 #ifndef VISUALIZATION_H_8LNOECHQ
 #define VISUALIZATION_H_8LNOECHQ
 
+#ifdef __CUDACC__
 #include <cuda.h>
 #include <cuda_gl_interop.h>
 #include <cuda_runtime.h>
+
+static_assert(false, "Suck my dick");
+#endif
+
 #include <string>
 #include <vector>
 
@@ -19,8 +24,10 @@ public:
     surface_raii(int width, int height, render_target target = render_target::texture);
     ~surface_raii();
 
+#ifdef __CUDACC__
     cudaSurfaceObject_t& getSurface() noexcept { return __cuda_surface; }
     void render_gl_texture() noexcept;
+#endif
 
     void save_as_png(const std::string& file_name) const;
 
@@ -43,6 +50,7 @@ private:
     int __height;                ///< height of the texture
 
     std::vector<uint8_t> __memory_texture; ///< when rendering to plain memory, buffer
+#ifdef __CUDACC__
     GLuint __texture; ///< when using an opengl texture, this value will be set
 
     /// When using an gpu, this will be used to handle the memory there
@@ -51,6 +59,7 @@ private:
     cudaGraphicsResource_t __cuda_resource;
 
     cudaSurfaceObject_t __cuda_surface;
+#endif
 };
 
 

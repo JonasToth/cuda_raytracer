@@ -18,11 +18,14 @@ surface_raii::surface_raii(int width, int height, render_target target)
   , __texture{0}
 {
     __initialize_render_target();
+#ifdef __CUDACC__
     __initialize_cuda_surface();
+#endif
 }
 
 surface_raii::~surface_raii()
 {
+#ifdef __CUDACC__
     if (__target == render_target::texture) {
         // Destroy the opengl texture
         glDeleteTextures(1, &__texture);
@@ -31,6 +34,7 @@ surface_raii::~surface_raii()
     }
 
     cudaDestroySurfaceObject(__cuda_surface);
+#endif
 }
 
 namespace
@@ -75,6 +79,7 @@ void surface_raii::__initialize_render_target()
 
 void surface_raii::__initialize_opengl_texture()
 {
+#ifdef __CUDACC__
     glEnable(GL_TEXTURE_2D);
     glGenTextures(1, &__texture);
 
@@ -110,6 +115,7 @@ void surface_raii::__initialize_opengl_texture()
 
     // Memory mapping
     cudaGraphicsMapResources(1, &__cuda_resource);
+#endif
 }
 
 void surface_raii::__initialize_memory_texture()
@@ -120,6 +126,7 @@ void surface_raii::__initialize_memory_texture()
 
 void surface_raii::__initialize_cuda_surface()
 {
+#ifdef __CUDACC__
     // source: Internet :)
     // https://stackoverflow.com/questions/19244191/
     // cuda-opengl-interop-draw-to-opengl-texture-with-cuda
@@ -130,10 +137,12 @@ void surface_raii::__initialize_cuda_surface()
 
     // Surface creation
     cudaCreateSurfaceObject(&__cuda_surface, &__cuda_array_resource_desc);
+#endif
 }
 
 void surface_raii::render_gl_texture() noexcept
 {
+#ifdef __CUDACC__
     glBindTexture(GL_TEXTURE_2D, __texture);
     {
         glBegin(GL_QUADS);
@@ -151,16 +160,21 @@ void surface_raii::render_gl_texture() noexcept
     }
     glBindTexture(GL_TEXTURE_2D, 0);
     glFinish();
+#endif
 }
 
 std::vector<uint8_t> surface_raii::__get_texture_memory() const
 {
     if (__target == render_target::texture) {
+#ifdef __CUDACC__
         std::vector<uint8_t> gl_texture_data(__width * __height * __channels);
         glReadPixels(0, 0, __width, __height, GL_RGBA, GL_UNSIGNED_BYTE,
                      gl_texture_data.data());
 
         return gl_texture_data;
+#else
+        throw std::runtime_error{"Using OpenGL without CUDA not supported!"};
+#endif
     } else if (__target == render_target::memory)
         return __memory_texture;
     else
