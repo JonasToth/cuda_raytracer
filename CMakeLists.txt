@@ -21,11 +21,12 @@ find_package(CUDA REQUIRED)
 find_package(glfw3 3.2 REQUIRED) # http://www.glfw.org/docs/latest/build_guide.html#build_link_cmake_package
 find_package(OpenGL REQUIRED)
 find_package(PNG REQUIRED)
+find_package(OpenMP REQUIRED)
 
 
 # ----------------------------------------------------------------------------------------
 #                         ===== Compiler Configuration =====
-add_definitions("--std=c++11 -Wall -Wextra -pedantic -DGSL_THROW_ON_CONTRACT_VIOLATION")
+add_definitions("--std=c++11 -Wall -Wextra -pedantic -DGSL_THROW_ON_CONTRACT_VIOLATION ${OpenMP_CXX_FLAGS}")
 include_directories(src)
 include_directories(lib)
 include_directories(${PROJECT_SOURCE_DIR}/lib/gsl-lite/include)
@@ -63,6 +64,8 @@ add_library(cpu_kernels
             ${PROJECT_SOURCE_DIR}/src/graphic/kernels/shaded.cpp
             ${PROJECT_SOURCE_DIR}/src/graphic/kernels/trace.cpp
             ${PROJECT_SOURCE_DIR}/src/graphic/kernels/utility.cpp)
+target_compile_options(cpu_kernels PUBLIC "${OpenMP_CXX_FLAGS}")
+target_link_libraries(cpu_kernels)
 
 # executable raytracer
 cuda_add_executable(raytracer.x src/main.cpp)

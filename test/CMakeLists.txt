@@ -177,10 +177,12 @@ FOREACH(test IN LISTS INTEGRATION_TESTS)
     add_executable(int_test_cpu_${test}.x 
                    int_test_${test}.cpp
                    ${PROJECT_SOURCE_DIR}/src/management/world.cu)
+    target_compile_options(int_test_cpu_${test}.x PUBLIC "-fopenmp")
+    #target_link_options(int_test_cpu_${test}.x PRIVATE "-fopenmp")
     target_compile_definitions(int_test_cpu_${test}.x 
                                PRIVATE -DTHRUST_DEVICE_SYSTEM=THRUST_DEVICE_SYSTEM_CPP)
     target_link_libraries(int_test_cpu_${test}.x
-                          cpu_kernels
+                          cpu_kernels pthread
                           glfw ${OPENGL_gl_LIBRARY}
                           ${PNG_LIBRARIES})
     add_dependencies(int_test_cpu_${test}.x integration_test_files)

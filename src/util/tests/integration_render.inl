@@ -29,7 +29,7 @@ void integration_render::init_default()
 void integration_render::run()
 {
 #ifndef __CUDACC__
-    raytrace_many_shaded(render_surface, scene.handle());
+    raytrace_many_shaded(render_surface, scene.handle(), 5);
 #else
     raytrace_many_shaded(render_surface.getSurface(), scene.handle());
     std::this_thread::sleep_for(std::chrono::seconds(2));

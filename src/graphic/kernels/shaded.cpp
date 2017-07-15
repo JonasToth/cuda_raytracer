@@ -1,11 +1,15 @@
 #include "graphic/kernels/shaded.h"
 #include "image_loop_macro.h"
+#include <iostream>
 
-void trace_triangles_shaded(memory_surface& surface, camera c,
-                            const triangle* triangles, std::size_t n_triangles,
-                            const light_source* lights, std::size_t n_lights)
+void trace_triangles_shaded(memory_surface& surface, camera c, const triangle* triangles,
+                            std::size_t n_triangles, const light_source* lights,
+                            std::size_t n_lights)
 {
-    PIXEL_LOOP(surface) {
+    PIXEL_LOOP(surface)
+    {
+        if (x == 0)
+            std::clog << "Rendering y = " << y << std::endl;
         ray r = c.rayAt(x, y);
 
         pixel_rgba pixel_color;
