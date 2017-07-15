@@ -6,6 +6,7 @@
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #include <png-plusplus/image.hpp>
 #include <png-plusplus/rgba_pixel.hpp>
+#pragma GCC diagnostic pop
 
 inline png::image<png::rgba_pixel> memory_to_png(const std::vector<uint8_t>& memory,
                                                  std::size_t width, std::size_t height,
@@ -23,6 +24,5 @@ inline png::image<png::rgba_pixel> memory_to_png(const std::vector<uint8_t>& mem
     return img;
 }
 
-#pragma GCC diagnostic pop
 
 #endif /* end of include guard: PNG_HELPER_H_7QDZO3IN */

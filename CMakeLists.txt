@@ -26,7 +26,9 @@ find_package(OpenMP REQUIRED)
 
 # ----------------------------------------------------------------------------------------
 #                         ===== Compiler Configuration =====
-add_definitions("--std=c++11 -Wall -Wextra -pedantic -DGSL_THROW_ON_CONTRACT_VIOLATION ${OpenMP_CXX_FLAGS}")
+add_definitions("--std=c++11 -Wall -Wextra -pedantic -DGSL_THROW_ON_CONTRACT_VIOLATION")
+SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fopenmp")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 include_directories(src)
 include_directories(lib)
 include_directories(${PROJECT_SOURCE_DIR}/lib/gsl-lite/include)
