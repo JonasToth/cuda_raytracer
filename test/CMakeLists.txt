@@ -162,13 +162,25 @@ SET(INTEGRATION_TESTS
     
 
 FOREACH(test IN LISTS INTEGRATION_TESTS)
-    cuda_add_executable(int_test_${test}.x int_test_${test}.cu)
-    target_link_libraries(int_test_${test}.x
+    # run this kernel and image on GPU AND CPU
+    cuda_add_executable(int_test_gpu_${test}.x int_test_${test}.cu)
+    target_link_libraries(int_test_gpu_${test}.x
                           management 
                           glfw ${OPENGL_gl_LIBRARY}
                           ${PNG_LIBRARIES})
-    add_dependencies(int_test_${test}.x integration_test_files)
+    add_dependencies(int_test_gpu_${test}.x integration_test_files)
 
-    add_test(NAME integration_${test}
-             COMMAND ./validate.sh ./int_test_${test}.x ${test} reference_${test})
+    add_test(NAME integration_gpu_${test}
+             COMMAND ./validate.sh ./int_test_gpu_${test}.x gpu_${test} reference_${test})
+
+    # CPU executable
+    add_executable(int_test_cpu_${test}.x int_test_${test}.cpp)
+    target_link_libraries(int_test_cpu_${test}.x
+                          management cpu_kernels
+                          glfw ${OPENGL_gl_LIBRARY}
+                          ${PNG_LIBRARIES})
+    add_dependencies(int_test_cpu_${test}.x integration_test_files)
+
+    add_test(NAME integration_cpu_${test}
+             COMMAND ./validate.sh ./int_test_cpu_${test}.x cpu_${test} reference_${test})
 ENDFOREACH(test)

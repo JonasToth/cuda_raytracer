@@ -58,6 +58,11 @@ cuda_add_library(management
                  ${PROJECT_SOURCE_DIR}/src/management/window.cpp
                  ${PROJECT_SOURCE_DIR}/src/management/world.cu)
 
+add_library(cpu_kernels
+            ${PROJECT_SOURCE_DIR}/src/graphics/kernels/shaded.cpp
+            ${PROJECT_SOURCE_DIR}/src/graphics/kernels/traced.cpp
+            ${PROJECT_SOURCE_DIR}/src/graphics/kernels/utility.cpp)
+
 # executable raytracer
 cuda_add_executable(raytracer.x src/main.cpp)
 
