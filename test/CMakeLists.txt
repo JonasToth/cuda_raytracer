@@ -110,7 +110,7 @@ ENDFOREACH(unit_test)
 
 # additional stuff, that can not be handled by the foreach loop
 add_executable(test_kernel_from_cpp.x test_kernel_from_cpp.cpp
-               ${PROJECT_SOURCE_DIR}/src/management/surface_raii.cu)
+               ${PROJECT_SOURCE_DIR}/src/management/memory_surface.cpp)
 target_link_libraries(test_kernel_from_cpp.x ${PNG_LIBRARIES}
                       ${GEST_MAIN} ${GTEST_LIBRARIES} pthread)
 add_test(unit_kernel_from_cpp test_kernel_from_cpp.x)

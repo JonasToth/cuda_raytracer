@@ -2,7 +2,7 @@
 
 #include "graphic/ray.h"
 #include "graphic/triangle.h"
-#include "management/surface_raii.h"
+#include "management/memory_surface.h"
 #include "management/window.h"
 #include <vector>
 
@@ -11,7 +11,7 @@ TEST(test_kernel, draw_triangle)
     const std::size_t width = 800, height = 600;
 
     // Use only CPU and RAM for raytracing
-    surface_raii vis(width, height, render_target::memory);
+    memory_surface vis(width, height);
 
     // Create the Triangle and Coordinates on the device
     std::vector<coord> Vertices(5);
