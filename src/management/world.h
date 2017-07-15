@@ -3,8 +3,6 @@
 
 
 #include <string>
-#include <thrust/device_vector.h>
-#include <thrust/host_vector.h>
 #include <vector>
 
 #include "graphic/camera.h"
@@ -12,6 +10,7 @@
 #include "graphic/material.h"
 #include "graphic/triangle.h"
 #include "graphic/vector.h"
+#include "management/thrust_containers.h"
 
 /// Holds the World Geometry in a device vector and handles loading it from file.
 ///
@@ -108,5 +107,8 @@ private:
     std::size_t __shape_count; ///< number of shapes(objects) in scene
 };
 
+#ifndef __CUDACC__
+#include "world.cu"
+#endif
 
 #endif /* end of include guard: OBJ_IO_H_ZHYWUHRN */

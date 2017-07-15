@@ -2,9 +2,9 @@ integration_render::integration_render(std::string obj_name, std::string img_nam
   : obj_name(obj_name)
   , img_name(img_name)
 #ifdef __CUDACC__
-  , w(800, 600, obj_name + " Scene")
+  , w(width, height, obj_name + " Scene")
 #endif
-  , render_surface(800, 600)
+  , render_surface(width, height)
   , scene(in_prefix + obj_name + ".obj")
 {
     std::clog << "Setup Rendering Platform initialized" << std::endl;
@@ -21,7 +21,7 @@ void integration_render::init_default()
     scene.add_light(phong_light(spec, diff), {-1.1f, 2.0f, 1.1f});
     scene.add_light(phong_light(spec, diff), {-1.5f, -1.5f, 1.5f});
 
-    scene.set_camera(camera(800, 600, {-1.5f, 1.2f, -1.5f}, {1.7f, -1.4f, 1.7f}));
+    scene.set_camera(camera(width, height, {-1.5f, 1.2f, -1.5f}, {1.7f, -1.4f, 1.7f}));
 
     std::clog << "World initialized" << std::endl;
 }

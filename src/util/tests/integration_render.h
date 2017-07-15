@@ -32,6 +32,8 @@ public:
     world_geometry& getScene() noexcept { return scene; }
 
 private:
+    const std::size_t width = 800;
+    const std::size_t height = 600;
     const std::string obj_name;
     const std::string img_name;
     const std::string out_prefix = "./int_test_output/";

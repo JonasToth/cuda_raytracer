@@ -7,8 +7,6 @@
 #include "graphic/ray.h"
 #include "graphic/shading.h"
 #include "graphic/triangle.h"
-#include "management/memory_surface.h"
-#include "management/surface_raii.h"
 
 
 /// Calculate the whole shading formular for one channel
@@ -28,16 +26,21 @@ CUCALL inline float clamp(float lowest, float value, float highest)
 }
 
 
+#ifdef __CUDACC__
+#include "management/surface_raii.h"
+
 __global__ void trace_triangles_shaded(cudaSurfaceObject_t surface, camera c,
                                        const triangle* triangles, std::size_t n_triangles,
                                        const light_source* lights, std::size_t n_lights,
                                        int width, int height);
+#include "graphic/kernels/shaded.inl"
 
+#else
+
+#include "management/memory_surface.h"
 void trace_triangles_shaded(memory_surface& surface, camera c,
                             const triangle* triangles, std::size_t n_triangles,
                             const light_source* lights, std::size_t n_lights);
-#ifdef __CUDACC__
-#include "graphic/kernels/shaded.inl"
 #endif
 
 #endif /* end of include guard: SHADED_H_KK3H1DCZ */

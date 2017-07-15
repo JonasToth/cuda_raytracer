@@ -1,4 +1,6 @@
+#ifdef __CUDACC__
 #include "management/world.h"
+#endif
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tinyobjloader/tiny_obj_loader.h"
@@ -8,7 +10,7 @@
 #include <iostream>
 #include <stdexcept>
 
-#define NDEBUG
+#define DEBUG_OUTPUT 0
 
 world_geometry::world_geometry() = default;
 world_geometry::world_geometry(const std::string& file_name) { load(file_name); }
@@ -48,7 +50,7 @@ loaded_data load(const char* file_name)
 
 thrust::host_vector<coord> build_coords(const std::vector<tinyobj::real_t>& vertices)
 {
-    Expects(vertices.size() % 3 == 0);
+    Expects(vertices.size() % 3 == 0ul);
 
     thrust::host_vector<coord> v;
     v.reserve(vertices.size() / 3);
@@ -97,9 +99,9 @@ VertexData vertex_information(const thrust::device_vector<coord>& vertices,
     const auto idx1 = indices[index_offset + 1].vertex_index;
     const auto idx2 = indices[index_offset + 2].vertex_index;
 
-    Expects(idx0 < vertices.size() && idx0 >= 0);
-    Expects(idx1 < vertices.size() && idx1 >= 0);
-    Expects(idx2 < vertices.size() && idx2 >= 0);
+    Expects(static_cast<std::size_t>(idx0) < vertices.size() && idx0 >= 0);
+    Expects(static_cast<std::size_t>(idx1) < vertices.size() && idx1 >= 0);
+    Expects(static_cast<std::size_t>(idx2) < vertices.size() && idx2 >= 0);
 
     VertexData p;
     p.P0 = (&vertices[idx0]).get();
@@ -208,7 +210,7 @@ NormalData normal_information(const thrust::device_vector<coord>& vertices,
             nd.i1 = n_idx1;
             nd.i2 = n_idx2;
 
-#ifdef NDEBUG
+#if DEBUG_OUTPUT == 1
             std::clog << "i0: " << nd.i0 << "; n0: " << nd.n0 << '\t' << "i1: " << nd.i1
                       << "; n1: " << nd.n1 << '\t' << "i2: " << nd.i2 << "; n2: " << nd.n2
                       << '\n';
@@ -229,9 +231,9 @@ NormalData normal_information(const thrust::device_vector<coord>& vertices,
         }
     }
 
-    Ensures(nd.i0 < normals.size() && nd.i0 >= 0);
-    Ensures(nd.i1 < normals.size() && nd.i1 >= 0);
-    Ensures(nd.i2 < normals.size() && nd.i2 >= 0);
+    Ensures(static_cast<std::size_t>(nd.i0) < normals.size() && nd.i0 >= 0);
+    Ensures(static_cast<std::size_t>(nd.i1) < normals.size() && nd.i1 >= 0);
+    Ensures(static_cast<std::size_t>(nd.i2) < normals.size() && nd.i2 >= 0);
     Ensures(nd.n0 != nullptr);
     Ensures(nd.n1 != nullptr);
     Ensures(nd.n2 != nullptr);
@@ -297,13 +299,13 @@ void world_geometry::load(const std::string& file_name)
 
     // Handle all Vertices
     __vertices = __detail::build_coords(data.attrib.vertices);
-    Expects(__vertices.size() == data.attrib.vertices.size() / 3);
+    Expects(__vertices.size() == data.attrib.vertices.size() / 3ul);
 
     // Handle all normals
     __normals = __detail::build_coords(data.attrib.normals);
 
     //__normals.reserve(__normals.size() + __normals.size() / 3);
-    __normals.reserve(100000000);
+    __normals.reserve(30000000);
 
     // Handle all Materials
     __materials = __detail::build_materials(data.materials);
@@ -312,7 +314,7 @@ void world_geometry::load(const std::string& file_name)
     // Connect the triangles and give their surfaces a material, creates normals if
     // necessary!
     __triangles = __detail::build_faces(data.shapes, __vertices, __normals, __materials);
-    Expects(__normals.size() > 0);
+    Expects(__normals.size() > 0ul);
 }
 
 
