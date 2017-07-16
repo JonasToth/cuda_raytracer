@@ -11,13 +11,16 @@ void raytrace_cuda(cudaSurfaceObject_t& Surface, int width, int height, const tr
 #include "util/kernel_launcher/world_depth.inl"
 
 #else
-inline void raytrace_many_cuda(memory_surface& s, const camera& c, const triangle* triangles,
-                        std::size_t triangle_count)
+inline void raytrace_many_cuda(memory_surface& s, const camera& c,
+                               const triangle* triangles, std::size_t triangle_count)
 {
     trace_many_triangles_with_camera(s, c, triangles, triangle_count);
 }
 
-inline void raytrace_cuda(memory_surface& s, const triangle& t) { trace_single_triangle(s, t); }
+inline void raytrace_cuda(memory_surface& s, const triangle& t)
+{
+    trace_single_triangle(s, t);
+}
 
 #endif
 

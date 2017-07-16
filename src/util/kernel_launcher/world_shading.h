@@ -12,7 +12,8 @@ void raytrace_many_shaded(cudaSurfaceObject_t surface, world_geometry::data_hand
 
 #else
 
-inline void raytrace_many_shaded(memory_surface& surface, world_geometry::data_handle dh, int)
+inline void raytrace_many_shaded(memory_surface& surface, world_geometry::data_handle dh,
+                                 int)
 {
     black_kernel(surface);
     trace_triangles_shaded(surface, dh.cam, dh.triangles, dh.triangle_count, dh.lights,

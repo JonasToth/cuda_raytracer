@@ -8,10 +8,6 @@ void trace_triangles_shaded(memory_surface& surface, camera c, const triangle* t
 {
     PIXEL_LOOP(surface)
     {
-#if 0
-        if (x == 0)
-            std::clog << "Rendering y = " << y << std::endl;
-#endif
         ray r = c.rayAt(x, y);
 
         pixel_rgba pixel_color;

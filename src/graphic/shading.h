@@ -17,18 +17,11 @@ CUCALL ALWAYS_INLINE inline float ambient(float ka, float ia) noexcept { return 
 
 /// Calculate diffuse lighting from material and light coeffs + Surface Normal(N), Light
 /// direction (L)
-CUCALL ALWAYS_INLINE inline float diffuse(float kd, float id, float dot_product)
-{
-    return kd * dot_product * id;
-}
+CUCALL inline float diffuse(float kd, float id, float dot_product);
 
 /// Calculate specular reflection depending on material, light, direction of camera(V)
 /// and direction of reflection ray (R) and shininess alpha
-CUCALL ALWAYS_INLINE inline float specular(float ks, float is, float dot_product,
-                                           float alpha)
-{
-    return ks * std::pow(dot_product, alpha) * is;
-}
+CUCALL inline float specular(float ks, float is, float dot_product, float alpha);
 
 
 // struct color { float r; float g; float b; };

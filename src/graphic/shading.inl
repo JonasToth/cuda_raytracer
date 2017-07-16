@@ -1,5 +1,16 @@
 #include "graphic/shading.h"
 
+CUCALL ALWAYS_INLINE inline float diffuse(float kd, float id, float dot_product)
+{
+    return kd * dot_product * id;
+}
+
+CUCALL ALWAYS_INLINE inline float specular(float ks, float is, float dot_product,
+                                           float alpha)
+{
+    return ks * std::pow(dot_product, alpha) * is;
+}
+
 inline CUCALL color phong_shading(const phong_material* m, const float ambient_constant,
                                   const light_source* lights, std::size_t light_count,
                                   const coord& ray_direction, const intersect& hit)
