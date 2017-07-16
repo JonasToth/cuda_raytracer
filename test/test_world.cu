@@ -275,7 +275,7 @@ TEST(real, massive_scene)
     w.load("mini_cooper.obj");
 
     EXPECT_EQ(w.vertex_count(), 234435) << "Bad Number of Vertices";
-    EXPECT_EQ(w.normal_count(), 347377) << "Bad Number of Normals";
+    EXPECT_EQ(w.normal_count(), 524396) << "Bad Number of Normals";
     EXPECT_EQ(w.triangle_count(), 304135) << "Bad Number of Triangles";
     EXPECT_EQ(w.shape_count(), 49) << "Bad number of Shapes";
     EXPECT_EQ(w.material_count(), 15) << "Bad number of materials";
@@ -283,7 +283,6 @@ TEST(real, massive_scene)
 
 int main(int argc, char** argv)
 {
-    world_geometry w("cube_no_normals.obj");
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }

@@ -10,7 +10,7 @@
 #include <iostream>
 #include <stdexcept>
 
-#define DEBUG_OUTPUT 0
+#define DEBUG_OUTPUT 1
 
 world_geometry::world_geometry() = default;
 world_geometry::world_geometry(const std::string& file_name) { load(file_name); }
@@ -182,15 +182,16 @@ NormalData normal_information(const thrust::device_vector<coord>& vertices,
             nd.i2 = n_idx2;
 
 #if DEBUG_OUTPUT == 1
-            std::clog << "i0: " << nd.i0 << "; n0: " << nd.n0 << '\t' << "i1: " << nd.i1
-                      << "; n1: " << nd.n1 << '\t' << "i2: " << nd.i2 << "; n2: " << nd.n2
-                      << '\n';
+            std::clog << "ni0: " << nd.i0 << '\t' << "ni1: " << nd.i1 << '\t'
+                      << "ni2: " << nd.i2 << '\t' << "nmax: " << normals.size() << '\t'
+                      << '\t' << "vi0: " << vd.i0 << '\t' << "vi1: " << vd.i1 << '\t'
+                      << "vi2: " << vd.i2 << '\t' << "vmax: " << vertices.size() << '\n';
 #endif
 
             // calculate face normal
-            const coord p0 = vertices[n_idx0];
-            const coord p1 = vertices[n_idx1];
-            const coord p2 = vertices[n_idx2];
+            const coord p0 = vertices[vd.i0];
+            const coord p1 = vertices[vd.i1];
+            const coord p2 = vertices[vd.i2];
             const coord n = normalize(cross(p1 - p0, p2 - p1));
             // push back normal, and get the last index (the created normal)
             normals.push_back(n);
@@ -264,10 +265,8 @@ build_faces(const std::vector<tinyobj::shape_t>& shapes,
         const auto& nd = face_normal_information[i];
         const auto& td = face_vertex_information[i];
 
-        triangle t((&vertices[td.i0]).get(), 
-                   (&vertices[td.i1]).get(), 
-                   (&vertices[td.i2]).get(), 
-                   (&normals[nd.f]).get());
+        triangle t((&vertices[td.i0]).get(), (&vertices[td.i1]).get(),
+                   (&vertices[td.i2]).get(), (&normals[nd.f]).get());
         t.p0_normal((&normals[nd.i0]).get());
         t.p1_normal((&normals[nd.i1]).get());
         t.p2_normal((&normals[nd.i2]).get());
