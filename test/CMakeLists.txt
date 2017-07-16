@@ -14,6 +14,12 @@ add_custom_target(demo_files
     # demo files
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.obj ${PROJECT_BINARY_DIR}/test/demo_input/
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.mtl ${PROJECT_BINARY_DIR}/test/ # stupid obj will look in exectuin directory
+
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/mini_cooper.obj ${PROJECT_BINARY_DIR}/test/demo_input/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/mini_cooper.mtl ${PROJECT_BINARY_DIR}/test/ # stupid obj will look in exectuin directory
+
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/mini_reduced.obj ${PROJECT_BINARY_DIR}/test/demo_input/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/mini_reduced.mtl ${PROJECT_BINARY_DIR}/test/ # stupid obj will look in exectuin directory
 )
 
 

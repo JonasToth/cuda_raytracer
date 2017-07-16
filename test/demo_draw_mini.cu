@@ -23,7 +23,8 @@ int main(int argc, char** argv)
 
     std::clog << "Setup Rendering Platform initialized" << std::endl;
 
-    world_geometry scene("mini_cooper.obj");
+    //world_geometry scene("mini_cooper.obj");
+    world_geometry scene("mini_reduced.obj");
 
     // Light Setup similar to blender (position and stuff taken from there)
     float spec[3] = {0.8f, 0.8f, 0.8f};
@@ -39,7 +40,8 @@ int main(int argc, char** argv)
         const auto& triangles = scene.triangles();
         raytrace_many_shaded(render_surface.getSurface(), scene.handle());
         render_surface.render_gl_texture();
-        render_surface.save_as_png("mini.png");
+        //render_surface.save_as_png("mini.png");
+        render_surface.save_as_png("mini_reduced.png");
         glfwSwapBuffers(w);
         std::clog << "World rendered" << std::endl;
         std::clog << "Camera Position: " << c.origin() << std::endl;
