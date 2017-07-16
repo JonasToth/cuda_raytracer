@@ -79,11 +79,6 @@ build_materials(const std::vector<tinyobj::material_t>& materials)
 }
 
 struct VertexData {
-    // pointers to the vertices
-    const coord* P0;
-    const coord* P1;
-    const coord* P2;
-
     // indices to the vertices
     int i0;
     int i1;
@@ -104,9 +99,6 @@ VertexData vertex_information(const thrust::device_vector<coord>& vertices,
     Expects(static_cast<std::size_t>(idx2) < vertices.size() && idx2 >= 0);
 
     VertexData p;
-    p.P0 = (&vertices[idx0]).get();
-    p.P1 = (&vertices[idx1]).get();
-    p.P2 = (&vertices[idx2]).get();
     p.i0 = idx0;
     p.i1 = idx1;
     p.i2 = idx2;
@@ -115,12 +107,6 @@ VertexData vertex_information(const thrust::device_vector<coord>& vertices,
 }
 
 struct NormalData {
-    // vertex normals
-    const coord* n0;
-    const coord* n1;
-    const coord* n2;
-    const coord* fn; // face normal
-
     // indices for normals
     int i0;
     int i1;
@@ -174,12 +160,6 @@ NormalData normal_information(const thrust::device_vector<coord>& vertices,
         // push back normal, and get the last index (the created normal)
         normals.push_back(n);
         const auto fn_idx = normals.size() - 1;
-        const auto* normal_ptr = (&normals[fn_idx]).get();
-
-        nd.n0 = normal_ptr;
-        nd.n1 = normal_ptr;
-        nd.n2 = normal_ptr;
-        nd.fn = normal_ptr;
 
         nd.i0 = fn_idx;
         nd.i1 = fn_idx;
@@ -190,12 +170,6 @@ NormalData normal_information(const thrust::device_vector<coord>& vertices,
         if ((n_idx0 == n_idx1) && (n_idx1 == n_idx2)) // normals are identical
         {
             // all normals (including face normal) are the same
-            const auto* normal_ptr = (&normals[n_idx0]).get();
-            nd.n0 = normal_ptr;
-            nd.n1 = normal_ptr;
-            nd.n2 = normal_ptr;
-            nd.fn = normal_ptr;
-
             nd.i0 = n_idx0;
             nd.i1 = n_idx0;
             nd.i2 = n_idx0;
@@ -203,9 +177,6 @@ NormalData normal_information(const thrust::device_vector<coord>& vertices,
         } else // normals are different
         {
             // vertex normals from file
-            nd.n0 = (&normals[n_idx0]).get();
-            nd.n1 = (&normals[n_idx1]).get();
-            nd.n2 = (&normals[n_idx2]).get();
             nd.i0 = n_idx0;
             nd.i1 = n_idx1;
             nd.i2 = n_idx2;
@@ -224,9 +195,7 @@ NormalData normal_information(const thrust::device_vector<coord>& vertices,
             // push back normal, and get the last index (the created normal)
             normals.push_back(n);
             const auto fn_idx = normals.size() - 1;
-            const auto* normal_ptr = (&normals[fn_idx]).get();
 
-            nd.fn = normal_ptr;
             nd.f = fn_idx;
         }
     }
@@ -234,10 +203,6 @@ NormalData normal_information(const thrust::device_vector<coord>& vertices,
     Ensures(static_cast<std::size_t>(nd.i0) < normals.size() && nd.i0 >= 0);
     Ensures(static_cast<std::size_t>(nd.i1) < normals.size() && nd.i1 >= 0);
     Ensures(static_cast<std::size_t>(nd.i2) < normals.size() && nd.i2 >= 0);
-    Ensures(nd.n0 != nullptr);
-    Ensures(nd.n1 != nullptr);
-    Ensures(nd.n2 != nullptr);
-    Ensures(nd.fn != nullptr);
 
     return nd;
 }
@@ -251,6 +216,11 @@ build_faces(const std::vector<tinyobj::shape_t>& shapes,
             const thrust::device_vector<phong_material>& materials)
 {
     thrust::device_vector<triangle> triangles;
+    // temporarily store normal indices, because the normal vector could grow, and
+    // invalidate all pointers
+    thrust::host_vector<NormalData> face_normal_information;
+    thrust::host_vector<VertexData> face_vertex_information;
+    thrust::host_vector<const phong_material*> face_materials;
 
     for (const auto& shape : shapes) {
         // we will use only triangles
@@ -266,11 +236,6 @@ build_faces(const std::vector<tinyobj::shape_t>& shapes,
             const auto nd = normal_information(vertices, shape.mesh.indices, td,
                                                index_offset, normals);
 
-            triangle t(td.P0, td.P1, td.P2, nd.fn);
-            t.p0_normal(nd.n0);
-            t.p1_normal(nd.n1);
-            t.p2_normal(nd.n2);
-
             // WARN: this writes the pointer on the device, as material pointer.
             // if you derefence material on the cpu, that results in a segfault
             // on cuda devices!
@@ -278,14 +243,42 @@ build_faces(const std::vector<tinyobj::shape_t>& shapes,
                 shape.mesh.material_ids[f] < 0 ?
                     nullptr :
                     (&materials[shape.mesh.material_ids[f]]).get();
-            t.material(m_ptr);
 
-            // add triangle to world
-            triangles.push_back(t);
+            // add triangle to world, and store the normal information for later
+            // connection
+            face_vertex_information.push_back(td);
+            face_normal_information.push_back(nd);
+            face_materials.push_back(m_ptr);
 
             index_offset += shape.mesh.num_face_vertices[f];
         }
     }
+
+    Expects(face_normal_information.size() == face_vertex_information.size());
+    Expects(face_normal_information.size() == face_materials.size());
+    Expects(face_normal_information.size() > 0);
+
+    // connect all normals with the triangle, the normal vector is expected to not grow
+    // anymore
+    for (std::size_t i = 0; i < face_normal_information.size(); ++i) {
+        const auto& nd = face_normal_information[i];
+        const auto& td = face_vertex_information[i];
+
+        triangle t((&vertices[td.i0]).get(), 
+                   (&vertices[td.i1]).get(), 
+                   (&vertices[td.i2]).get(), 
+                   (&normals[nd.f]).get());
+        t.p0_normal((&normals[nd.i0]).get());
+        t.p1_normal((&normals[nd.i1]).get());
+        t.p2_normal((&normals[nd.i2]).get());
+        t.material(face_materials[i]);
+
+        triangles.push_back(t);
+    }
+
+    Ensures(triangles.size() > 0);
+    Ensures(normals.size() > 0);
+
     return triangles;
 }
 } // namespace __detail
@@ -303,9 +296,6 @@ void world_geometry::load(const std::string& file_name)
 
     // Handle all normals
     __normals = __detail::build_coords(data.attrib.normals);
-
-    //__normals.reserve(__normals.size() + __normals.size() / 3);
-    __normals.reserve(30000000);
 
     // Handle all Materials
     __materials = __detail::build_materials(data.materials);

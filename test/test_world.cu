@@ -211,7 +211,26 @@ TEST(non_geometry, lights)
     EXPECT_EQ(w.light_count(), 1);
 }
 
-TEST(non_geometry, camera) {}
+TEST(non_geometry, camera) {
+    world_geometry w;
+
+    w.set_camera(camera(800, 600));
+
+    const auto c = w.get_camera();
+    EXPECT_EQ(c.width(), 800);
+    EXPECT_EQ(c.height(), 600);
+    EXPECT_EQ(c.origin(), coord(0.f, 0.f, 0.f));
+    EXPECT_EQ(c.steering(), coord(0.f, 0.f, 1.f));
+
+
+    w.set_camera(camera(640, 480, coord(1.f, 1.f, 0.f), coord(-1.f, -1.f, 0.f)));
+
+    const auto c2 = w.get_camera();
+    EXPECT_EQ(c2.width(), 640);
+    EXPECT_EQ(c2.height(), 480);
+    EXPECT_EQ(c2.origin(), coord(1.f, 1.f, 0.f));
+    EXPECT_EQ(c2.steering(), normalize(coord(-1.f, -1.f, 0.f)));
+}
 
 TEST(real, easy_scene)
 {
@@ -250,7 +269,7 @@ TEST(real, simple_scene)
     EXPECT_EQ(w.material_count(), 4) << "Bad number of materials";
 }
 
-TEST(real, DISABLED_massive_scene)
+TEST(real, massive_scene)
 {
     world_geometry w;
     w.load("mini_cooper.obj");
