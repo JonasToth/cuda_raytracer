@@ -39,6 +39,7 @@ public:
     void add_light(phong_light l, coord position);
 
     void set_camera(camera c) noexcept { __c = c; }
+    camera get_camera() const noexcept { return __c; }
 
     std::size_t vertex_count() const noexcept { return __vertices.size(); }
     std::size_t normal_count() const noexcept { return __normals.size(); }
