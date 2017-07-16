@@ -10,7 +10,7 @@
 #include <iostream>
 #include <stdexcept>
 
-#define DEBUG_OUTPUT 1
+#define DEBUG_OUTPUT 0
 
 world_geometry::world_geometry() = default;
 world_geometry::world_geometry(const std::string& file_name) { load(file_name); }
