@@ -12,13 +12,13 @@
 int main(int argc, char** argv)
 {
     bool camera_changed = true;
-    window win(800, 600, "Material Scene");
+    window win(640, 480, "Material Scene");
     auto w = win.getWindow();
     glfwMakeContextCurrent(w);
     glfwSetKeyCallback(w, register_key_press);
 
     // Camera Setup similar to blender
-    camera c(win.getWidth(), win.getHeight(), {-2.5f, 3.f, 3.f}, {0.0f, -0.1f, -1.f});
+    camera c(win.getWidth(), win.getHeight(), {-2.0f, -2.0f, -3.0f}, { 1.0f,  1.0f, -1.0f});
     surface_raii render_surface(win.getWidth(), win.getHeight());
 
     std::clog << "Setup Rendering Platform initialized" << std::endl;
@@ -29,20 +29,22 @@ int main(int argc, char** argv)
     // Light Setup similar to blender (position and stuff taken from there)
     float spec[3] = {0.8f, 0.8f, 0.8f};
     float diff[3] = {0.8f, 0.8f, 0.8f};
-    scene.add_light(phong_light(spec, diff), coord(0.8f, 0.9f, 1.5f));
-    scene.add_light(phong_light(spec, diff), coord(1.7f, -1.1f, -0.3f));
-    scene.add_light(phong_light(spec, diff), coord(-1.3f, 0.8f, 2.0f));
-    scene.add_light(phong_light(spec, diff), coord(-1.7f, -1.7f, 0.8f));
+    scene.add_light(phong_light(spec, diff), coord( 2.0f,  2.0f, -2.0f));
+    scene.add_light(phong_light(spec, diff), coord(-2.0f,  2.0f, -2.0f));
+    //scene.add_light(phong_light(spec, diff), coord(-1.3f, 0.8f, 2.0f));
+    //scene.add_light(phong_light(spec, diff), coord(-1.7f, -1.7f, 0.8f));
 
     std::clog << "World initialized" << std::endl;
 
     auto render_lambda = [&]() {
-        const auto& triangles = scene.triangles();
         raytrace_many_shaded(render_surface.getSurface(), scene.handle());
+        std::this_thread::sleep_for(std::chrono::seconds(10));
+
         render_surface.render_gl_texture();
+        glfwSwapBuffers(w);
         //render_surface.save_as_png("mini.png");
         render_surface.save_as_png("mini_reduced.png");
-        glfwSwapBuffers(w);
+
         std::clog << "World rendered" << std::endl;
         std::clog << "Camera Position: " << c.origin() << std::endl;
         std::clog << "Camera Steering At: " << c.steering() << std::endl << std::endl;
