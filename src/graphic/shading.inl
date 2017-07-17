@@ -11,12 +11,23 @@ CUCALL ALWAYS_INLINE inline float specular(float ks, float is, float dot_product
     return ks * std::pow(dot_product, alpha) * is;
 }
 
-inline CUCALL color phong_shading(const phong_material* m, const float ambient_constant,
-                                  const light_source* lights, std::size_t light_count,
-                                  const coord& ray_direction, const intersect& hit)
+inline coord shading_normal(const triangle& t, coord /* unused */,
+                            flat_shading_tag /* unused */)
 {
-    // const auto N = normalize(hit.face->normal());
-    const auto N = hit.face->interpolated_normal(hit.hit);
+    return normalize(t.normal());
+}
+
+inline coord shading_normal(const triangle& t, coord hit, smooth_shading_tag /* unused */)
+{
+    return t.interpolated_normal(hit);
+}
+
+template <typename ShadingStyleTag>
+inline color phong_shading(const phong_material* m, const float ambient_constant,
+                           gsl::span<const light_source> lights, const coord& ray_direction,
+                           const intersect& hit, ShadingStyleTag sst)
+{
+    const auto N = shading_normal(*hit.face, hit.hit, sst);
     const auto V = normalize(coord(ray_direction.x, ray_direction.y, ray_direction.z));
 
     color c{0.f, 0.f, 0.f};
@@ -30,7 +41,7 @@ inline CUCALL color phong_shading(const phong_material* m, const float ambient_c
     c.g = ambient(mg.ambient_reflection(), ambient_constant);
     c.b = ambient(mb.ambient_reflection(), ambient_constant);
 
-    for (std::size_t i = 0; i < light_count; ++i) {
+    for (std::size_t i = 0; i < lights.size(); ++i) {
         const auto& lr = lights[i].light.r;
         const auto& lg = lights[i].light.g;
         const auto& lb = lights[i].light.b;

@@ -5,6 +5,7 @@
 #include "graphic/light.h"
 #include "graphic/material.h"
 #include "macros.h"
+#include <gsl/gsl>
 
 struct color {
     float r;
@@ -23,14 +24,26 @@ CUCALL inline float diffuse(float kd, float id, float dot_product);
 /// and direction of reflection ray (R) and shininess alpha
 CUCALL inline float specular(float ks, float is, float dot_product, float alpha);
 
+/// Tag dispatch for different shading methods,
+/// interpolated vertex normals => smooth
+/// facenormal => flat
+struct flat_shading_tag {
+};
+struct smooth_shading_tag {
+};
 
-// struct color { float r; float g; float b; };
+CUCALL inline coord shading_normal(const triangle& t, coord hit,
+                                   flat_shading_tag /* unused */);
+CUCALL inline coord shading_normal(const triangle& t, coord hit,
+                                   smooth_shading_tag /* unused */);
+
 
 /// Calculate the whole shading formular for one channel
 /// This is C-Style, since it must run on the gpu as well, therefor no nice vectors
+template <typename ShadingStyleTag>
 CUCALL color phong_shading(const phong_material* m, float ambient_constant,
-                           const light_source* lights, std::size_t light_count,
-                           const coord& ray_direction, const intersect& hit);
+                           gsl::span<const light_source> lights, const coord& ray_direction,
+                           const intersect& hit, ShadingStyleTag sst);
 
 
 #include "shading.inl"

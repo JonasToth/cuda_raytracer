@@ -7,5 +7,5 @@ inline void raytrace_many_shaded(cudaSurfaceObject_t surface, world_geometry::da
     black_kernel<<<dimGrid, dimBlock>>>(surface, dh.cam.width(), dh.cam.height());
     trace_triangles_shaded<<<dimGrid, dimBlock>>>(
         surface, dh.cam, dh.triangles, dh.triangle_count, dh.lights, dh.light_count,
-        dh.cam.width(), dh.cam.height());
+        flat_shading_tag{});
 }

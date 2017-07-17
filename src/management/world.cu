@@ -319,16 +319,11 @@ world_geometry::data_handle::data_handle(const thrust::device_vector<coord>& ver
                                          const thrust::device_vector<phong_material>& mat,
                                          const thrust::device_vector<light_source>& light,
                                          const camera c)
-  : vertices{vert.data().get()}
-  , vertex_count{vert.size()}
-  , normals{norm.data().get()}
-  , normal_count{norm.size()}
-  , triangles{tria.data().get()}
-  , triangle_count{tria.size()}
-  , materials{mat.data().get()}
-  , material_count{mat.size()}
-  , lights{light.data().get()}
-  , light_count{light.size()}
+  : vertices{vert.data().get(), vert.size()}
+  , normals{norm.data().get(), norm.size()}
+  , triangles{tria.data().get(), tria.size()}
+  , materials{mat.data().get(), mat.size()}
+  , lights{light.data().get(), light.size()}
   , cam{c}
 {
 }

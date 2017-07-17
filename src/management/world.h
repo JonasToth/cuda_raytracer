@@ -2,6 +2,7 @@
 #define OBJ_IO_H_ZHYWUHRN
 
 
+#include <gsl/gsl>
 #include <string>
 #include <vector>
 
@@ -71,17 +72,12 @@ public:
     /// Helper struct to get the device pointers for all gpu data,
     /// kernel call simplification
     struct data_handle {
-        const coord* const vertices;
-        const std::size_t vertex_count;
-        const coord* const normals;
-        const std::size_t normal_count;
-        const triangle* const triangles;
-        const std::size_t triangle_count;
+        const gsl::span<const coord> vertices;
+        const gsl::span<const coord> normals;
+        const gsl::span<const triangle> triangles;
 
-        const phong_material* const materials;
-        const std::size_t material_count;
-        const light_source* const lights;
-        const std::size_t light_count;
+        const gsl::span<const phong_material> materials;
+        const gsl::span<const light_source> lights;
 
         const camera cam;
 

@@ -16,8 +16,8 @@ inline void raytrace_many_shaded(memory_surface& surface, world_geometry::data_h
                                  int)
 {
     black_kernel(surface);
-    trace_triangles_shaded(surface, dh.cam, dh.triangles, dh.triangle_count, dh.lights,
-                           dh.light_count);
+    trace_triangles_shaded(surface, dh.cam, {dh.triangles, dh.triangle_count},
+                           {dh.lights, dh.light_count}, flat_shading_tag{});
 }
 #endif
 
