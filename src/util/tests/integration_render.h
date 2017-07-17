@@ -9,7 +9,7 @@
 #endif
 
 #include "management/world.h"
-#include "util/kernel_launcher/world_shading.h"
+#include "graphic/render/world_shading.h"
 
 /// Define the basic sekeleton for an integration test, that renders an image,
 /// that will be compared with an reference image.

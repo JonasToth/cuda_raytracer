@@ -27,7 +27,7 @@ CUCALL inline float clamp(float lowest, float value, float highest)
 }
 
 
-#ifdef __CUDACC__
+#ifdef __CUDACC__ // GPU Raytracing
 #include "management/surface_raii.h"
 
 template <typename ShadingStyleTag>
@@ -37,9 +37,9 @@ __global__ void trace_triangles_shaded(cudaSurfaceObject_t surface, camera c,
                                        ShadingStyleTag sst);
 #include "graphic/kernels/shaded.inl"
 
-#else
-
+#else // CPU raytracing
 #include "management/memory_surface.h"
+
 template <typename ShadingStyleTag>
 void trace_triangles_shaded(memory_surface& surface, camera c,
                             gsl::span<const triangle> triangles,

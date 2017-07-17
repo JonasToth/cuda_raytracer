@@ -173,25 +173,20 @@ TEST(non_geometry, world_handle)
 
     const auto h = w.handle();
 
-    EXPECT_NE(h.vertices, nullptr);
-    EXPECT_EQ(h.vertices, w.vertices().data().get());
-    EXPECT_EQ(h.vertex_count, 8);
+    EXPECT_EQ(&h.vertices[0], w.vertices().data().get());
+    EXPECT_EQ(h.vertices.size(), 8);
 
-    EXPECT_NE(h.normals, nullptr);
-    EXPECT_EQ(h.normals, w.normals().data().get());
-    EXPECT_EQ(h.normal_count, 6);
+    EXPECT_EQ(&h.normals[0], w.normals().data().get());
+    EXPECT_EQ(h.normals.size(), 6);
 
-    EXPECT_NE(h.triangles, nullptr);
-    EXPECT_EQ(h.triangles, w.triangles().data().get());
-    EXPECT_EQ(h.triangle_count, 12);
+    EXPECT_EQ(&h.triangles[0], w.triangles().data().get());
+    EXPECT_EQ(h.triangles.size(), 12);
 
-    EXPECT_NE(h.materials, nullptr);
-    EXPECT_EQ(h.materials, w.materials().data().get());
-    EXPECT_EQ(h.material_count, 1);
+    EXPECT_EQ(&h.materials[0], w.materials().data().get());
+    EXPECT_EQ(h.materials.size(), 1);
 
-    EXPECT_NE(h.lights, nullptr);
-    EXPECT_EQ(h.lights, w.lights().data().get());
-    EXPECT_EQ(h.light_count, 2);
+    EXPECT_EQ(&h.lights[0], w.lights().data().get());
+    EXPECT_EQ(h.lights.size(), 2);
 
     EXPECT_EQ(h.cam.width(), 800);
     EXPECT_EQ(h.cam.height(), 600);

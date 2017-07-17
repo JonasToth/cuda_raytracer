@@ -7,17 +7,23 @@
 #include "management/world.h"
 
 #ifdef __CUDACC__
-void raytrace_many_shaded(cudaSurfaceObject_t surface, world_geometry::data_handle dh);
-#include "util/kernel_launcher/world_shading.inl"
+inline void render_flat(cudaSurfaceObject_t surface, world_geometry::data_handle dh)
+{
+    dim3 dimBlock(32, 32);
+    dim3 dimGrid((dh.cam.width() + dimBlock.x) / dimBlock.x,
+                 (dh.cam.height() + dimBlock.y) / dimBlock.y);
+    black_kernel<<<dimGrid, dimBlock>>>(surface, dh.cam.width(), dh.cam.height());
+    trace_triangles_shaded<<<dimGrid, dimBlock>>>(surface, dh.cam, dh.triangles,
+                                                  dh.triangle_count, dh.lights,
+                                                  dh.light_count, flat_shading_tag{});
+}
 
 #else
 
-inline void raytrace_many_shaded(memory_surface& surface, world_geometry::data_handle dh,
-                                 int)
+inline void render_flat(memory_surface& surface, world_geometry::data_handle dh)
 {
     black_kernel(surface);
-    trace_triangles_shaded(surface, dh.cam, {dh.triangles, dh.triangle_count},
-                           {dh.lights, dh.light_count}, flat_shading_tag{});
+    trace_triangles_shaded(surface, dh.cam, dh.triangles, dh.lights, flat_shading_tag{});
 }
 #endif
 
