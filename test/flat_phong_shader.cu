@@ -6,10 +6,10 @@ int main(int argc, char** argv)
         std::cerr << "Provide test name, otherwise file io can not succeed!" << std::endl;
         return 1;
     }
-    integration_render cube(argv[1], argv[2]);
+    integration_render r(argv[1], argv[2]);
 
-    cube.init_default();
-    cube.run();
+    r.init_default();
+    r.run();
 
     return 0;
 }

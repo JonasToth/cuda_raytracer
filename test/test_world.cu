@@ -267,7 +267,7 @@ TEST(real, simple_scene)
 TEST(real, massive_scene)
 {
     world_geometry w;
-    w.load("mini_cooper.obj");
+    w.load("mini_reduced.obj");
 
     EXPECT_EQ(w.vertex_count(), 234435) << "Bad Number of Vertices";
     EXPECT_EQ(w.normal_count(), 524396) << "Bad Number of Normals";

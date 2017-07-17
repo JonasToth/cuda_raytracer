@@ -160,40 +160,60 @@ add_custom_target(integration_test_files
 )
 
 
-SET(INTEGRATION_TESTS
-    cube
-    cube_smooth
-    materials
-    materials_smooth
+# ------------------------------- All renderers -----------------------------------------
+SET(CPU_RENDER
+    flat_phong_shader
+    smooth_phong_shader
     )
-    
+SET(GPU_RENDER
+    flat_phong_shader
+    smooth_phong_shader
+    )
 
-FOREACH(test IN LISTS INTEGRATION_TESTS)
-    # run this kernel and image on GPU AND CPU
-    cuda_add_executable(int_test_gpu_${test}.x int_test_${test}.cu)
-    target_link_libraries(int_test_gpu_${test}.x
-                          management cpu_kernels
-                          glfw ${OPENGL_gl_LIBRARY}
-                          ${PNG_LIBRARIES})
-    add_dependencies(int_test_gpu_${test}.x integration_test_files)
-
-    add_test(NAME integration_gpu_${test}
-             COMMAND ./validate.sh ./int_test_gpu_${test}.x ${test} gpu_${test} reference_${test})
-
-    # CPU executable
-    add_executable(int_test_cpu_${test}.x 
-                   int_test_${test}.cpp
+FOREACH(renderer IN LISTS CPU_RENDER)
+    add_executable(cpu_${renderer}.x ${renderer}.cpp
                    ${PROJECT_SOURCE_DIR}/src/management/world.cu)
-    target_compile_options(int_test_cpu_${test}.x PUBLIC "-fopenmp")
-    #target_link_options(int_test_cpu_${test}.x PRIVATE "-fopenmp")
-    target_compile_definitions(int_test_cpu_${test}.x 
+    target_compile_options(cpu_${renderer}.x PUBLIC "-fopenmp")
+    target_compile_definitions(cpu_${renderer}.x 
                                PRIVATE -DTHRUST_DEVICE_SYSTEM=THRUST_DEVICE_SYSTEM_CPP)
-    target_link_libraries(int_test_cpu_${test}.x
+    target_link_libraries(cpu_${renderer}.x
                           cpu_kernels pthread
+                          ${PNG_LIBRARIES})
+    add_dependencies(cpu_${renderer}.x integration_test_files)
+ENDFOREACH()
+
+
+FOREACH(renderer IN LISTS GPU_RENDER)
+    cuda_add_executable(gpu_${renderer}.x ${renderer}.cu)
+    add_dependencies(gpu_${renderer}.x integration_test_files)
+    target_link_libraries(gpu_${renderer}.x
+                          management 
                           glfw ${OPENGL_gl_LIBRARY}
                           ${PNG_LIBRARIES})
-    add_dependencies(int_test_cpu_${test}.x integration_test_files)
+    add_dependencies(gpu_${renderer}.x integration_test_files)
+ENDFOREACH()
 
-    add_test(NAME integration_cpu_${test}
-             COMMAND ./validate.sh ./int_test_cpu_${test}.x ${test} cpu_${test} reference_${test})
+
+# --------------- Running these renderes with different input files ---------------------
+SET(FLAT_INTEGRATION_TESTS
+    cube
+    materials
+    )
+SET(SMOOTH_INTEGRATION_TESTS
+    cube
+    materials
+    )
+
+FOREACH(test IN LISTS FLAT_INTEGRATION_TESTS)
+    add_test(NAME gpu_flat_${test}
+             COMMAND ./validate.sh ./gpu_flat_phong_shader.x ${test} gpu_${test} reference_flat_${test})
+    add_test(NAME cpu_flat_${test}
+             COMMAND ./validate.sh ./cpu_flat_phong_shader.x ${test} cpu_${test} reference_flat_${test})
+ENDFOREACH(test)
+
+FOREACH(test IN LISTS SMOOTH_INTEGRATION_TESTS)
+    add_test(NAME gpu_smooth_${test}
+             COMMAND ./validate.sh ./gpu_smooth_phong_shader.x ${test} gpu_${test} reference_smooth_${test})
+    add_test(NAME cpu_smooth_${test}
+             COMMAND ./validate.sh ./cpu_smooth_phong_shader.x ${test} cpu_${test} reference_smooth_${test})
 ENDFOREACH(test)
