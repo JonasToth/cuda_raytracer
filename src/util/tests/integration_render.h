@@ -9,7 +9,7 @@
 #endif
 
 #include "management/world.h"
-#include "graphic/render/world_shading.h"
+#include "graphic/render/shading.h"
 
 /// Define the basic sekeleton for an integration test, that renders an image,
 /// that will be compared with an reference image.
@@ -34,6 +34,7 @@ public:
 private:
     const std::size_t width = 800;
     const std::size_t height = 600;
+    const unsigned int delay = 2; // seconds
     const std::string obj_name;
     const std::string img_name;
     const std::string out_prefix = "./int_test_output/";

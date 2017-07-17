@@ -4,7 +4,7 @@
 #include "graphic/kernels/trace.h"
 #include "graphic/kernels/utility.h"
 
-#ifdef __CUDACC__
+#ifdef __CUDACC__ // GPU Raytracing
 inline void raytrace_many_cuda(cudaSurfaceObject_t Surface, const camera& c,
                                gsl::span<const triangle> triangles)
 {
@@ -13,7 +13,7 @@ inline void raytrace_many_cuda(cudaSurfaceObject_t Surface, const camera& c,
                  (c.height() + dimBlock.y) / dimBlock.y);
     black_kernel<<<dimGrid, dimBlock>>>(Surface, c.width(), c.height());
     trace_many_triangles_with_camera<<<dimGrid, dimBlock>>>(
-        Surface, c, triangles, triangles.size(), c.width(), c.height());
+        Surface, c, triangles.data(), triangles.size(), c.width(), c.height());
 }
 
 
@@ -26,9 +26,7 @@ inline void raytrace_cuda(cudaSurfaceObject_t& Surface, int width, int height,
 }
 
 
-#include "util/kernel_launcher/world_depth.inl"
-
-#else
+#else // CPU Raytracing
 
 inline void raytrace_many_cuda(memory_surface& s, const camera& c,
                                gsl::span<const triangle> triangles)

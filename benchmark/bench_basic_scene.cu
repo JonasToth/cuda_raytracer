@@ -3,9 +3,9 @@
 #include <cuda_runtime.h>
 
 #include "graphic/kernels/trace.h"
+#include "graphic/render/shading.h"
 #include "management/window.h"
 #include "management/world.h"
-#include "util/kernel_launcher/world_shading.h"
 
 #include <chrono>
 #include <thread>

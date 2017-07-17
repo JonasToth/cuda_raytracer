@@ -1,7 +1,7 @@
 template <typename ShadingStyleTag>
 __global__ void trace_triangles_shaded(cudaSurfaceObject_t surface, camera c,
-                                       gsl::span<const triangle> triangles,
-                                       gsl::span<const light_source> lights,
+                                       const triangle* triangles, std::size_t n_triangles,
+                                       const light_source* lights, std::size_t n_lights,
                                        ShadingStyleTag sst)
 {
     const auto x = blockIdx.x * blockDim.x + threadIdx.x;
@@ -22,7 +22,7 @@ __global__ void trace_triangles_shaded(cudaSurfaceObject_t surface, camera c,
         nearest_hit.depth = 10000.f;
 
         // Find out the closes triangle
-        for (std::size_t i = 0; i < triangles.size(); ++i) {
+        for (std::size_t i = 0; i < n_triangles; ++i) {
             const auto traced = r.intersects(triangles[i]);
             if (traced.first) {
                 if (traced.second.depth < nearest_hit.depth) {
@@ -34,7 +34,7 @@ __global__ void trace_triangles_shaded(cudaSurfaceObject_t surface, camera c,
 
         if (nearest != nullptr) {
             const phong_material* hit_material = nearest->material();
-            const auto color = phong_shading(hit_material, 0.1, lights,
+            const auto color = phong_shading(hit_material, 0.1, lights, n_lights,
                                              normalize(r.direction), nearest_hit, sst);
 
             pixel_color.x = 255 * clamp(0.f, color.r, 1.f);

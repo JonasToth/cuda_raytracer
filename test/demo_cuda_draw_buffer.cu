@@ -1,8 +1,8 @@
 #include "gtest/gtest.h"
 
 #include "graphic/kernels/shaded.h"
-#include "graphic/render/world_depth.h"
-#include "graphic/render/world_shading.h"
+#include "graphic/render/depth.h"
+#include "graphic/render/shading.h"
 #include "management/input_callback.h"
 #include "management/input_manager.h"
 #include "management/window.h"
@@ -178,7 +178,7 @@ TEST(cuda_draw, draw_loaded_geometry)
         dim3 dimGrid((Width + dimBlock.x) / dimBlock.x, (Height + dimBlock.y) / dimBlock.y);
         black_kernel<<<dimGrid, dimBlock>>>(vis.getSurface(), Width, Height);
 
-        raytrace_many_cuda(vis.getSurface(), c, Triangles.data().get(), Triangles.size());
+        raytrace_many_cuda(vis.getSurface(), c, {Triangles.data().get(), Triangles.size()});
 
         vis.render_gl_texture();
 
@@ -219,7 +219,7 @@ TEST(cuda_draw, draw_phong_shaded)
     const auto& triangles = world.triangles();
 
     while (!glfwWindowShouldClose(w)) {
-        raytrace_many_shaded(vis.getSurface(), world.handle());
+        render_flat(vis.getSurface(), world.handle());
         vis.render_gl_texture();
 
         glfwSwapBuffers(w);

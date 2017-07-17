@@ -42,8 +42,9 @@ CUCALL inline coord shading_normal(const triangle& t, coord hit,
 /// This is C-Style, since it must run on the gpu as well, therefor no nice vectors
 template <typename ShadingStyleTag>
 CUCALL color phong_shading(const phong_material* m, float ambient_constant,
-                           gsl::span<const light_source> lights, const coord& ray_direction,
-                           const intersect& hit, ShadingStyleTag sst);
+                           const light_source* lights, std::size_t n_lights,
+                           const coord& ray_direction, const intersect& hit,
+                           ShadingStyleTag sst);
 
 
 #include "shading.inl"

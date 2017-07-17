@@ -63,7 +63,6 @@ cuda_add_library(management
 
 add_library(cpu_kernels
             ${PROJECT_SOURCE_DIR}/src/management/memory_surface.cpp
-            ${PROJECT_SOURCE_DIR}/src/graphic/kernels/shaded.cpp
             ${PROJECT_SOURCE_DIR}/src/graphic/kernels/trace.cpp
             ${PROJECT_SOURCE_DIR}/src/graphic/kernels/utility.cpp)
 target_compile_options(cpu_kernels PUBLIC "${OpenMP_CXX_FLAGS}")

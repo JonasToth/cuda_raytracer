@@ -1,4 +1,3 @@
-#include "graphic/kernels/shaded.h"
 #include "image_loop_macro.h"
 #include <iostream>
 
@@ -35,8 +34,9 @@ void trace_triangles_shaded(memory_surface& surface, camera c,
 
         if (nearest != nullptr) {
             const phong_material* hit_material = nearest->material();
-            const auto color = phong_shading(hit_material, 0.1, lights,
-                                             normalize(r.direction), nearest_hit, sst);
+            const auto color =
+                phong_shading(hit_material, 0.1, lights.data(), lights.size(),
+                              normalize(r.direction), nearest_hit, sst);
 
             pixel_color.r = 255 * clamp(0.f, color.r, 1.f);
             pixel_color.g = 255 * clamp(0.f, color.g, 1.f);

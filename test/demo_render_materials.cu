@@ -1,7 +1,7 @@
 #include "graphic/kernels/shaded.h"
 #include "graphic/kernels/trace.h"
 #include "graphic/kernels/utility.h"
-#include "graphic/render/world_shading.h"
+#include "graphic/render/shading.h"
 #include "management/input_callback.h"
 #include "management/input_manager.h"
 #include "management/window.h"
@@ -40,7 +40,7 @@ int main(int argc, char** argv)
 
     auto render_lambda = [&]() {
         const auto& triangles = scene.triangles();
-        raytrace_many_shaded(render_surface.getSurface(), scene.handle());
+        render_flat(render_surface.getSurface(), scene.handle());
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
         render_surface.render_gl_texture();
         glfwSwapBuffers(w);

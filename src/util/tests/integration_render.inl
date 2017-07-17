@@ -28,14 +28,13 @@ void integration_render::init_default()
 
 void integration_render::run()
 {
-#ifndef __CUDACC__
-    raytrace_many_shaded(render_surface, scene.handle(), 5);
-#else
-    raytrace_many_shaded(render_surface.getSurface(), scene.handle());
-    std::this_thread::sleep_for(std::chrono::seconds(2));
+#ifndef __CUDACC__ // Ray Memory as surface
+    render_flat(render_surface, scene.handle());
+#else // OpenGL and cuda stuff as surface
+    render_flat(render_surface.getSurface(), scene.handle());
+    std::this_thread::sleep_for(std::chrono::seconds(delay));
     render_surface.render_gl_texture();
 #endif
-
     std::clog << "World rendered" << std::endl;
 
     render_surface.save_as_png(out_prefix + img_name + ".png");

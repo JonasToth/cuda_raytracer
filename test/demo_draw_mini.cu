@@ -1,5 +1,5 @@
 #include "graphic/kernels/trace.h"
-#include "graphic/render/world_shading.h"
+#include "graphic/render/shading.h"
 #include "management/input_callback.h"
 #include "management/input_manager.h"
 #include "management/window.h"
@@ -37,7 +37,7 @@ int main(int argc, char** argv)
     std::clog << "World initialized" << std::endl;
 
     auto render_lambda = [&]() {
-        raytrace_many_shaded(render_surface.getSurface(), scene.handle());
+        render_flat(render_surface.getSurface(), scene.handle());
         std::this_thread::sleep_for(std::chrono::seconds(10));
 
         render_surface.render_gl_texture();

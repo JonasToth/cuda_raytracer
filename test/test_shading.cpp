@@ -116,7 +116,7 @@ TEST(shading, complex_shade_one_channel)
     const intersect hit(1.f, coord(0.f, 0.f, 0.f), &T);
 
     for (float x_dir = 2.f; x_dir > 0.f; x_dir -= 0.5f) {
-        const auto lv = phong_shading(&m, 0.1, {&ls, 1ul}, normalize(coord(x_dir, 0.f, -1.f)),
+        const auto lv = phong_shading(&m, 0.1, &ls, 1ul, normalize(coord(x_dir, 0.f, -1.f)),
                                       hit, flat_shading_tag{});
         EXPECT_GT(lv.r, 0.f) << "Light must be there";
         EXPECT_GT(lv.g, 0.f) << "Light must be there";
