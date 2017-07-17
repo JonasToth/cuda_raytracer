@@ -17,6 +17,7 @@
 /// Will be used in conjunction with ./validate.sh
 
 
+template <typename ShadingTag>
 class integration_render
 {
 public:

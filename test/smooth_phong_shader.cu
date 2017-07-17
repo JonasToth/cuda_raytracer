@@ -1,4 +1,10 @@
-#include "util/tests/integration_render.h"
+#include "graphic/render/shading.h"
+#include "management/surface_raii.h"
+#include "management/window.h"
+#include "management/world.h"
+#include <chrono>
+#include <string>
+#include <thread>
 
 int main(int argc, char** argv)
 {
@@ -7,22 +13,28 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    integration_render r(argv[1], argv[2]);
+    const std::size_t width = 800, height = 600;
+    const std::string obj_name(argv[1]);
+    const std::string img_name(argv[2]);
 
-    r.init_default();
+    window w(width, height, "Integration Test " + obj_name);
+    glfwMakeContextCurrent(w.getWindow());
 
-    const coord position(-1.5f, -1.5f, -1.5f);
-    auto& s = r.getScene();
+    surface_raii render_surface(width, height);
+    world_geometry scene(obj_name);
 
-    s.set_camera(camera(800, 600, position, coord(1.f, 1.f, 1.f)));
-    auto& l = s.lights();
-    l.resize(1);
+    // Light Setup similar to blender (position and stuff taken from there)
+    const coord camera_posi = {-1.5f, 1.2f, -1.5f};
+    float spec[3] = {0.4f, 0.4f, 0.4f};
+    float diff[3] = {0.4f, 0.4f, 0.4f};
+    scene.add_light(phong_light(spec, diff), camera_posi);
+    scene.set_camera(camera(width, height, camera_posi, coord(0.f, 0.f, 0.f) - camera_posi));
 
-    float diff[3] = {0.9f, 0.9f, 0.9f};
-    float spec[3] = {0.0f, 0.0f, 0.0f};
-    l[0] = light_source(phong_light(spec, diff), position);
+    render_smooth(render_surface.getSurface(), scene.handle());
+    render_surface.render_gl_texture();
+    std::this_thread::sleep_for(std::chrono::seconds(5));
 
-    r.run();
+    render_surface.save_as_png(img_name);
 
     return 0;
 }

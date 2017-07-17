@@ -102,7 +102,6 @@ void surface_raii::render_gl_texture() noexcept
         }
         glEnd();
     }
-    glBindTexture(GL_TEXTURE_2D, 0);
     glFinish();
 }
 

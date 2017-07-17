@@ -253,7 +253,6 @@ TEST(real, test_bad_input)
     // quad";
 }
 
-
 TEST(real, simple_scene)
 {
     world_geometry w("material_scene.obj");
@@ -262,18 +261,6 @@ TEST(real, simple_scene)
     EXPECT_EQ(w.triangle_count(), 16976) << "Bad Number of Triangles";
     EXPECT_EQ(w.shape_count(), 5) << "Bad number of Shapes";
     EXPECT_EQ(w.material_count(), 4) << "Bad number of materials";
-}
-
-TEST(real, massive_scene)
-{
-    world_geometry w;
-    w.load("mini_reduced.obj");
-
-    EXPECT_EQ(w.vertex_count(), 234435) << "Bad Number of Vertices";
-    EXPECT_EQ(w.normal_count(), 524396) << "Bad Number of Normals";
-    EXPECT_EQ(w.triangle_count(), 304135) << "Bad Number of Triangles";
-    EXPECT_EQ(w.shape_count(), 49) << "Bad number of Shapes";
-    EXPECT_EQ(w.material_count(), 15) << "Bad number of materials";
 }
 
 int main(int argc, char** argv)
