@@ -1,6 +1,6 @@
 # Blender v2.78 (sub 0) OBJ File: 'material_scene.blend'
 # www.blender.org
-mtllib material_scene_smooth.mtl
+mtllib materials_smooth.mtl
 o Cylinder
 v 1.429480 -0.239620 1.592389
 v 0.902384 0.165361 1.679531
