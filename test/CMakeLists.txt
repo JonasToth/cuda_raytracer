@@ -131,6 +131,7 @@ add_custom_target(integration_test_files
     
     # infrastructure
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/validate.sh ${PROJECT_BINARY_DIR}/test
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/compare_images.py ${PROJECT_BINARY_DIR}/test
     COMMAND mkdir -p ${PROJECT_BINARY_DIR}/test/int_test_output/
     COMMAND mkdir -p ${PROJECT_BINARY_DIR}/test/int_test_input/
     COMMAND mkdir -p ${PROJECT_BINARY_DIR}/test/int_test_ref/

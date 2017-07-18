@@ -22,13 +22,9 @@ REF_FILE="$4.png"
 
 eval "$TEST_EXE $OBJ_BASE $OUT_BASE"
 
-convert "./int_test_output/$OUT_FILE" "./int_test_output/$OUT_BASE.rgba"
-convert "./int_test_ref/$REF_FILE" "./int_test_output/$REF_BASE.rgba"
-cmp "./int_test_output/$OUT_BASE.rgba" "./int_test_output/$REF_BASE.rgba"
+compare_images.py "./int_test_output/$OUT_FILE" "./int_test_output/$REF_FILE"
 
 diff=$?
-
-rm "./int_test_output/$OUT_BASE.rgba" "./int_test_output/$REF_BASE.rgba"
 
 if [ $diff -eq 0 ]; then
     echo "Equality"
