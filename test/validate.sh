@@ -16,7 +16,7 @@ OUT_FILE="$3"
 REF_FILE="$4"
 
 
-eval "$TEST_EXE $OBJ_FILE $OUT_FILE"
+eval "OMP_NUM_THREADS=4 $TEST_EXE $OBJ_FILE $OUT_FILE"
 
 python compare_images.py "$OUT_FILE" "$REF_FILE"
 

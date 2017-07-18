@@ -32,6 +32,8 @@ int main(int argc, char** argv)
 
     render_smooth(render_surface.getSurface(), scene.handle());
     render_surface.render_gl_texture();
+    glfwSwapBuffers(w.getWindow());
+    glFinish();
     std::this_thread::sleep_for(std::chrono::seconds(5));
 
     render_surface.save_as_png(img_name);

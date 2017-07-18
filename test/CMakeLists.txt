@@ -210,7 +210,7 @@ FOREACH(test IN LISTS FLAT_INTEGRATION_TESTS)
              COMMAND ./validate.sh ../gpu_flat_phong_shader.x ${test}_flat.obj gpu_flat_${test}.png reference_flat_${test}.png
              WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/integration_tests)
     add_test(NAME cpu_flat_${test}
-             COMMAND OMP_NUM_THREADS=4 ./validate.sh ../cpu_flat_phong_shader.x ${test}_flat.obj cpu_flat_${test}.png reference_flat_${test}.png
+             COMMAND ./validate.sh ../cpu_flat_phong_shader.x ${test}_flat.obj cpu_flat_${test}.png reference_flat_${test}.png
              WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/integration_tests)
 ENDFOREACH(test)
 
@@ -219,6 +219,6 @@ FOREACH(test IN LISTS SMOOTH_INTEGRATION_TESTS)
              COMMAND ./validate.sh ../gpu_smooth_phong_shader.x ${test}_smooth.obj gpu_smooth_${test}.png reference_smooth_${test}.png
              WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/integration_tests)
     add_test(NAME cpu_smooth_${test}
-             COMMAND OMP_NUM_THREADS=4 ./validate.sh ../cpu_smooth_phong_shader.x ${test}_smooth.obj cpu_smooth_${test}.png reference_smooth_${test}.png
+             COMMAND ./validate.sh ../cpu_smooth_phong_shader.x ${test}_smooth.obj cpu_smooth_${test}.png reference_smooth_${test}.png
              WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/integration_tests)
 ENDFOREACH(test)

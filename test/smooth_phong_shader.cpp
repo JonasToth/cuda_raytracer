@@ -19,8 +19,8 @@ int main(int argc, char** argv)
 
     // Light Setup similar to blender (position and stuff taken from there)
     const coord camera_posi = {-1.5f, 1.2f, -1.5f};
-    float spec[3] = {0.4f, 0.4f, 0.4f};
-    float diff[3] = {0.4f, 0.4f, 0.4f};
+    float spec[3] = {0.8f, 0.8f, 0.8f};
+    float diff[3] = {0.8f, 0.8f, 0.8f};
     scene.add_light(phong_light(spec, diff), camera_posi);
     scene.set_camera(camera(width, height, camera_posi, coord(0.f, 0.f, 0.f) - camera_posi));
 

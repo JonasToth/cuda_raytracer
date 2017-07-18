@@ -17,6 +17,7 @@ surface_raii::~surface_raii()
 {
     // Destroy the opengl texture
     glDeleteTextures(1, &__texture);
+    glFinish();
     // Destroy link between cuda and opengl
     cudaGraphicsUnmapResources(1, &__cuda_resource);
 
@@ -49,6 +50,7 @@ void surface_raii::__initialize_opengl_texture()
                      GL_UNSIGNED_BYTE, nullptr);
     }
     glBindTexture(GL_TEXTURE_2D, 0);
+    glFinish();
 
     const auto E = cudaGraphicsGLRegisterImage(&__cuda_resource, __texture, GL_TEXTURE_2D,
                                                cudaGraphicsRegisterFlagsWriteDiscard);
@@ -110,6 +112,7 @@ std::vector<uint8_t> surface_raii::__get_texture_memory() const
     std::vector<uint8_t> gl_texture_data(__width * __height * __channels);
     glReadPixels(0, 0, __width, __height, GL_RGBA, GL_UNSIGNED_BYTE,
                  gl_texture_data.data());
+    glFinish();
 
     return gl_texture_data;
 }
