@@ -9,8 +9,16 @@
 #include "util/demos/fps_demo.h"
 
 #include <chrono>
+#include <string>
 #include <thread>
 
+std::string get_scene_name(int argc, char** argv)
+{
+    if(argc == 1)
+        return std::string("materials_flat.obj");
+    else 
+        return std::string(argv[1]);
+}
 
 int main(int argc, char** argv)
 {
@@ -26,7 +34,7 @@ int main(int argc, char** argv)
 
     std::clog << "Setup Rendering Platform initialized" << std::endl;
 
-    world_geometry scene("material_scene.obj");
+    world_geometry scene(get_scene_name(argc, argv));
 
     // Light Setup similar to blender (position and stuff taken from there)
     float spec[3] = {0.8f, 0.8f, 0.8f};

@@ -9,18 +9,20 @@ include_directories(${GTEST_INCLUDE_DIRS})
 
 add_custom_target(demo_files
     # infrastructure
-    COMMAND mkdir -p ${PROJECT_BINARY_DIR}/test/demo_input/
+    #COMMAND mkdir -p ${PROJECT_BINARY_DIR}/test/demo_input/
 
     # demo files
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.obj ${PROJECT_BINARY_DIR}/test/demo_input/
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.mtl ${PROJECT_BINARY_DIR}/test/ # stupid obj will look in exectuin directory
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/materials_flat.obj ${PROJECT_BINARY_DIR}/test/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/materials_flat.mtl ${PROJECT_BINARY_DIR}/test/ 
 
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/mini_cooper.obj ${PROJECT_BINARY_DIR}/test/demo_input/
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/mini_cooper.mtl ${PROJECT_BINARY_DIR}/test/ # stupid obj will look in exectuin directory
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/materials_smooth.obj ${PROJECT_BINARY_DIR}/test/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/materials_smooth.mtl ${PROJECT_BINARY_DIR}/test/ 
 
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/mini_reduced.obj ${PROJECT_BINARY_DIR}/test/demo_input/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/mini_cooper.obj ${PROJECT_BINARY_DIR}/test/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/mini_cooper.mtl ${PROJECT_BINARY_DIR}/test/
+
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/mini_reduced.obj ${PROJECT_BINARY_DIR}/test/
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/mini_reduced.mtl ${PROJECT_BINARY_DIR}/test/ # stupid obj will look in exectuin directory
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/mini_reduced.mtl ${PROJECT_BINARY_DIR}/test/ 
 )
 
 
@@ -67,13 +69,17 @@ target_link_libraries(test_surface_raii.x
 # symbolic links to all test files
 add_custom_target(example_files
     # object files and materials necessary as testcases
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube.obj ${PROJECT_BINARY_DIR}/test
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_flat.obj ${PROJECT_BINARY_DIR}/test
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_flat.mtl ${PROJECT_BINARY_DIR}/test
+
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_subdiv_1.obj ${PROJECT_BINARY_DIR}/test
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_subdiv_1.mtl ${PROJECT_BINARY_DIR}/test
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube.mtl ${PROJECT_BINARY_DIR}/test
+
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_no_normals.obj ${PROJECT_BINARY_DIR}/test
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_no_normals.mtl ${PROJECT_BINARY_DIR}/test
+
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_no_normals_no_materials.obj ${PROJECT_BINARY_DIR}/test
+
 
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/shapes.obj ${PROJECT_BINARY_DIR}/test
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/bad.obj ${PROJECT_BINARY_DIR}/test
@@ -81,11 +87,11 @@ add_custom_target(example_files
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/mini_cooper.obj ${PROJECT_BINARY_DIR}/test
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/mini_cooper.mtl ${PROJECT_BINARY_DIR}/test
 
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.obj ${PROJECT_BINARY_DIR}/test
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.mtl ${PROJECT_BINARY_DIR}/test
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/materials_flat.obj ${PROJECT_BINARY_DIR}/test
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/materials_flat.mtl ${PROJECT_BINARY_DIR}/test
 
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene_smooth.obj ${PROJECT_BINARY_DIR}/test
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene_smooth.mtl ${PROJECT_BINARY_DIR}/test
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/materials_smooth.obj ${PROJECT_BINARY_DIR}/test
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/materials_smooth.mtl ${PROJECT_BINARY_DIR}/test
 )
 
 
@@ -141,15 +147,15 @@ add_custom_target(integration_test_files
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_smooth.obj ${PROJECT_BINARY_DIR}/test/integration_tests/
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_smooth.mtl ${PROJECT_BINARY_DIR}/test/integration_tests/ 
 
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_flat.obj ${PROJECT_BINARY_DIR}/test/integration_tests/
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_flat.mtl ${PROJECT_BINARY_DIR}/test/integration_tests/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/materials_flat.obj ${PROJECT_BINARY_DIR}/test/integration_tests/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/materials_flat.mtl ${PROJECT_BINARY_DIR}/test/integration_tests/
 
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/materials_smooth.obj ${PROJECT_BINARY_DIR}/test/integration_tests/
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/materials_smooth.mtl ${PROJECT_BINARY_DIR}/test/integration_tests/
 
     # reference as ground truth
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_flat_cube.png ${PROJECT_BINARY_DIR}/test/integration_tests/
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_smooth_smooth.png ${PROJECT_BINARY_DIR}/test/integration_tests/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_smooth_cube.png ${PROJECT_BINARY_DIR}/test/integration_tests/
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_flat_materials.png ${PROJECT_BINARY_DIR}/test/integration_tests/
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_smooth_materials.png ${PROJECT_BINARY_DIR}/test/integration_tests/
 )
@@ -201,18 +207,18 @@ SET(SMOOTH_INTEGRATION_TESTS
 
 FOREACH(test IN LISTS FLAT_INTEGRATION_TESTS)
     add_test(NAME gpu_flat_${test}
-             COMMAND ./validate.sh ../gpu_flat_phong_shader.x ${test}.obj gpu_${test}.png reference_flat_${test}.png
+             COMMAND ./validate.sh ../gpu_flat_phong_shader.x ${test}_flat.obj gpu_flat_${test}.png reference_flat_${test}.png
              WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/integration_tests)
     add_test(NAME cpu_flat_${test}
-             COMMAND ./validate.sh ../cpu_flat_phong_shader.x ${test}.obj cpu_${test}.png reference_flat_${test}.png
+             COMMAND OMP_NUM_THREADS=4 ./validate.sh ../cpu_flat_phong_shader.x ${test}_flat.obj cpu_flat_${test}.png reference_flat_${test}.png
              WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/integration_tests)
 ENDFOREACH(test)
 
 FOREACH(test IN LISTS SMOOTH_INTEGRATION_TESTS)
     add_test(NAME gpu_smooth_${test}
-             COMMAND ./validate.sh ../gpu_smooth_phong_shader.x ${test}.obj gpu_${test}.png reference_smooth_${test}.png
+             COMMAND ./validate.sh ../gpu_smooth_phong_shader.x ${test}_smooth.obj gpu_smooth_${test}.png reference_smooth_${test}.png
              WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/integration_tests)
     add_test(NAME cpu_smooth_${test}
-             COMMAND ./validate.sh ../cpu_smooth_phong_shader.x ${test}.obj cpu_${test}.png reference_smooth_${test}.png
+             COMMAND OMP_NUM_THREADS=4 ./validate.sh ../cpu_smooth_phong_shader.x ${test}_smooth.obj cpu_smooth_${test}.png reference_smooth_${test}.png
              WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/integration_tests)
 ENDFOREACH(test)
