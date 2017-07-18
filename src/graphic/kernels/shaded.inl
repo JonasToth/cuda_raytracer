@@ -13,7 +13,7 @@ __global__ void trace_triangles_shaded(cudaSurfaceObject_t surface, camera c,
         uchar4 pixel_color;
         pixel_color.x = 0;
         pixel_color.y = 0;
-        pixel_color.z = 255;
+        pixel_color.z = 0;
         pixel_color.w = 255;
 
         triangle const* nearest = nullptr;

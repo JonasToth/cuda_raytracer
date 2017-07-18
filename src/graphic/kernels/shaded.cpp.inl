@@ -13,7 +13,7 @@ void trace_triangles_shaded(memory_surface& surface, camera c,
         pixel_rgba pixel_color;
         pixel_color.r = 0;
         pixel_color.g = 0;
-        pixel_color.b = 255;
+        pixel_color.b = 0;
         pixel_color.a = 255;
 
         triangle const* nearest = nullptr;
