@@ -29,7 +29,7 @@ int main(int argc, char** argv)
     glfwSetKeyCallback(w, register_key_press);
 
     // Camera Setup similar to blender
-    camera c(win.getWidth(), win.getHeight(), {0.0f, 0.5f, 2.5f}, {0.1f, 0.f, -1.f});
+    camera c(win.getWidth(), win.getHeight(), {0.0f, 0.5f, -2.5f}, {0.1f, 0.f,  1.f});
     surface_raii render_surface(win.getWidth(), win.getHeight());
 
     std::clog << "Setup Rendering Platform initialized" << std::endl;
@@ -47,23 +47,29 @@ int main(int argc, char** argv)
     std::clog << "World initialized" << std::endl;
 
     auto render_lambda = [&]() {
-        const auto& triangles = scene.triangles();
-        render_flat(render_surface.getSurface(), scene.handle());
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        render_smooth(render_surface.getSurface(), scene.handle());
+        std::this_thread::sleep_for(std::chrono::milliseconds(1400));
+
         render_surface.render_gl_texture();
         glfwSwapBuffers(w);
+
         std::clog << "World rendered" << std::endl;
         std::clog << "Camera Position: " << c.origin() << std::endl;
         std::clog << "Camera Steering At: " << c.steering() << std::endl << std::endl;
+
         camera_changed = false;
     };
 
 
     while (!glfwWindowShouldClose(w)) {
-        glfwWaitEvents();
         camera_changed = handle_keys(w, c);
         if (camera_changed)
+        {
+            scene.set_camera(c);
             render_lambda();
+        }
+
+        glfwWaitEvents();
     }
     input_manager::instance().clear();
 

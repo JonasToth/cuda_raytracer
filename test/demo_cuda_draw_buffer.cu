@@ -190,46 +190,6 @@ TEST(cuda_draw, draw_loaded_geometry)
     input_manager::instance().clear();
 }
 
-TEST(cuda_draw, draw_phong_shaded)
-{
-    // Window stuff
-    window win(Width, Height, "Cuda Raytracer");
-    auto w = win.getWindow();
-    c = camera(Width, Height, {-2.f, 1.f, -2.f}, {2.f, -1.f, 2.f});
-
-    glfwSetKeyCallback(w, register_key_press);
-    glfwSetCursorPosCallback(w, register_mouse_movement);
-    glfwSetInputMode(w, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-    glfwMakeContextCurrent(w);
-
-    // Cuda stuff
-    surface_raii vis(Width, Height);
-
-    // 3D Stuff
-    world_geometry world("test_camera_light.obj");
-
-    float spec[3] = {0.2f, 0.4f, 0.2f};
-    float diff[3] = {0.1f, 0.9f, 0.7f};
-    world.add_light(phong_light(spec, diff), {-1.7f, -1.5f, -1.5f});
-    world.add_light(phong_light(spec, diff), {1.3f, -1.8f, -1.2f});
-    world.add_light(phong_light(spec, diff), {-1.1f, 2.0f, 1.1f});
-    world.add_light(phong_light(spec, diff), {-1.5f, -1.5f, 1.5f});
-
-    const auto& triangles = world.triangles();
-
-    while (!glfwWindowShouldClose(w)) {
-        render_flat(vis.getSurface(), world.handle());
-        vis.render_gl_texture();
-
-        glfwSwapBuffers(w);
-        glfwWaitEvents();
-        handle_keys(w);
-        handle_mouse_movement();
-    }
-    input_manager::instance().clear();
-}
-
 int main(int argc, char** argv)
 {
     testing::InitGoogleTest(&argc, argv);
