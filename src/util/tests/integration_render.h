@@ -38,8 +38,6 @@ private:
     const unsigned int delay = 2; // seconds
     const std::string obj_name;
     const std::string img_name;
-    const std::string out_prefix = "./int_test_output/";
-    const std::string in_prefix = "./int_test_input/";
 
 #ifdef __CUDACC__
     window w;

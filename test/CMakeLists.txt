@@ -130,34 +130,28 @@ add_custom_target(integration_test_files
     # necessary for integration tests
     
     # infrastructure
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/validate.sh ${PROJECT_BINARY_DIR}/test
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/compare_images.py ${PROJECT_BINARY_DIR}/test
-    COMMAND mkdir -p ${PROJECT_BINARY_DIR}/test/int_test_output/
-    COMMAND mkdir -p ${PROJECT_BINARY_DIR}/test/int_test_input/
-    COMMAND mkdir -p ${PROJECT_BINARY_DIR}/test/int_test_ref/
+    COMMAND mkdir -p ${PROJECT_BINARY_DIR}/test/integration_tests/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/validate.sh ${PROJECT_BINARY_DIR}/test/integration_tests/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/compare_images.py ${PROJECT_BINARY_DIR}/test/integration_tests/
 
     # actual test files
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube.obj ${PROJECT_BINARY_DIR}/test/int_test_input/
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube.mtl ${PROJECT_BINARY_DIR}/test/int_test_input/ # stupid obj load will look in exectuion dir
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube.mtl ${PROJECT_BINARY_DIR}/test/ # stupid obj load will look in exectuion dir
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube.obj ${PROJECT_BINARY_DIR}/test/integration_tests/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube.mtl ${PROJECT_BINARY_DIR}/test/integration_tests/ 
 
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_smooth.obj ${PROJECT_BINARY_DIR}/test/int_test_input/
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_smooth.mtl ${PROJECT_BINARY_DIR}/test/int_test_input/ # stupid obj load will look in exectuion dir
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_smooth.mtl ${PROJECT_BINARY_DIR}/test/ # stupid obj load will look in exectuion dir
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_smooth.obj ${PROJECT_BINARY_DIR}/test/integration_tests/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_smooth.mtl ${PROJECT_BINARY_DIR}/test/integration_tests/ 
 
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.obj ${PROJECT_BINARY_DIR}/test/int_test_input/materials.obj
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.mtl ${PROJECT_BINARY_DIR}/test/int_test_input/materials.mtl # stupid obj load will look in exectuion dir
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.mtl ${PROJECT_BINARY_DIR}/test/materials.mtl # stupid obj load will look in exectuion dir
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.obj ${PROJECT_BINARY_DIR}/test/integration_tests/materials.obj
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.mtl ${PROJECT_BINARY_DIR}/test/integration_tests/materials.mtl 
 
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene_smooth.obj ${PROJECT_BINARY_DIR}/test/int_test_input/materials_smooth.obj
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene_smooth.mtl ${PROJECT_BINARY_DIR}/test/int_test_input/materials_smooth.mtl # stupid obj load will look in exectuion dir
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene_smooth.mtl ${PROJECT_BINARY_DIR}/test/materials_smooth.mtl # stupid obj load will look in exectuion dir
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene_smooth.obj ${PROJECT_BINARY_DIR}/test/integration_tests/materials_smooth.obj
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene_smooth.mtl ${PROJECT_BINARY_DIR}/test/integration_tests/materials_smooth.mtl 
 
     # reference as ground truth
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_cube.png ${PROJECT_BINARY_DIR}/test/int_test_ref/
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_cube_smooth.png ${PROJECT_BINARY_DIR}/test/int_test_ref/
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_materials.png ${PROJECT_BINARY_DIR}/test/int_test_ref/
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_materials_smooth.png ${PROJECT_BINARY_DIR}/test/int_test_ref/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_cube.png ${PROJECT_BINARY_DIR}/test/integration_tests/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_cube_smooth.png ${PROJECT_BINARY_DIR}/test/integration_tests/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_materials.png ${PROJECT_BINARY_DIR}/test/integration_tests/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_materials_smooth.png ${PROJECT_BINARY_DIR}/test/integration_tests/
 )
 
 
@@ -207,14 +201,18 @@ SET(SMOOTH_INTEGRATION_TESTS
 
 FOREACH(test IN LISTS FLAT_INTEGRATION_TESTS)
     add_test(NAME gpu_flat_${test}
-             COMMAND ./validate.sh ./gpu_flat_phong_shader.x ${test} gpu_${test} reference_flat_${test})
+             COMMAND ./validate.sh ./gpu_flat_phong_shader.x ${test}.obj gpu_${test}.png reference_flat_${test}.png
+             WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/integration_tests)
     add_test(NAME cpu_flat_${test}
-             COMMAND ./validate.sh ./cpu_flat_phong_shader.x ${test} cpu_${test} reference_flat_${test})
+             COMMAND ./validate.sh ./cpu_flat_phong_shader.x ${test}.obj cpu_${test}.png reference_flat_${test}.png
+             WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/integration_tests)
 ENDFOREACH(test)
 
 FOREACH(test IN LISTS SMOOTH_INTEGRATION_TESTS)
     add_test(NAME gpu_smooth_${test}
-             COMMAND ./validate.sh ./gpu_smooth_phong_shader.x ${test} gpu_${test} reference_smooth_${test})
+             COMMAND ./validate.sh ./gpu_smooth_phong_shader.x ${test}.obj gpu_${test}.png reference_smooth_${test}.png
+             WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/integration_tests)
     add_test(NAME cpu_smooth_${test}
-             COMMAND ./validate.sh ./cpu_smooth_phong_shader.x ${test} cpu_${test} reference_smooth_${test})
+             COMMAND ./validate.sh ./cpu_smooth_phong_shader.x ${test}.obj cpu_${test}.png reference_smooth_${test}.png
+             WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/integration_tests)
 ENDFOREACH(test)

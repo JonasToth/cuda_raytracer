@@ -5,7 +5,7 @@ integration_render::integration_render(std::string obj_name, std::string img_nam
   , w(width, height, obj_name + " Scene")
 #endif
   , render_surface(width, height)
-  , scene(in_prefix + obj_name + ".obj")
+  , scene(obj_name + ".obj")
 {
     std::clog << "Setup Rendering Platform initialized" << std::endl;
 }
@@ -37,5 +37,5 @@ void integration_render::run()
 #endif
     std::clog << "World rendered" << std::endl;
 
-    render_surface.save_as_png(out_prefix + img_name + ".png");
+    render_surface.save_as_png(img_name + ".png");
 }

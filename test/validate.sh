@@ -11,18 +11,14 @@ fi
 
 TEST_EXE="$1"
 
-OBJ_BASE="$2"
-
-OUT_BASE="$3"
-OUT_FILE="$3.png"
-
-REF_BASE="$4"
-REF_FILE="$4.png"
+OBJ_FILE="$2"
+OUT_FILE="$3"
+REF_FILE="$4"
 
 
-eval "$TEST_EXE $OBJ_BASE $OUT_BASE"
+eval "$TEST_EXE $OBJ_FILE $OUT_FILE"
 
-compare_images.py "./int_test_output/$OUT_FILE" "./int_test_output/$REF_FILE"
+compare_images.py "$OUT_FILE" "$REF_FILE"
 
 diff=$?
 
