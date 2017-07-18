@@ -45,19 +45,10 @@ __global__ void trace_many_triangles_with_camera(cudaSurfaceObject_t surface, ca
 
         triangle const* nearest = nullptr;
         intersect nearest_hit;
-        // nearest_hit.depth = std::numeric_limits<float>::max;
-        nearest_hit.depth = 10000.f;
+        const auto result_pair = calculate_intersection(r, triangles, n_triangles);
+        nearest = result_pair.first;
+        nearest_hit = result_pair.second;
 
-        // Find out the closes triangle
-        for (std::size_t i = 0; i < n_triangles; ++i) {
-            const auto traced = r.intersects(triangles[i]);
-            if (traced.first) {
-                if (traced.second.depth < nearest_hit.depth) {
-                    nearest = &triangles[i];
-                    nearest_hit = traced.second;
-                }
-            }
-        }
 
         if (nearest != nullptr) {
             pixel_color.x = nearest_hit.depth * 5.f;

@@ -1,25 +1,31 @@
 #include "graphic/shading.h"
 
-CUCALL ALWAYS_INLINE inline float diffuse(float kd, float id, float dot_product)
+ALWAYS_INLINE inline float diffuse(float kd, float id, float dot_product)
 {
     return kd * dot_product * id;
 }
 
-CUCALL ALWAYS_INLINE inline float specular(float ks, float is, float dot_product,
-                                           float alpha)
+ALWAYS_INLINE inline float specular(float ks, float is, float dot_product, float alpha)
 {
     return ks * std::pow(dot_product, alpha) * is;
 }
 
-inline coord shading_normal(const triangle& t, coord /* unused */,
-                            flat_shading_tag /* unused */)
+ALWAYS_INLINE inline coord shading_normal(const triangle& t, coord /* unused */,
+                                          flat_shading_tag /* unused */)
 {
     return normalize(t.normal());
 }
 
-inline coord shading_normal(const triangle& t, coord hit, smooth_shading_tag /* unused */)
+ALWAYS_INLINE inline coord shading_normal(const triangle& t, coord hit,
+                                          smooth_shading_tag /* unused */)
 {
     return t.interpolated_normal(hit);
+}
+
+inline bool luminated_by_light(const intersect& hit, const light_source& l)
+{
+    const auto L = normalize(l.position - hit.hit);
+    return true;
 }
 
 template <typename ShadingStyleTag>
@@ -43,6 +49,8 @@ inline color phong_shading(const phong_material* m, const float ambient_constant
     c.b = ambient(mb.ambient_reflection(), ambient_constant);
 
     for (std::size_t i = 0; i < n_lights; ++i) {
+        if (!luminated_by_light(hit, lights[i]))
+            continue;
         const auto& lr = lights[i].light.r;
         const auto& lg = lights[i].light.g;
         const auto& lb = lights[i].light.b;

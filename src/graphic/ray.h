@@ -1,10 +1,9 @@
 #ifndef RAY_H_COAY6AFS
 #define RAY_H_COAY6AFS
 
-#ifdef __CUDACC__
+//#ifdef __CUDACC__
 #include <thrust/pair.h>
-#include <thrust/tuple.h>
-#endif
+//#endif
 
 #include <utility>
 
@@ -82,5 +81,25 @@ struct ray {
     coord origin;
     coord direction;
 };
+
+
+inline CUCALL thrust::pair<const triangle*, intersect>
+calculate_intersection(const ray r, const triangle* triangles, std::size_t n_triangles)
+{
+    const triangle* nearest = nullptr;
+    intersect nearest_hit;
+    nearest_hit.depth = 10000.f;
+    for (std::size_t i = 0; i < n_triangles; ++i) {
+        const auto traced = r.intersects(triangles[i]);
+        if (traced.first) {
+            if (traced.second.depth < nearest_hit.depth) {
+                nearest = &triangles[i];
+                nearest_hit = traced.second;
+            }
+        }
+    }
+    return thrust::make_pair(nearest, nearest_hit);
+}
+
 
 #endif /* end of include guard: RAY_H_COAY6AFS */

@@ -37,6 +37,7 @@ CUCALL inline coord shading_normal(const triangle& t, coord hit,
 CUCALL inline coord shading_normal(const triangle& t, coord hit,
                                    smooth_shading_tag /* unused */);
 
+CUCALL inline bool luminated_by_light(const intersect& hit, const light_source& l);
 
 /// Calculate the whole shading formular for one channel
 /// This is C-Style, since it must run on the gpu as well, therefor no nice vectors

@@ -18,19 +18,10 @@ void trace_triangles_shaded(memory_surface& surface, camera c,
 
         triangle const* nearest = nullptr;
         intersect nearest_hit;
-        // nearest_hit.depth = std::numeric_limits<float>::max;
-        nearest_hit.depth = 10000.f;
-
-        // Find out the closes triangle
-        for (std::size_t i = 0; i < triangles.size(); ++i) {
-            const auto traced = r.intersects(triangles[i]);
-            if (traced.first) {
-                if (traced.second.depth < nearest_hit.depth) {
-                    nearest = &triangles[i];
-                    nearest_hit = traced.second;
-                }
-            }
-        }
+        const auto result_pair =
+            calculate_intersection(r, triangles.data(), triangles.size());
+        nearest = result_pair.first;
+        nearest_hit = result_pair.second;
 
         if (nearest != nullptr) {
             const phong_material* hit_material = nearest->material();
