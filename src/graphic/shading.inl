@@ -22,17 +22,13 @@ ALWAYS_INLINE inline coord shading_normal(const triangle& t, coord hit,
     return t.interpolated_normal(hit);
 }
 
-inline bool luminated_by_light(const intersect& hit, const light_source& l)
-{
-    const auto L = normalize(l.position - hit.hit);
-    return true;
-}
 
-template <typename ShadingStyleTag>
-inline color phong_shading(const phong_material* m, const float ambient_constant,
-                           const light_source* lights, std::size_t n_lights,
-                           const coord& ray_direction, const intersect& hit,
-                           ShadingStyleTag sst)
+template <typename ShadingStyleTag, typename ShadowTag>
+color phong_shading(const phong_material* m, const float ambient_constant,
+                    const coord& ray_direction, const intersect& hit,
+                    const light_source* lights, std::size_t n_lights,
+                    const triangle* triangles, std::size_t n_triangles,
+                    ShadingStyleTag sst, ShadowTag st)
 {
     const auto N = shading_normal(*hit.face, hit.hit, sst);
     const auto V = normalize(coord(ray_direction.x, ray_direction.y, ray_direction.z));
@@ -49,8 +45,9 @@ inline color phong_shading(const phong_material* m, const float ambient_constant
     c.b = ambient(mb.ambient_reflection(), ambient_constant);
 
     for (std::size_t i = 0; i < n_lights; ++i) {
-        if (!luminated_by_light(hit, lights[i]))
+        if (!luminated_by_light(hit, lights[i], triangles, n_triangles, st))
             continue;
+
         const auto& lr = lights[i].light.r;
         const auto& lg = lights[i].light.g;
         const auto& lb = lights[i].light.b;
@@ -83,4 +80,23 @@ inline color phong_shading(const phong_material* m, const float ambient_constant
     }
 
     return c;
+}
+
+inline bool luminated_by_light(const intersect& hit, const light_source& l,
+                               const triangle* triangles, std::size_t n_triangles,
+                               hard_shadow_tag /*unused*/)
+{
+    const auto L = normalize(l.position - hit.hit);
+    const auto origin = hit.hit;
+
+    ray r;
+    r.origin = origin;
+    r.direction = L;
+
+    const auto result = calculate_intersection(r, triangles, n_triangles);
+
+    if (result.first == nullptr || result.second.depth > norm(l.position - hit.hit))
+        return true;
+
+    return false;
 }

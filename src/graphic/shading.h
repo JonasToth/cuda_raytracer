@@ -32,21 +32,43 @@ struct flat_shading_tag {
 struct smooth_shading_tag {
 };
 
+/// Tag dispatch to create shadows, either no shadow or sharp shadow
+struct no_shadow_tag {
+};
+struct hard_shadow_tag {
+};
+
+/// Returns face normal of the triangle
 CUCALL inline coord shading_normal(const triangle& t, coord hit,
                                    flat_shading_tag /* unused */);
+/// Returns interpolated normal of the hit point on the triangle
 CUCALL inline coord shading_normal(const triangle& t, coord hit,
                                    smooth_shading_tag /* unused */);
 
-CUCALL inline bool luminated_by_light(const intersect& hit, const light_source& l);
 
 /// Calculate the whole shading formular for one channel
 /// This is C-Style, since it must run on the gpu as well, therefor no nice vectors
-template <typename ShadingStyleTag>
+template <typename ShadingStyleTag, typename ShadowTag>
 CUCALL color phong_shading(const phong_material* m, float ambient_constant,
-                           const light_source* lights, std::size_t n_lights,
                            const coord& ray_direction, const intersect& hit,
-                           ShadingStyleTag sst);
+                           const light_source* lights, std::size_t n_lights,
+                           const triangle* triangles, std::size_t n_triangles,
+                           ShadingStyleTag sst, ShadowTag st);
 
+/// Returns always true, since no shadows shall be calculated
+CUCALL ALWAYS_INLINE inline bool luminated_by_light(const intersect& /*unused*/,
+                                                    const light_source& /*unused*/,
+                                                    const triangle* /*unused*/,
+                                                    std::size_t /*unused*/,
+                                                    no_shadow_tag /*unused*/)
+{
+    return true;
+}
+
+/// Test if there is a triangle between the intersection point and the light source l.
+CUCALL inline bool luminated_by_light(const intersect& hit, const light_source& l,
+                                      const triangle* triangles, std::size_t n_triangles,
+                                      hard_shadow_tag /*unused*/);
 
 #include "shading.inl"
 

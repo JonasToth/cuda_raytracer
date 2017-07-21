@@ -15,7 +15,7 @@ inline void render_flat(cudaSurfaceObject_t surface, world_geometry::data_handle
     black_kernel<<<dimGrid, dimBlock>>>(surface, dh.cam.width(), dh.cam.height());
     trace_triangles_shaded<<<dimGrid, dimBlock>>>(surface, dh.cam, dh.triangles.data(),
                                                   dh.triangles.size(), dh.lights.data(),
-                                                  dh.lights.size(), flat_shading_tag{});
+                                                  dh.lights.size(), flat_shading_tag{}, no_shadow_tag{});
 }
 inline void render_smooth(cudaSurfaceObject_t surface, world_geometry::data_handle dh)
 {
@@ -25,7 +25,7 @@ inline void render_smooth(cudaSurfaceObject_t surface, world_geometry::data_hand
     black_kernel<<<dimGrid, dimBlock>>>(surface, dh.cam.width(), dh.cam.height());
     trace_triangles_shaded<<<dimGrid, dimBlock>>>(surface, dh.cam, dh.triangles.data(),
                                                   dh.triangles.size(), dh.lights.data(),
-                                                  dh.lights.size(), smooth_shading_tag{});
+                                                  dh.lights.size(), smooth_shading_tag{}, no_shadow_tag{});
 }
 
 
@@ -34,13 +34,13 @@ inline void render_smooth(cudaSurfaceObject_t surface, world_geometry::data_hand
 inline void render_flat(memory_surface& surface, world_geometry::data_handle dh)
 {
     black_kernel(surface);
-    trace_triangles_shaded(surface, dh.cam, dh.triangles, dh.lights, flat_shading_tag{});
+    trace_triangles_shaded(surface, dh.cam, dh.triangles, dh.lights, flat_shading_tag{}, no_shadow_tag{});
 }
 
 inline void render_smooth(memory_surface& surface, world_geometry::data_handle dh)
 {
     black_kernel(surface);
-    trace_triangles_shaded(surface, dh.cam, dh.triangles, dh.lights, smooth_shading_tag{});
+    trace_triangles_shaded(surface, dh.cam, dh.triangles, dh.lights, smooth_shading_tag{}, no_shadow_tag{});
 }
 
 #endif

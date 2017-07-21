@@ -1,8 +1,8 @@
-template <typename ShadingStyleTag>
+template <typename ShadingStyleTag, typename ShadowTag>
 __global__ void trace_triangles_shaded(cudaSurfaceObject_t surface, camera c,
                                        const triangle* triangles, std::size_t n_triangles,
                                        const light_source* lights, std::size_t n_lights,
-                                       ShadingStyleTag sst)
+                                       ShadingStyleTag sst, ShadowTag st)
 {
     const auto x = blockIdx.x * blockDim.x + threadIdx.x;
     const auto y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -24,8 +24,9 @@ __global__ void trace_triangles_shaded(cudaSurfaceObject_t surface, camera c,
 
         if (nearest != nullptr) {
             const phong_material* hit_material = nearest->material();
-            const auto color = phong_shading(hit_material, 0.1, lights, n_lights,
-                                             normalize(r.direction), nearest_hit, sst);
+            const auto color = phong_shading(hit_material, 0.1, normalize(r.direction),
+                                             nearest_hit, lights, n_lights,
+                                             triangles, n_triangles, sst, st);
 
             pixel_color.x = 255 * clamp(0.f, color.r, 1.f);
             pixel_color.y = 255 * clamp(0.f, color.g, 1.f);

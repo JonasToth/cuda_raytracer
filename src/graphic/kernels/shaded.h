@@ -30,20 +30,21 @@ CUCALL inline float clamp(float lowest, float value, float highest)
 #ifdef __CUDACC__ // GPU Raytracing
 #include "management/surface_raii.h"
 
-template <typename ShadingStyleTag>
+template <typename ShadingStyleTag, typename ShadowTag>
 __global__ void trace_triangles_shaded(cudaSurfaceObject_t surface, camera c,
                                        const triangle* triangles, std::size_t n_triangles,
                                        const light_source* lights, std::size_t n_lights,
-                                       ShadingStyleTag sst);
+                                       ShadingStyleTag sst, ShadowTag st);
 #include "graphic/kernels/shaded.inl"
 
 #else // CPU raytracing
 #include "management/memory_surface.h"
 
-template <typename ShadingStyleTag>
+template <typename ShadingStyleTag, typename ShadowTag>
 void trace_triangles_shaded(memory_surface& surface, camera c,
                             gsl::span<const triangle> triangles,
-                            gsl::span<const light_source> lights, ShadingStyleTag sst);
+                            gsl::span<const light_source> lights, ShadingStyleTag sst,
+                            ShadowTag st);
 
 #include "graphic/kernels/shaded.cpp.inl"
 #endif

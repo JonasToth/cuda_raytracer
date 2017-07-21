@@ -1,10 +1,11 @@
 #include "image_loop_macro.h"
 #include <iostream>
 
-template <typename ShadingStyleTag>
+template <typename ShadingStyleTag, typename ShadowTag>
 void trace_triangles_shaded(memory_surface& surface, camera c,
                             gsl::span<const triangle> triangles,
-                            gsl::span<const light_source> lights, ShadingStyleTag sst)
+                            gsl::span<const light_source> lights, ShadingStyleTag sst,
+                            ShadowTag st)
 {
     PIXEL_LOOP(surface)
     {
@@ -25,9 +26,9 @@ void trace_triangles_shaded(memory_surface& surface, camera c,
 
         if (nearest != nullptr) {
             const phong_material* hit_material = nearest->material();
-            const auto color =
-                phong_shading(hit_material, 0.1, lights.data(), lights.size(),
-                              normalize(r.direction), nearest_hit, sst);
+            const auto color = phong_shading(
+                hit_material, 0.1, normalize(r.direction), nearest_hit, lights.data(),
+                lights.size(), triangles.data(), triangles.size(), sst, st);
 
             pixel_color.r = 255 * clamp(0.f, color.r, 1.f);
             pixel_color.g = 255 * clamp(0.f, color.g, 1.f);

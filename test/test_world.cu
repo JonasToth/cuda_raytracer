@@ -17,7 +17,7 @@ struct validityCheck {
 
 TEST(cube, all_contained)
 {
-    world_geometry w("cube.obj");
+    world_geometry w("cube_flat.obj");
 
     EXPECT_EQ(w.vertex_count(), 8) << "Bad Number of Vertices";
     EXPECT_EQ(w.normal_count(), 6) << "Bad Number of Normals";
@@ -163,7 +163,7 @@ TEST(cube, no_normals_no_materials)
 
 TEST(non_geometry, world_handle)
 {
-    world_geometry w("cube.obj");
+    world_geometry w("cube_flat.obj");
     float spec[3] = {0.8f, 0.8f, 0.8f};
     float diff[3] = {0.8f, 0.8f, 0.8f};
     w.add_light(phong_light(spec, diff), {-1.7f, -1.5f, -1.5f});
@@ -255,7 +255,7 @@ TEST(real, test_bad_input)
 
 TEST(real, simple_scene)
 {
-    world_geometry w("material_scene.obj");
+    world_geometry w("materials_flat.obj");
     EXPECT_EQ(w.vertex_count(), 8500) << "Bad Number of Vertices";
     EXPECT_EQ(w.normal_count(), 11040) << "Bad Number of Normals";
     EXPECT_EQ(w.triangle_count(), 16976) << "Bad Number of Triangles";
