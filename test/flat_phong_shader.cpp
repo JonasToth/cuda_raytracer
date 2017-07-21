@@ -21,7 +21,10 @@ int main(int argc, char** argv)
     const coord camera_posi = {-1.5f, 1.2f, -1.5f};
     float spec[3] = {0.8f, 0.8f, 0.8f};
     float diff[3] = {0.8f, 0.8f, 0.8f};
-    scene.add_light(phong_light(spec, diff), camera_posi);
+    scene.add_light(phong_light(spec, diff), coord(-1.1f,  1.1,  1.1f));
+    scene.add_light(phong_light(spec, diff), coord( 1.1f, -1.1, -1.1f));
+    scene.add_light(phong_light(spec, diff), coord(-1.1f, -1.1,  1.1f));
+    scene.add_light(phong_light(spec, diff), coord(-1.1f, -1.1, -1.1f));
     scene.set_camera(camera(width, height, camera_posi, coord(0.f, 0.f, 0.f) - camera_posi));
 
     render_flat(render_surface, scene.handle());
