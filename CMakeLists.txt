@@ -35,7 +35,7 @@ include_directories(${PROJECT_SOURCE_DIR}/lib/gsl-lite/include)
 include_directories(${PROJECT_SOURCE_DIR}/lib/png-plusplus)
 include_directories(${PNG_INCLUDE_DIRS})
 
-set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} --std=c++11 -Wno-deprecated-gpu-targets --expt-extended-lambda -DTHRUST_DEBUG")
+set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} --std=c++11 -Wno-deprecated-gpu-targets --expt-extended-lambda -DTHRUST_DEBUG -DGSL_UNENFORCED_ON_CONTRACT_VIOLATION")
 
 # optimize in release
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native")

@@ -1,9 +1,9 @@
 #ifndef OBJ_IO_H_ZHYWUHRN
 #define OBJ_IO_H_ZHYWUHRN
 
-#ifdef __CUDACC__
-#define GSL_UNENFORCED_ON_CONTRACT_VIOLATION
-#endif
+//#ifdef __CUDACC__
+//#define GSL_UNENFORCED_ON_CONTRACT_VIOLATION
+//#endif
 
 #include <gsl/gsl>
 #include <string>
