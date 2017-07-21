@@ -32,6 +32,11 @@ color phong_shading(const phong_material* m, const float ambient_constant,
 {
     const auto N = shading_normal(*hit.face, hit.hit, sst);
     const auto V = normalize(coord(ray_direction.x, ray_direction.y, ray_direction.z));
+    const auto shadow_hit = [&hit, &N]() {
+        auto new_hit = hit;
+        new_hit.hit = new_hit.hit + 0.001 * N;
+        return new_hit;
+    }();
 
     color c{0.f, 0.f, 0.f};
 
@@ -45,7 +50,7 @@ color phong_shading(const phong_material* m, const float ambient_constant,
     c.b = ambient(mb.ambient_reflection(), ambient_constant);
 
     for (std::size_t i = 0; i < n_lights; ++i) {
-        if (!luminated_by_light(hit, lights[i], triangles, n_triangles, st))
+        if (!luminated_by_light(shadow_hit, lights[i], triangles, n_triangles, st))
             continue;
 
         const auto& lr = lights[i].light.r;
@@ -93,10 +98,21 @@ inline bool luminated_by_light(const intersect& hit, const light_source& l,
     r.origin = origin;
     r.direction = L;
 
+#if 0
     const auto result = calculate_intersection(r, triangles, n_triangles);
 
     if (result.first == nullptr || result.second.depth > norm(l.position - hit.hit))
         return true;
 
     return false;
+#else
+    const auto max_depth = norm(l.position - hit.hit);
+    for (std::size_t i = 0; i < n_triangles; ++i) {
+        const auto traced = r.intersects(triangles[i]);
+        if (traced.first)
+            if (traced.second.depth < max_depth)
+                return false;
+    }
+    return true;
+#endif
 }

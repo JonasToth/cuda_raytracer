@@ -26,9 +26,9 @@ void trace_triangles_shaded(memory_surface& surface, camera c,
 
         if (nearest != nullptr) {
             const phong_material* hit_material = nearest->material();
-            const auto color = phong_shading(
-                hit_material, 0.1, normalize(r.direction), nearest_hit, lights.data(),
-                lights.size(), triangles.data(), triangles.size(), sst, st);
+            const auto color = phong_shading(hit_material, 0.1, normalize(r.direction),
+                                             nearest_hit, lights.data(), lights.size(),
+                                             triangles.data(), triangles.size(), sst, st);
 
             pixel_color.r = 255 * clamp(0.f, color.r, 1.f);
             pixel_color.g = 255 * clamp(0.f, color.g, 1.f);

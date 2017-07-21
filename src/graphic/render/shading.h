@@ -34,7 +34,7 @@ inline void render_smooth(cudaSurfaceObject_t surface, world_geometry::data_hand
 inline void render_flat(memory_surface& surface, world_geometry::data_handle dh)
 {
     black_kernel(surface);
-    trace_triangles_shaded(surface, dh.cam, dh.triangles, dh.lights, flat_shading_tag{}, no_shadow_tag{});
+    trace_triangles_shaded(surface, dh.cam, dh.triangles, dh.lights, flat_shading_tag{}, hard_shadow_tag{});
 }
 
 inline void render_smooth(memory_surface& surface, world_geometry::data_handle dh)
