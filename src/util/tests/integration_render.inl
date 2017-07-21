@@ -34,6 +34,7 @@ void integration_render::run()
     render_flat(render_surface.getSurface(), scene.handle());
     std::this_thread::sleep_for(std::chrono::seconds(delay));
     render_surface.render_gl_texture();
+    glfwSwapBuffers(w.getWindow());
 #endif
     std::clog << "World rendered" << std::endl;
 

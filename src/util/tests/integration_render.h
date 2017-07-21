@@ -35,7 +35,7 @@ public:
 private:
     const std::size_t width = 800;
     const std::size_t height = 600;
-    const unsigned int delay = 2; // seconds
+    const unsigned int delay = 10; // seconds
     const std::string obj_name;
     const std::string img_name;
 

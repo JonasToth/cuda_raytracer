@@ -106,12 +106,19 @@ inline bool luminated_by_light(const intersect& hit, const light_source& l,
 
     return false;
 #else
+    //std::clog << "Shadow Ray with Origin = " << r.origin
+              //<< " and direction = " << r.direction << " emitted." << std::endl;
     const auto max_depth = norm(l.position - hit.hit);
+    //std::clog << "Max Depth = " << max_depth << std::endl;
     for (std::size_t i = 0; i < n_triangles; ++i) {
         const auto traced = r.intersects(triangles[i]);
-        if (traced.first)
-            if (traced.second.depth < max_depth)
+        if (traced.first) {
+            //std::clog << "Shadow Ray did hit Triangle" << std::endl;
+            if (traced.second.depth < max_depth) {
+                //std::clog << "Shadow Ray got absorbed before light source" << std::endl;
                 return false;
+            }
+        }
     }
     return true;
 #endif
