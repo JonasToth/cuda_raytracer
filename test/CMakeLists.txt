@@ -147,6 +147,9 @@ add_custom_target(integration_test_files
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_smooth.obj ${PROJECT_BINARY_DIR}/test/integration_tests/
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_smooth.mtl ${PROJECT_BINARY_DIR}/test/integration_tests/ 
 
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_room.obj ${PROJECT_BINARY_DIR}/test/integration_tests/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_room.mtl ${PROJECT_BINARY_DIR}/test/integration_tests/ 
+
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/materials_flat.obj ${PROJECT_BINARY_DIR}/test/integration_tests/
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/materials_flat.mtl ${PROJECT_BINARY_DIR}/test/integration_tests/
 
@@ -198,6 +201,7 @@ ENDFOREACH()
 # --------------- Running these renderes with different input files ---------------------
 SET(FLAT_INTEGRATION_TESTS
     cube
+    cube_room
     materials
     )
 SET(SMOOTH_INTEGRATION_TESTS
