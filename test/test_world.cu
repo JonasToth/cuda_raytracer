@@ -28,41 +28,41 @@ TEST(cube, all_contained)
     const thrust::host_vector<coord> h_vertices = w.vertices();
     const std::vector<coord> vertices(h_vertices.begin(), h_vertices.end());
 
-    EXPECT_EQ(vertices[0], coord(1.f, -1.f, -1.f));
-    EXPECT_EQ(vertices[1], coord(1.f, -1.f, 1.f));
-    EXPECT_EQ(vertices[2], coord(-1.f, -1.f, 1.f));
-    EXPECT_EQ(vertices[3], coord(-1.f, -1.f, -1.f));
-    EXPECT_EQ(vertices[4], coord(1.f, 1.f, -0.9999999f));
-    EXPECT_EQ(vertices[5], coord(0.999999f, 1.f, 1.000001f));
-    EXPECT_EQ(vertices[6], coord(-1.f, 1.f, 1.f));
-    EXPECT_EQ(vertices[7], coord(-1.f, 1.f, -1.f));
+    EXPECT_EQ(vertices[0], coord( 0.000000f, -1.707107f, 6.707107f));
+    EXPECT_EQ(vertices[1], coord( 0.000000f,  0.292893f, 8.707107f));
+    EXPECT_EQ(vertices[2], coord(-1.414213f, -0.707107f, 7.707107f));
+    EXPECT_EQ(vertices[3], coord( 0.000000f,  1.707107f, 7.292893f));
+    EXPECT_EQ(vertices[4], coord( 0.000001f, -0.292893f, 5.292893f));
+    EXPECT_EQ(vertices[5], coord(-1.414213f,  0.707106f, 6.292893f));
+    EXPECT_EQ(vertices[6], coord( 1.414213f, -0.707107f, 7.707107f));
+    EXPECT_EQ(vertices[7], coord( 1.414213f,  0.707107f, 6.292893f));
 
     const thrust::host_vector<coord> h_normals = w.normals();
     const std::vector<coord> normals(h_normals.begin(), h_normals.end());
 
-    EXPECT_EQ(normals[0], coord(0.f, -1.f, 0.f)) << "Bad normal";
-    EXPECT_EQ(normals[1], coord(0.f, 1.f, 0.f)) << "Bad normal";
-    EXPECT_EQ(normals[2], coord(1.f, 0.f, 0.f)) << "Bad normal";
-    EXPECT_EQ(normals[3], coord(0.f, 0.f, 1.f)) << "Bad normal";
-    EXPECT_EQ(normals[4], coord(-1.f, 0.f, 0.f)) << "Bad normal";
-    EXPECT_EQ(normals[5], coord(0.f, 0.f, -1.f)) << "Bad normal";
+    EXPECT_EQ(normals[0], coord( 0.0000f, -0.7071f,  0.7071f)) << "Bad normal";
+    EXPECT_EQ(normals[1], coord(-0.0000f,  0.7071f, -0.7071f)) << "Bad normal";
+    EXPECT_EQ(normals[2], coord(-0.7071f, -0.5000f, -0.5000f)) << "Bad normal";
+    EXPECT_EQ(normals[3], coord( 0.7071f, -0.5000f, -0.5000f)) << "Bad normal";
+    EXPECT_EQ(normals[4], coord( 0.7071f,  0.5000f,  0.5000f)) << "Bad normal";
+    EXPECT_EQ(normals[5], coord(-0.7071f,  0.5000f,  0.5000f)) << "Bad normal";
 
     const thrust::host_vector<triangle> h_triangles = w.triangles();
     const std::vector<triangle> triangles(h_triangles.begin(), h_triangles.end());
 
     // correct
-    EXPECT_EQ(&triangles[0].p0(), (&w.vertices()[1]).get()) << "Bad triangle connection";
-    EXPECT_EQ(&triangles[0].p1(), (&w.vertices()[3]).get()) << "Bad triangle connection";
-    EXPECT_EQ(&triangles[0].p2(), (&w.vertices()[0]).get()) << "Bad triangle connection";
+    EXPECT_EQ(&triangles[0].p0(), (&w.vertices()[0]).get()) << "Bad triangle connection";
+    EXPECT_EQ(&triangles[0].p1(), (&w.vertices()[1]).get()) << "Bad triangle connection";
+    EXPECT_EQ(&triangles[0].p2(), (&w.vertices()[2]).get()) << "Bad triangle connection";
 
     EXPECT_EQ(&triangles[0].normal(), (&w.normals()[0]).get()) << "Bad normal connection";
 
     EXPECT_NE(triangles[0].material(), nullptr) << "No material connection";
 
     // incorrect should be checked as well, random choice
-    EXPECT_NE(&triangles[0].p0(), (&w.vertices()[0]).get()) << "Bad triangle connection";
+    EXPECT_NE(&triangles[0].p0(), (&w.vertices()[1]).get()) << "Bad triangle connection";
     EXPECT_NE(&triangles[0].p1(), (&w.vertices()[5]).get()) << "Bad triangle connection";
-    EXPECT_NE(&triangles[0].p2(), (&w.vertices()[2]).get()) << "Bad triangle connection";
+    EXPECT_NE(&triangles[0].p2(), (&w.vertices()[3]).get()) << "Bad triangle connection";
 }
 
 TEST(cube, vertex_normals)
@@ -257,7 +257,7 @@ TEST(real, simple_scene)
 {
     world_geometry w("materials_flat.obj");
     EXPECT_EQ(w.vertex_count(), 8500) << "Bad Number of Vertices";
-    EXPECT_EQ(w.normal_count(), 11040) << "Bad Number of Normals";
+    EXPECT_EQ(w.normal_count(), 14614) << "Bad Number of Normals";
     EXPECT_EQ(w.triangle_count(), 16976) << "Bad Number of Triangles";
     EXPECT_EQ(w.shape_count(), 5) << "Bad number of Shapes";
     EXPECT_EQ(w.material_count(), 4) << "Bad number of materials";

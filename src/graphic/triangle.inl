@@ -47,9 +47,9 @@ CUCALL inline coord triangle::barycentric(const coord P) const noexcept
 
 
 #ifndef __CUDACC__
-    Ensures(v >= 0.f && v <= 1.f);
-    Ensures(w >= 0.f && w <= 1.f);
-    Ensures(u >= 0.f && u <= 1.f);
+    Ensures(v >= -0.01f && v <= 1.01f);
+    Ensures(w >= -0.01f && w <= 1.01f);
+    Ensures(u >= -0.01f && u <= 1.01f);
     Ensures(norm(bary) <= 1.f);
 #endif
 

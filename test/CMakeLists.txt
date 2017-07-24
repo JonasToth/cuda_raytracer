@@ -170,6 +170,8 @@ add_custom_target(integration_test_files
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_smooth_cube.png ${PROJECT_BINARY_DIR}/test/integration_tests/
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_flat_materials.png ${PROJECT_BINARY_DIR}/test/integration_tests/
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_smooth_materials.png ${PROJECT_BINARY_DIR}/test/integration_tests/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_flat_cube_room.png ${PROJECT_BINARY_DIR}/test/integration_tests/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_structured_underground.png ${PROJECT_BINARY_DIR}/test/integration_tests/
 )
 
 
