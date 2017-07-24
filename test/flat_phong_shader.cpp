@@ -1,6 +1,7 @@
 #include "graphic/render/shading.h"
 #include "management/memory_surface.h"
 #include "management/world.h"
+#include "scene_setup.h"
 #include <string>
 
 int main(int argc, char** argv)
@@ -16,17 +17,10 @@ int main(int argc, char** argv)
 
     memory_surface render_surface(width, height);
     world_geometry scene(obj_name);
+    setup_common_scene(scene);
 
     // Light Setup similar to blender (position and stuff taken from there)
-    const coord camera_posi = { -2.0f, -2.0f,  2.0f};
-    const coord camera_view = {  1.0f,  1.0f, -1.0f};
-    float spec[3] = {0.8f, 0.8f, 0.8f};
-    float diff[3] = {0.8f, 0.8f, 0.8f};
-    scene.add_light(phong_light(spec, diff), coord(-1.1f,  1.1,  1.1f));
-    scene.add_light(phong_light(spec, diff), coord( 1.1f, -1.1, -1.1f));
-    scene.add_light(phong_light(spec, diff), coord(-1.1f, -1.1,  1.1f));
-    scene.add_light(phong_light(spec, diff), coord(-1.1f, -1.1, -1.1f));
-    scene.set_camera(camera(width, height, camera_posi, camera_view));
+    scene.set_camera(camera(width, height));
 
     render_flat(render_surface, scene.handle());
     render_surface.save_as_png(img_name);

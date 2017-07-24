@@ -23,6 +23,12 @@ add_custom_target(demo_files
 
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/mini_reduced.obj ${PROJECT_BINARY_DIR}/test/
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/mini_reduced.mtl ${PROJECT_BINARY_DIR}/test/ 
+
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/complex.obj ${PROJECT_BINARY_DIR}/test/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/complex.mtl ${PROJECT_BINARY_DIR}/test/ 
+
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/structured_underground.obj ${PROJECT_BINARY_DIR}/test/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/structured_underground.mtl ${PROJECT_BINARY_DIR}/test/ 
 )
 
 

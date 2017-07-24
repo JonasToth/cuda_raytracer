@@ -2,6 +2,7 @@
 #include "management/surface_raii.h"
 #include "management/window.h"
 #include "management/world.h"
+#include "scene_setup.h"
 #include <chrono>
 #include <string>
 #include <thread>
@@ -21,28 +22,18 @@ int main(int argc, char** argv)
     glfwMakeContextCurrent(w.getWindow());
 
     surface_raii render_surface(width, height);
+
     world_geometry scene(obj_name);
+    setup_common_scene(scene);
 
     // Light Setup similar to blender (position and stuff taken from there)
-    const coord camera_posi = {-1.5f, 1.2f,  1.5f};
-    float spec[3] = {0.8f, 0.8f, 0.8f};
-    float diff[3] = {0.8f, 0.8f, 0.8f};
-    scene.add_light(phong_light(spec, diff), coord(-1.1f,  1.1,  1.1f));
-    scene.add_light(phong_light(spec, diff), coord( 1.1f, -1.1, -1.1f));
-    scene.add_light(phong_light(spec, diff), coord(-1.1f, -1.1,  1.1f));
-    scene.add_light(phong_light(spec, diff), coord(-1.1f, -1.1, -1.1f));
-    scene.set_camera(camera(width, height, camera_posi, coord(0.f, 0.f, 0.f) - camera_posi));
+    scene.set_camera(camera(width, height));
 
-    glFinish();
     render_flat(render_surface.getSurface(), scene.handle());
-    glFinish();
     render_surface.render_gl_texture();
-    glFinish();
-    //std::this_thread::sleep_for(std::chrono::seconds(15));
     glfwSwapBuffers(w.getWindow());
     render_surface.render_gl_texture();
     glfwSwapBuffers(w.getWindow());
-    glFinish();
 
     render_surface.save_as_png(img_name);
 

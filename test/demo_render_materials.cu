@@ -6,6 +6,7 @@
 #include "management/input_manager.h"
 #include "management/window.h"
 #include "management/world.h"
+#include "scene_setup.h"
 #include "util/demos/fps_demo.h"
 
 #include <chrono>
@@ -14,9 +15,9 @@
 
 std::string get_scene_name(int argc, char** argv)
 {
-    if(argc == 1)
+    if (argc == 1)
         return std::string("materials_flat.obj");
-    else 
+    else
         return std::string(argv[1]);
 }
 
@@ -29,20 +30,13 @@ int main(int argc, char** argv)
     glfwSetKeyCallback(w, register_key_press);
 
     // Camera Setup similar to blender
-    camera c(win.getWidth(), win.getHeight(), coord(0.f, 0.f, 0.f), coord(0.f, 0.f, 1.f));
+    camera c(win.getWidth(), win.getHeight());
     surface_raii render_surface(win.getWidth(), win.getHeight());
 
     std::clog << "Setup Rendering Platform initialized" << std::endl;
 
     world_geometry scene(get_scene_name(argc, argv));
-
-    // Light Setup similar to blender (position and stuff taken from there)
-    float spec[3] = {0.4f, 0.4f, 0.4f};
-    float diff[3] = {0.4f, 0.4f, 0.4f};
-    scene.add_light(phong_light(spec, diff), {-5.0f, 10.0f,  5.0f});
-    scene.add_light(phong_light(spec, diff), {-5.0f,  4.0f,  5.0f});
-    scene.add_light(phong_light(spec, diff), { 5.0f,  4.0f,  5.0f});
-    scene.add_light(phong_light(spec, diff), { 5.0f, 10.0f,  5.0f});
+    setup_common_scene(scene);
 
     std::clog << "World initialized" << std::endl;
 
@@ -62,8 +56,7 @@ int main(int argc, char** argv)
     render_lambda();
     while (!glfwWindowShouldClose(w)) {
         camera_changed = handle_keys(w, c);
-        if (camera_changed)
-        {
+        if (camera_changed) {
             scene.set_camera(c);
             render_lambda();
         }
