@@ -16,6 +16,7 @@ inline void render_flat(cudaSurfaceObject_t surface, world_geometry::data_handle
     trace_triangles_shaded<<<dimGrid, dimBlock>>>(
         surface, dh.cam, dh.triangles.data(), dh.triangles.size(), dh.lights.data(),
         dh.lights.size(), flat_shading_tag{}, hard_shadow_tag{});
+    cudaDeviceSynchronize();
 }
 inline void render_smooth(cudaSurfaceObject_t surface, world_geometry::data_handle dh)
 {
@@ -26,6 +27,7 @@ inline void render_smooth(cudaSurfaceObject_t surface, world_geometry::data_hand
     trace_triangles_shaded<<<dimGrid, dimBlock>>>(
         surface, dh.cam, dh.triangles.data(), dh.triangles.size(), dh.lights.data(),
         dh.lights.size(), smooth_shading_tag{}, hard_shadow_tag{});
+    cudaDeviceSynchronize();
 }
 
 

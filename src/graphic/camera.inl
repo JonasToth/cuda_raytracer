@@ -19,7 +19,7 @@ inline CUCALL camera::camera(int width, int height)
 inline CUCALL ray camera::rayAt(int u, int v) const noexcept
 {
     // imeplement pinhole model
-    const float f = 360.f;
+    const float f = 900.0f;
     // const float fx = f, fy = f;
     const int cx = __width / 2;
     const int cy = __height / 2;

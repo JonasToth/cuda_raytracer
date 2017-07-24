@@ -29,7 +29,7 @@ int main(int argc, char** argv)
     glfwSetKeyCallback(w, register_key_press);
 
     // Camera Setup similar to blender
-    camera c(win.getWidth(), win.getHeight(), {0.0f, 0.5f, -2.5f}, {0.1f, 0.f,  1.f});
+    camera c(win.getWidth(), win.getHeight(), coord(0.f, 0.f, 0.f), coord(0.f, 0.f, 1.f));
     surface_raii render_surface(win.getWidth(), win.getHeight());
 
     std::clog << "Setup Rendering Platform initialized" << std::endl;
@@ -37,18 +37,17 @@ int main(int argc, char** argv)
     world_geometry scene(get_scene_name(argc, argv));
 
     // Light Setup similar to blender (position and stuff taken from there)
-    float spec[3] = {0.8f, 0.8f, 0.8f};
-    float diff[3] = {0.8f, 0.8f, 0.8f};
-    scene.add_light(phong_light(spec, diff), {-1.7f, -1.5f, -1.5f});
-    scene.add_light(phong_light(spec, diff), {1.3f, -1.8f, -1.2f});
-    scene.add_light(phong_light(spec, diff), {-1.1f, 2.0f, 1.1f});
-    scene.add_light(phong_light(spec, diff), {-1.5f, -1.5f, 1.5f});
+    float spec[3] = {0.4f, 0.4f, 0.4f};
+    float diff[3] = {0.4f, 0.4f, 0.4f};
+    scene.add_light(phong_light(spec, diff), {-5.0f, 10.0f,  5.0f});
+    scene.add_light(phong_light(spec, diff), {-5.0f,  4.0f,  5.0f});
+    scene.add_light(phong_light(spec, diff), { 5.0f,  4.0f,  5.0f});
+    scene.add_light(phong_light(spec, diff), { 5.0f, 10.0f,  5.0f});
 
     std::clog << "World initialized" << std::endl;
 
     auto render_lambda = [&]() {
         render_smooth(render_surface.getSurface(), scene.handle());
-        std::this_thread::sleep_for(std::chrono::milliseconds(1400));
 
         render_surface.render_gl_texture();
         glfwSwapBuffers(w);
@@ -60,7 +59,7 @@ int main(int argc, char** argv)
         camera_changed = false;
     };
 
-
+    render_lambda();
     while (!glfwWindowShouldClose(w)) {
         camera_changed = handle_keys(w, c);
         if (camera_changed)
