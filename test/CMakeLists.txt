@@ -162,6 +162,9 @@ add_custom_target(integration_test_files
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/materials_smooth.obj ${PROJECT_BINARY_DIR}/test/integration_tests/
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/materials_smooth.mtl ${PROJECT_BINARY_DIR}/test/integration_tests/
 
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/structured_underground.obj ${PROJECT_BINARY_DIR}/test/integration_tests/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/structured_underground.mtl ${PROJECT_BINARY_DIR}/test/integration_tests/
+
     # reference as ground truth
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_flat_cube.png ${PROJECT_BINARY_DIR}/test/integration_tests/
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_smooth_cube.png ${PROJECT_BINARY_DIR}/test/integration_tests/
@@ -232,3 +235,7 @@ FOREACH(test IN LISTS SMOOTH_INTEGRATION_TESTS)
              COMMAND ./validate.sh ../cpu_smooth_phong_shader.x ${test}_smooth.obj cpu_smooth_${test}.png reference_smooth_${test}.png
              WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/integration_tests)
 ENDFOREACH(test)
+
+add_test(NAME scene_structured_underground
+         COMMAND ./validate.sh ../gpu_smooth_phong_shader.x structured_underground.obj structured_underground.png reference_structured_underground.png
+         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/integration_tests)
