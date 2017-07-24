@@ -7,6 +7,8 @@ __global__ void trace_triangles_shaded(cudaSurfaceObject_t surface, camera c,
     const auto x = blockIdx.x * blockDim.x + threadIdx.x;
     const auto y = blockIdx.y * blockDim.y + threadIdx.y;
 
+    const float ambient_factor = 0.f;
+
     if (x < c.width() && y < c.height()) {
         ray r = c.rayAt(x, y);
 
@@ -24,9 +26,9 @@ __global__ void trace_triangles_shaded(cudaSurfaceObject_t surface, camera c,
 
         if (nearest != nullptr) {
             const phong_material* hit_material = nearest->material();
-            const auto color = phong_shading(hit_material, 0.3, normalize(r.direction),
-                                             nearest_hit, lights, n_lights,
-                                             triangles, n_triangles, sst, st);
+            const auto color = phong_shading(hit_material, ambient_factor,
+                                             normalize(r.direction), nearest_hit, lights,
+                                             n_lights, triangles, n_triangles, sst, st);
 
             pixel_color.x = 255 * clamp(0.f, color.r, 1.f);
             pixel_color.y = 255 * clamp(0.f, color.g, 1.f);

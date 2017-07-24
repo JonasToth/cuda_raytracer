@@ -1,8 +1,8 @@
-# Blender MTL File: 'material_scene.blend'
+# Blender MTL File: 'materials_flat.blend'
 # Material Count: 4
 
 newmtl BlueWall
-Ns 96.078431
+Ns 94.117647
 Ka 1.000000 1.000000 1.000000
 Kd 0.040100 0.150844 0.742463
 Ks 0.263493 0.807790 1.000000
@@ -12,7 +12,7 @@ d 0.497537
 illum 2
 
 newmtl BrownWall
-Ns 96.078431
+Ns 94.117647
 Ka 1.000000 1.000000 1.000000
 Kd 0.104854 0.053142 0.026875
 Ks 0.404522 0.292527 0.245488
@@ -31,8 +31,8 @@ Ni 1.000000
 d 0.665025
 illum 2
 
-newmtl Material
-Ns 96.078431
+newmtl Material.001
+Ns 94.117647
 Ka 1.000000 1.000000 1.000000
 Kd 0.640000 0.640000 0.640000
 Ks 0.500000 0.500000 0.500000
