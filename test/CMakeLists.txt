@@ -165,6 +165,9 @@ add_custom_target(integration_test_files
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/structured_underground.obj ${PROJECT_BINARY_DIR}/test/integration_tests/
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/structured_underground.mtl ${PROJECT_BINARY_DIR}/test/integration_tests/
 
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/complex.obj ${PROJECT_BINARY_DIR}/test/integration_tests/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/complex.mtl ${PROJECT_BINARY_DIR}/test/integration_tests/
+
     # reference as ground truth
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_flat_cube.png ${PROJECT_BINARY_DIR}/test/integration_tests/
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_smooth_cube.png ${PROJECT_BINARY_DIR}/test/integration_tests/
@@ -172,6 +175,7 @@ add_custom_target(integration_test_files
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_smooth_materials.png ${PROJECT_BINARY_DIR}/test/integration_tests/
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_flat_cube_room.png ${PROJECT_BINARY_DIR}/test/integration_tests/
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_structured_underground.png ${PROJECT_BINARY_DIR}/test/integration_tests/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_complex.png ${PROJECT_BINARY_DIR}/test/integration_tests/
 )
 
 
@@ -240,4 +244,7 @@ ENDFOREACH(test)
 
 add_test(NAME scene_structured_underground
          COMMAND ./validate.sh ../gpu_smooth_phong_shader.x structured_underground.obj structured_underground.png reference_structured_underground.png
+         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/integration_tests)
+add_test(NAME scene_complex
+         COMMAND ./validate.sh ../gpu_smooth_phong_shader.x complex.obj complex.png reference_complex.png
          WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/integration_tests)
