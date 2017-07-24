@@ -22,7 +22,7 @@ int main(int argc, char** argv)
     // Light Setup similar to blender (position and stuff taken from there)
     scene.set_camera(camera(width, height));
 
-    render_flat(render_surface, scene.handle());
+    render_flat<hard_shadow_tag>(render_surface, scene.handle());
     render_surface.save_as_png(img_name);
 
     return 0;

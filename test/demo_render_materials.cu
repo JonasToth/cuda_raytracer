@@ -41,7 +41,7 @@ int main(int argc, char** argv)
     std::clog << "World initialized" << std::endl;
 
     auto render_lambda = [&]() {
-        render_smooth(render_surface.getSurface(), scene.handle());
+        render_smooth<no_shadow_tag>(render_surface.getSurface(), scene.handle());
 
         render_surface.render_gl_texture();
         glfwSwapBuffers(w);

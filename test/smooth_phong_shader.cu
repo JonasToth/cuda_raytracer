@@ -29,7 +29,7 @@ int main(int argc, char** argv)
     // Light Setup similar to blender (position and stuff taken from there)
     scene.set_camera(camera(width, height));
 
-    render_smooth(render_surface.getSurface(), scene.handle());
+    render_smooth<hard_shadow_tag>(render_surface.getSurface(), scene.handle());
     render_surface.render_gl_texture();
     glfwSwapBuffers(w.getWindow());
 

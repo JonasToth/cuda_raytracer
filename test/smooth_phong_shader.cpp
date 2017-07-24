@@ -22,7 +22,7 @@ int main(int argc, char** argv)
 
     scene.set_camera(camera(width, height));
 
-    render_smooth(render_surface, scene.handle());
+    render_smooth<hard_shadow_tag>(render_surface, scene.handle());
     render_surface.save_as_png(img_name);
 
     return 0;

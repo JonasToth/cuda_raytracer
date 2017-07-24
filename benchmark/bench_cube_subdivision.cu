@@ -19,6 +19,7 @@ void raytrace_many_cuda(cudaSurfaceObject_t& Surface, const camera& c,
                  (c.height() + dimBlock.y) / dimBlock.y);
     trace_many_triangles_with_camera<<<dimGrid, dimBlock>>>(
         Surface, c, Triangles, TriangleCount, c.width(), c.height());
+    cudaDeviceSynchronize();
 }
 
 
@@ -45,10 +46,9 @@ auto BM_CubeRender = [](benchmark::State& state, std::string base_name) {
     const auto& triangles = scene.triangles();
 
     while (state.KeepRunning()) {
-        render_flat(render_surface.getSurface(), scene.handle());
+        render_flat<no_shadow_tag>(render_surface.getSurface(), scene.handle());
     }
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
     render_surface.render_gl_texture();
     render_surface.save_as_png(base_name + ".png");
 };
@@ -75,7 +75,6 @@ auto BM_CubeDepth = [](benchmark::State& state, std::string base_name) {
                            triangles.size());
     }
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
     render_surface.render_gl_texture();
     render_surface.save_as_png(prefix + base_name + ".png");
 };
