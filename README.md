@@ -3,6 +3,8 @@
 *CUDA Raytracer* is a University project to implement a basic Raytracer in CUDA.
 It is supplementary to the lecture on the architecture of parallel computers and gpus from Prof. Froitzheim at the TU Bergakademie Freiberg.
 
+![Suzanne, different materials and shadows](test/reference/structured_underground.png)
+
 ## Installation
 
 First, install dependenices! (CMake, Cuda + Thrust, OpenGL, libPNG), see below for
