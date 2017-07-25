@@ -136,13 +136,54 @@ TEST(shading, complex_with_shadow)
     float ambi[3] = {0.0f, 0.0f, 0.0f};
 
     const phong_material m{spec, diff, ambi, 1.0f};
-    const light_source ls{phong_light(spec, diff), coord(0.0f, 0.0f, 5.0f)};
+    const light_source L[2] = {
+        light_source{phong_light(spec, diff), coord(0.0f, 5.0f, 0.0f)},
+        light_source{phong_light(spec, diff), coord(-1.0f, 5.0f, 0.0f)}};
 
-    const coord camera_origin(-2.0f, 0.0f, 5.0f);
+    const coord P0{1.0f, 2.0f, 1.0f}, P1{1.0f, 2.0f, -1.0f}, P2{-1.0f, 2.0f, 1.0f};
+    const coord P3{1.0f, 0.0f, -1.0f}, P4{-1.0f, 0.0f, -1.0f}, P5{1.0f, 0.0f, 1.0f};
+    const coord normal{0.0f, 1.0f, 0.0f};
 
-    const auto color =
-        phong_shading(&m, 0.0, normalize(coord(x_dir, 0.0f, -1.0f)), hit, &ls, 1ul, &T,
-                      1ul, flat_shading_tag{}, hard_shadow_tag{});
+    const triangle T[2] = {triangle{&P0, &P1, &P2, &normal},
+                           triangle{&P3, &P4, &P5, &normal}};
+
+    const coord camera_origin(-3.0f, 3.0f, 0.0f);
+
+    const coord ray_destination[3] = {
+        coord{0.0f, 0.0f, -0.5f}, // no shadow
+        coord{0.8f, 0.0f, -0.5f}, // half shadow
+        coord{0.8f, 0.0f, 0.5f},  // full shadow
+    };
+
+    const ray rays[3] = {
+        ray(camera_origin, normalize(ray_destination[0] - camera_origin)), // no shadow
+        ray(camera_origin, normalize(ray_destination[1] - camera_origin)), // half shadow
+        ray(camera_origin, normalize(ray_destination[2] - camera_origin)), // full shadow
+    };
+
+    for (std::size_t i = 0; i < 3; ++i) {
+        EXPECT_TRUE(rays[i].intersects(T[1]).first)
+            << "Expect intersection with triangle 1";
+    }
+
+    // no shadow point
+    const auto no_shadow_color =
+        phong_shading(&m, 0.0, rays[0].direction, rays[0].intersects(T[1]).second, L, 2ul,
+                      T, 2ul, flat_shading_tag{}, hard_shadow_tag{});
+
+    const auto half_shadow_color =
+        phong_shading(&m, 0.0, rays[1].direction, rays[1].intersects(T[1]).second, L, 2ul,
+                      T, 2ul, flat_shading_tag{}, hard_shadow_tag{});
+
+    const auto full_shadow_color =
+        phong_shading(&m, 0.0, rays[2].direction, rays[2].intersects(T[1]).second, L, 2ul,
+                      T, 2ul, flat_shading_tag{}, hard_shadow_tag{});
+
+    EXPECT_GT(no_shadow_color.r, half_shadow_color.r)
+        << "No shadow need higher intensity";
+    EXPECT_GT(half_shadow_color.r, full_shadow_color.r)
+        << "No shadow need higher intensity";
+    EXPECT_EQ(full_shadow_color.r, 0) << "Full shadown yields to black";
 }
 
 int main(int argc, char** argv)
