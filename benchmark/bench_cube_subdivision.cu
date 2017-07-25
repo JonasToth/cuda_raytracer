@@ -34,7 +34,7 @@ auto BM_CubeRender = [](benchmark::State& state, std::string base_name) {
 
 
     while (state.KeepRunning()) {
-        render_flat<no_shadow_tag>(render_surface.getSurface(), scene.handle());
+        render_flat<no_shadow_tag>(render_surface, scene.handle());
     }
 
     render_surface.render_gl_texture();
@@ -65,7 +65,7 @@ auto BM_CubeSmooth = [](benchmark::State& state, std::string base_name)
 
 
     while (state.KeepRunning()) {
-        render_smooth<no_shadow_tag>(render_surface.getSurface(), scene.handle());
+        render_smooth<no_shadow_tag>(render_surface, scene.handle());
     }
 
     render_surface.render_gl_texture();
@@ -89,7 +89,7 @@ auto BM_CubeDepth = [](benchmark::State& state, std::string base_name) {
     const auto& triangles = scene.triangles();
 
     while (state.KeepRunning()) {
-        raytrace_many_cuda(render_surface.getSurface(), scene.handle().cam,
+        raytrace_many_cuda(render_surface, scene.handle().cam,
                            scene.handle().triangles);
     }
 

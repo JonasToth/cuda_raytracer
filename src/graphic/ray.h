@@ -30,7 +30,7 @@ struct intersect {
 
     float depth = 0.f;
     coord hit;
-    const triangle* face;
+    const triangle* face = nullptr;
 };
 
 struct ray {

@@ -18,7 +18,7 @@ inline void raytrace_many_cuda(cudaSurfaceObject_t Surface, const camera& c,
 }
 
 
-inline void raytrace_cuda(cudaSurfaceObject_t& Surface, int width, int height,
+inline void raytrace_cuda(cudaSurfaceObject_t Surface, int width, int height,
                           const triangle* T)
 {
     dim3 dimBlock(32, 32);

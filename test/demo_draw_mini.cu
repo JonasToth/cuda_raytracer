@@ -37,7 +37,7 @@ int main(int argc, char** argv)
     std::clog << "World initialized" << std::endl;
 
     auto render_lambda = [&]() {
-        render_flat<no_shadow_tag>(render_surface.getSurface(), scene.handle());
+        render_flat<no_shadow_tag>(render_surface, scene.handle());
         std::this_thread::sleep_for(std::chrono::seconds(10));
 
         render_surface.render_gl_texture();

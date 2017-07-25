@@ -61,7 +61,7 @@ static void handle_mouse_movement()
     c.turn(yaw, pitch);
 }
 
-void invokeRenderingKernel(cudaSurfaceObject_t& Surface, float t)
+void invokeRenderingKernel(cudaSurfaceObject_t Surface, float t)
 {
     // std::clog << "Rendering new image " << char{t} << std::endl;
     dim3 dimBlock(32, 32);
@@ -82,7 +82,7 @@ TEST(cuda_draw, basic_drawing)
     float t = 0.f;
     while (!glfwWindowShouldClose(w)) {
         t += 0.5f;
-        invokeRenderingKernel(vis.getSurface(), t);
+        invokeRenderingKernel(vis, t);
 
         vis.render_gl_texture();
 
@@ -135,11 +135,11 @@ TEST(cuda_draw, drawing_traced_triangle)
     while (!glfwWindowShouldClose(w)) {
         dim3 dimBlock(32, 32);
         dim3 dimGrid((Width + dimBlock.x) / dimBlock.x, (Height + dimBlock.y) / dimBlock.y);
-        black_kernel<<<dimGrid, dimBlock>>>(vis.getSurface(), Width, Height);
+        black_kernel<<<dimGrid, dimBlock>>>(vis, Width, Height);
 
         for (std::size_t i = 0; i < Triangles.size(); ++i) {
             const thrust::device_ptr<triangle> T = &Triangles[i];
-            raytrace_cuda(vis.getSurface(), win.getWidth(), win.getHeight(), T.get());
+            raytrace_cuda(vis, win.getWidth(), win.getHeight(), T.get());
         }
 
         vis.render_gl_texture();
@@ -176,9 +176,9 @@ TEST(cuda_draw, draw_loaded_geometry)
     while (!glfwWindowShouldClose(w)) {
         dim3 dimBlock(32, 32);
         dim3 dimGrid((Width + dimBlock.x) / dimBlock.x, (Height + dimBlock.y) / dimBlock.y);
-        black_kernel<<<dimGrid, dimBlock>>>(vis.getSurface(), Width, Height);
+        black_kernel<<<dimGrid, dimBlock>>>(vis, Width, Height);
 
-        raytrace_many_cuda(vis.getSurface(), c, {Triangles.data().get(), Triangles.size()});
+        raytrace_many_cuda(vis, c, {Triangles.data().get(), Triangles.size()});
 
         vis.render_gl_texture();
 

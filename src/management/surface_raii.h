@@ -21,6 +21,8 @@ public:
 
     void save_as_png(const std::string& file_name) const;
 
+    operator cudaSurfaceObject_t() const noexcept { return __cuda_surface; }
+
 private:
     /// Handle opengl
     void __initialize_opengl_texture();

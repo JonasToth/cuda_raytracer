@@ -18,12 +18,10 @@ void trace_triangles_shaded(memory_surface& surface, camera c,
         pixel_color.b = 0;
         pixel_color.a = 255;
 
-        triangle const* nearest = nullptr;
-        intersect nearest_hit;
         const auto result_pair =
             calculate_intersection(r, triangles.data(), triangles.size());
-        nearest = result_pair.first;
-        nearest_hit = result_pair.second;
+        triangle const* nearest = result_pair.first;
+        intersect nearest_hit = result_pair.second;
 
         if (nearest != nullptr) {
             const phong_material* hit_material = nearest->material();
