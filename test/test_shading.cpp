@@ -129,6 +129,22 @@ TEST(shading, complex_shade_one_channel)
     }
 }
 
+TEST(shading, complex_with_shadow)
+{
+    float spec[3] = {0.0f, 0.0f, 0.0f};
+    float diff[3] = {1.0f, 0.0f, 0.0f};
+    float ambi[3] = {0.0f, 0.0f, 0.0f};
+
+    const phong_material m{spec, diff, ambi, 1.0f};
+    const light_source ls{phong_light(spec, diff), coord(0.0f, 0.0f, 5.0f)};
+
+    const coord camera_origin(-2.0f, 0.0f, 5.0f);
+
+    const auto color =
+        phong_shading(&m, 0.0, normalize(coord(x_dir, 0.0f, -1.0f)), hit, &ls, 1ul, &T,
+                      1ul, flat_shading_tag{}, hard_shadow_tag{});
+}
+
 int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);

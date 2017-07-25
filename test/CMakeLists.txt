@@ -86,6 +86,8 @@ add_custom_target(example_files
 
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/cube_no_normals_no_materials.obj ${PROJECT_BINARY_DIR}/test
 
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/test_shadow.obj ${PROJECT_BINARY_DIR}/test
+
 
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/shapes.obj ${PROJECT_BINARY_DIR}/test
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/bad.obj ${PROJECT_BINARY_DIR}/test
