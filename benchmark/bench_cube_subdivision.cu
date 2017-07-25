@@ -2,26 +2,13 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 
-#include "graphic/kernels/trace.h"
+#include "graphic/render/depth.h"
 #include "graphic/render/shading.h"
 #include "management/window.h"
 #include "management/world.h"
 
 #include <chrono>
 #include <thread>
-
-
-void raytrace_many_cuda(cudaSurfaceObject_t& Surface, const camera& c,
-                        const triangle* Triangles, int TriangleCount)
-{
-    dim3 dimBlock(32, 32);
-    dim3 dimGrid((c.width() + dimBlock.x) / dimBlock.x,
-                 (c.height() + dimBlock.y) / dimBlock.y);
-    trace_many_triangles_with_camera<<<dimGrid, dimBlock>>>(
-        Surface, c, Triangles, TriangleCount, c.width(), c.height());
-    cudaDeviceSynchronize();
-}
-
 
 
 auto BM_CubeRender = [](benchmark::State& state, std::string base_name) {
@@ -71,8 +58,7 @@ auto BM_CubeDepth = [](benchmark::State& state, std::string base_name) {
     const auto& triangles = scene.triangles();
 
     while (state.KeepRunning()) {
-        raytrace_many_cuda(render_surface.getSurface(), c, triangles.data().get(),
-                           triangles.size());
+        raytrace_many_cuda(render_surface.getSurface(), c, scene.handle().triangles);
     }
 
     render_surface.render_gl_texture();
@@ -81,12 +67,18 @@ auto BM_CubeDepth = [](benchmark::State& state, std::string base_name) {
 
 int main(int argc, char** argv)
 {
-    for (auto& name : {"cube_subdiv_1", "cube_subdiv_2", "cube_subdiv_3", "cube_subdiv_4"})
-    /*,"cube_subdiv_5", "cube_subdiv_6"})*/
-    {
-        auto* b = benchmark::RegisterBenchmark(name, BM_CubeRender, name);
-        b->Unit(benchmark::kMicrosecond);
-        b->MinTime(0.8);
+    for (const auto& name : {"cube_subdiv_1", "cube_subdiv_2", "cube_subdiv_3",
+                             "cube_subdiv_4", "cube_subdiv_5", "cube_subdiv_6"}) {
+        const std::string render_bm_name = std::string(name) + "flat_no_shadow";
+        auto* b0 =
+            benchmark::RegisterBenchmark(render_bm_name.c_str(), BM_CubeRender, name);
+        b0->Unit(benchmark::kMicrosecond);
+        b0->MinTime(2.0);
+
+        const std::string depth_bm_name = std::string(name) + "depth";
+        auto* b1 = benchmark::RegisterBenchmark(depth_bm_name.c_str(), BM_CubeDepth, name);
+        b1->Unit(benchmark::kMicrosecond);
+        b1->MinTime(2.0);
     }
     benchmark::Initialize(&argc, argv);
     benchmark::RunSpecifiedBenchmarks();
