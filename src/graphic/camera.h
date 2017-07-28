@@ -23,12 +23,22 @@ public:
     CUCALL coord origin() const noexcept { return __origin; }
     CUCALL coord steering() const noexcept { return __steering; }
 
-private:
+protected:
     coord __origin;
     coord __steering;
 
     int __width;
     int __height;
+};
+
+class equirectengular : public camera
+{
+public:
+    CUCALL equirectengular();
+    CUCALL explicit equirectengular(int width, int height);
+    CUCALL explicit equirectengular(int width, int height, coord origin, coord steering);
+
+    CUCALL ray rayAt(int u, int v) const noexcept;
 };
 
 #include "camera.inl"

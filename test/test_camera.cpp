@@ -108,6 +108,58 @@ TEST(camera, rays_moved_camera)
     std::clog << c.rayAt(640, 480).direction << std::endl;
 }
 
+TEST(equirectengular, ray_generation)
+{
+    const int width  = 10000;
+    const int height = 5000;
+    const int cx     = width / 2;
+    const int cy     = height / 2;
+
+    // rays on the whole unit sphere
+    equirectengular c(width, height);
+
+    auto r = c.rayAt(cx, cy);
+    ASSERT_EQ(r.origin, coord(0.f, 0.f, 0.f)) << "Not from center of the universe";
+    ASSERT_EQ(r.direction, coord(1.0f, 0.0f, 0.0f)) << "Centered ray not in optical axis";
+
+    const auto tl = c.rayAt(0, 0).direction;
+    const auto tm = c.rayAt(cx, 0).direction;
+    const auto tr = c.rayAt(width, 0).direction;
+
+    const auto mnorth = c.rayAt(0, cy).direction;
+    const auto meast  = c.rayAt(cx / 2, cy).direction;
+    const auto msouth = c.rayAt(cx, cy).direction;
+    const auto mwest  = c.rayAt(cx + cx / 2, cy).direction;
+
+    const auto bl = c.rayAt(0, height).direction;
+    const auto bm = c.rayAt(cx, height).direction;
+    const auto br = c.rayAt(width, height).direction;
+
+    std::clog << "TL = " << tl << " "
+              << "TM = " << tm << " "
+              << "TR = " << tr << '\n'
+              << "MN = " << mnorth << " "
+              << "ME = " << meast << " "
+              << "MS = " << msouth << " "
+              << "MW = " << mwest << '\n'
+              << "BL = " << bl << " "
+              << "BM = " << bm << " "
+              << "BR = " << br << std::endl;
+
+    EXPECT_EQ(tl, coord(0.0f, 0.0f, 1.0f));
+    EXPECT_EQ(tm, coord(0.0f, 0.0f, 1.0f));
+    EXPECT_EQ(tr, coord(0.0f, 0.0f, 1.0f));
+
+    EXPECT_EQ(bl, coord(0.0f, 0.0f, -1.0f));
+    EXPECT_EQ(bm, coord(0.0f, 0.0f, -1.0f));
+    EXPECT_EQ(br, coord(0.0f, 0.0f, -1.0f));
+
+    EXPECT_EQ(mnorth, coord(-1.0f, 0.0f, 0.0f));
+    EXPECT_EQ(meast, coord(0.0f, -1.0f, 0.0f));
+    EXPECT_EQ(msouth, coord(1.0f, 0.0f, 0.0f));
+    EXPECT_EQ(mwest, coord(0.0f, 1.0f, 0.0f));
+}
+
 
 int main(int argc, char** argv)
 {
