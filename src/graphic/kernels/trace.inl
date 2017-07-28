@@ -27,7 +27,8 @@ __global__ void trace_single_triangle(cudaSurfaceObject_t surface, const triangl
 }
 
 
-__global__ void trace_many_triangles_with_camera(cudaSurfaceObject_t surface, camera c,
+template <typename Camera>
+__global__ void trace_many_triangles_with_camera(cudaSurfaceObject_t surface, Camera c,
                                                  const triangle* triangles,
                                                  int n_triangles, int width, int height)
 {

@@ -20,9 +20,9 @@ int main(int argc, char** argv)
     world_geometry scene(obj_name);
     setup_common_scene(scene);
 
-    scene.set_camera(camera(width, height));
+    camera c(width, height);
 
-    render_smooth<hard_shadow_tag>(render_surface, scene.handle());
+    render_smooth<hard_shadow_tag>(render_surface, c, scene.handle());
     render_surface.save_as_png(img_name);
 
     return 0;

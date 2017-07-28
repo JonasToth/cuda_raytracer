@@ -41,7 +41,7 @@ int main(int argc, char** argv)
     std::clog << "World initialized" << std::endl;
 
     auto render_lambda = [&]() {
-        render_smooth<hard_shadow_tag>(render_surface, scene.handle());
+        render_smooth<hard_shadow_tag>(render_surface, c, scene.handle());
 
         render_surface.render_gl_texture();
         glfwSwapBuffers(w);
@@ -57,7 +57,6 @@ int main(int argc, char** argv)
     while (!glfwWindowShouldClose(w)) {
         camera_changed = handle_keys(w, c);
         if (camera_changed) {
-            scene.set_camera(c);
             render_lambda();
         }
 

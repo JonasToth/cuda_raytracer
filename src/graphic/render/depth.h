@@ -5,7 +5,8 @@
 #include "graphic/kernels/utility.h"
 
 #ifdef __CUDACC__ // GPU Raytracing
-inline void raytrace_many_cuda(cudaSurfaceObject_t Surface, const camera& c,
+template <typename Camera>
+inline void raytrace_many_cuda(cudaSurfaceObject_t Surface, Camera c,
                                gsl::span<const triangle> triangles)
 {
     dim3 dimBlock(32, 32);
@@ -30,7 +31,8 @@ inline void raytrace_cuda(cudaSurfaceObject_t Surface, int width, int height,
 
 #else // CPU Raytracing
 
-inline void raytrace_many_cuda(memory_surface& s, const camera& c,
+template <typename Camera>
+inline void raytrace_many_cuda(memory_surface& s, Camera c,
                                gsl::span<const triangle> triangles)
 {
     trace_many_triangles_with_camera(s, c, triangles, triangles.size());

@@ -187,6 +187,7 @@ SET(CPU_RENDER
 SET(GPU_RENDER
     flat_phong_shader
     smooth_phong_shader
+    smooth_equirectengular_phong_shader
     )
 
 FOREACH(renderer IN LISTS CPU_RENDER)

@@ -169,8 +169,6 @@ TEST(non_geometry, world_handle)
     w.add_light(phong_light(spec, diff), {-1.7f, -1.5f, -1.5f});
     w.add_light(phong_light(spec, diff), {1.3f, -1.8f, -1.2f});
 
-    w.set_camera(camera(800, 600));
-
     const auto h = w.handle();
 
     EXPECT_EQ(&h.vertices[0], w.vertices().data().get());
@@ -187,11 +185,6 @@ TEST(non_geometry, world_handle)
 
     EXPECT_EQ(&h.lights[0], w.lights().data().get());
     EXPECT_EQ(h.lights.size(), 2);
-
-    EXPECT_EQ(h.cam.width(), 800);
-    EXPECT_EQ(h.cam.height(), 600);
-    EXPECT_EQ(h.cam.origin(), coord(0.f, 0.f, 0.f));
-    EXPECT_EQ(h.cam.steering(), coord(0.f, 0.f, 1.f));
 }
 
 TEST(non_geometry, lights)
@@ -204,27 +197,6 @@ TEST(non_geometry, lights)
     w.add_light(phong_light(spec, diff), coord(-1.7f, -1.5f, -1.5f));
 
     EXPECT_EQ(w.light_count(), 1);
-}
-
-TEST(non_geometry, camera) {
-    world_geometry w;
-
-    w.set_camera(camera(800, 600));
-
-    const auto c = w.get_camera();
-    EXPECT_EQ(c.width(), 800);
-    EXPECT_EQ(c.height(), 600);
-    EXPECT_EQ(c.origin(), coord(0.f, 0.f, 0.f));
-    EXPECT_EQ(c.steering(), coord(0.f, 0.f, 1.f));
-
-
-    w.set_camera(camera(640, 480, coord(1.f, 1.f, 0.f), coord(-1.f, -1.f, 0.f)));
-
-    const auto c2 = w.get_camera();
-    EXPECT_EQ(c2.width(), 640);
-    EXPECT_EQ(c2.height(), 480);
-    EXPECT_EQ(c2.origin(), coord(1.f, 1.f, 0.f));
-    EXPECT_EQ(c2.steering(), normalize(coord(-1.f, -1.f, 0.f)));
 }
 
 TEST(real, easy_scene)

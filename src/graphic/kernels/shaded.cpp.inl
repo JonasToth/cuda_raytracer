@@ -1,8 +1,8 @@
 #include "image_loop_macro.h"
 #include <iostream>
 
-template <typename ShadingStyleTag, typename ShadowTag>
-void trace_triangles_shaded(memory_surface& surface, camera c,
+template <typename Camera, typename ShadingStyleTag, typename ShadowTag>
+void trace_triangles_shaded(memory_surface& surface, Camera c,
                             gsl::span<const triangle> triangles,
                             gsl::span<const light_source> lights, ShadingStyleTag sst,
                             ShadowTag st)

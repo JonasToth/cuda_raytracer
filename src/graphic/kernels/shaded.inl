@@ -1,5 +1,5 @@
-template <typename ShadingStyleTag, typename ShadowTag>
-__global__ void trace_triangles_shaded(cudaSurfaceObject_t surface, camera c,
+template <typename Camera, typename ShadingStyleTag, typename ShadowTag>
+__global__ void trace_triangles_shaded(cudaSurfaceObject_t surface, Camera c,
                                        const triangle* triangles, std::size_t n_triangles,
                                        const light_source* lights, std::size_t n_lights,
                                        ShadingStyleTag sst, ShadowTag st)

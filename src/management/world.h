@@ -42,9 +42,6 @@ public:
 
     void add_light(phong_light l, coord position);
 
-    void set_camera(camera c) noexcept { __c = c; }
-    camera get_camera() const noexcept { return __c; }
-
     std::size_t vertex_count() const noexcept { return __vertices.size(); }
     std::size_t normal_count() const noexcept { return __normals.size(); }
     std::size_t material_count() const noexcept { return __materials.size(); }
@@ -82,13 +79,11 @@ public:
         const gsl::span<const phong_material> materials;
         const gsl::span<const light_source> lights;
 
-        const camera cam;
-
         data_handle(const thrust::device_vector<coord>& vert,
                     const thrust::device_vector<coord>& norm,
                     const thrust::device_vector<triangle>& tria,
                     const thrust::device_vector<phong_material>& mat,
-                    const thrust::device_vector<light_source>& light, const camera c);
+                    const thrust::device_vector<light_source>& light);
     };
 
     data_handle handle() const noexcept;
@@ -102,7 +97,6 @@ private:
                                                  ///< and __materials
 
     thrust::device_vector<light_source> __lights; ///< lights in the scene
-    camera __c;                                   ///< camera watching the scene
 
     std::size_t __shape_count; ///< number of shapes(objects) in scene
 };

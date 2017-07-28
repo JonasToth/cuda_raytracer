@@ -29,7 +29,8 @@ void trace_single_triangle(memory_surface& surface, const triangle& t)
 }
 
 
-void trace_many_triangles_with_camera(memory_surface& surface, camera c,
+template <typename Camera>
+void trace_many_triangles_with_camera(memory_surface& surface, Camera c,
                                       const triangle* triangles, std::size_t n_triangles)
 {
     PIXEL_LOOP(surface)

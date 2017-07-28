@@ -27,7 +27,7 @@ int main(int argc, char** argv)
     setup_common_scene(scene);
 
     // Light Setup similar to blender (position and stuff taken from there)
-    camera c(width, height);
+    equirectengular c(width, height);
 
     render_smooth<hard_shadow_tag>(render_surface, c, scene.handle());
     render_surface.render_gl_texture();
