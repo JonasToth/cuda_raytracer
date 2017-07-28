@@ -14,7 +14,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    const std::size_t width = 800, height = 600;
+    const std::size_t width = 2000, height = 1000;
     const std::string obj_name(argv[1]);
     const std::string img_name(argv[2]);
 
@@ -27,7 +27,7 @@ int main(int argc, char** argv)
     setup_common_scene(scene);
 
     // Light Setup similar to blender (position and stuff taken from there)
-    equirectengular c(width, height);
+    equirectengular c(width, height, coord(0.0f, 0.0f, 18.0f), coord(0.0f, 0.0f, 1.0f));
 
     render_smooth<hard_shadow_tag>(render_surface, c, scene.handle());
     render_surface.render_gl_texture();
