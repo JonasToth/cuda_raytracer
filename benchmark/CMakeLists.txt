@@ -15,14 +15,14 @@ add_custom_target(benchmark_files
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/benchmark/files/cube_subdiv_3.mtl ${PROJECT_BINARY_DIR}/benchmark
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/benchmark/files/cube_subdiv_4.obj ${PROJECT_BINARY_DIR}/benchmark
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/benchmark/files/cube_subdiv_4.mtl ${PROJECT_BINARY_DIR}/benchmark
-    #COMMAND ln -sf ${PROJECT_SOURCE_DIR}/benchmark/files/cube_subdiv_5.obj ${PROJECT_BINARY_DIR}/benchmark
-    #COMMAND ln -sf ${PROJECT_SOURCE_DIR}/benchmark/files/cube_subdiv_5.mtl ${PROJECT_BINARY_DIR}/benchmark
-    #COMMAND ln -sf ${PROJECT_SOURCE_DIR}/benchmark/files/cube_subdiv_6.obj ${PROJECT_BINARY_DIR}/benchmark
-    #COMMAND ln -sf ${PROJECT_SOURCE_DIR}/benchmark/files/cube_subdiv_6.mtl ${PROJECT_BINARY_DIR}/benchmark
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/benchmark/files/cube_subdiv_5.obj ${PROJECT_BINARY_DIR}/benchmark
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/benchmark/files/cube_subdiv_5.mtl ${PROJECT_BINARY_DIR}/benchmark
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/benchmark/files/cube_subdiv_6.obj ${PROJECT_BINARY_DIR}/benchmark
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/benchmark/files/cube_subdiv_6.mtl ${PROJECT_BINARY_DIR}/benchmark
 
     # real world
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.obj ${PROJECT_BINARY_DIR}/benchmark
-    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.mtl ${PROJECT_BINARY_DIR}/benchmark
+    #COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.obj ${PROJECT_BINARY_DIR}/benchmark
+    #COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/material_scene.mtl ${PROJECT_BINARY_DIR}/benchmark
 )
 
 # benchmarks
