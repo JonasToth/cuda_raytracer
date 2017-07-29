@@ -53,8 +53,8 @@ add_dependencies(bench_cube_subdivision_cpu.x benchmark_files)
 
 
 
-add_test(NAME bench_basic_scene 
-         COMMAND ./bench_basic_scene.x --benchmark_color=false --benchmark_counters_tabular=true)
+#add_test(NAME bench_basic_scene 
+#         COMMAND ./bench_basic_scene.x --benchmark_color=false --benchmark_counters_tabular=true)
 add_test(NAME bench_cube_subdivision 
          COMMAND ./bench_cube_subdivision.x --benchmark_color=false --benchmark_counters_tabular=true)
 add_test(NAME bench_cube_subdivision_cpu
