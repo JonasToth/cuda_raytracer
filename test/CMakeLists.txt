@@ -184,6 +184,7 @@ add_custom_target(integration_test_files
 SET(CPU_RENDER
     flat_phong_shader
     smooth_phong_shader
+    equirectengular_phong_shader
     )
 SET(GPU_RENDER
     flat_phong_shader
@@ -249,7 +250,8 @@ SET(EQUIRECTENGULAR_INTEGRATION_TESTS
     complex
     )
 #FOREACH(test in LISTS EQUIRECTENGULAR_INTEGRATION_TESTS)
-    add_test(NAME gpu_smooth_equirectengular_${test}
+SET(test complex)
+    add_test(NAME gpu_equirectengular_${test}
              COMMAND ./validate.sh ../gpu_equirectengular_phong_shader.x ${test}.obj gpu_equirectengular_${test}.png reference_equirectengular_${test}.png
              WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/integration_tests)
 #ENDFOREACH(test)
