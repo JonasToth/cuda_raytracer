@@ -254,6 +254,9 @@ SET(test complex)
     add_test(NAME gpu_equirectengular_${test}
              COMMAND ./validate.sh ../gpu_equirectengular_phong_shader.x ${test}.obj gpu_equirectengular_${test}.png reference_equirectengular_${test}.png
              WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/integration_tests)
+    add_test(NAME cpu_equirectengular_${test}
+             COMMAND ./validate.sh ../cpu_equirectengular_phong_shader.x ${test}.obj cpu_equirectengular_${test}.png reference_equirectengular_${test}.png
+             WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/integration_tests)
 #ENDFOREACH(test)
 
 add_test(NAME scene_structured_underground
