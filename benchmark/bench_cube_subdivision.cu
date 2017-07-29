@@ -93,24 +93,29 @@ auto BM_CubeDepth = [](benchmark::State& state, std::string base_name) {
 
 int main(int argc, char** argv)
 {
+    int i = 1; 
     for (const auto& name : {"cube_subdiv_1", "cube_subdiv_2", "cube_subdiv_3",
                              "cube_subdiv_4", "cube_subdiv_5", "cube_subdiv_6"}) {
+        const float min_time = i * 2.0;
+
         const std::string render_bm_name = std::string(name) + "_flat";
         auto* b0 =
             benchmark::RegisterBenchmark(render_bm_name.c_str(), BM_CubeRender, name);
         b0->Unit(benchmark::kMicrosecond);
-        b0->MinTime(4.0);
+        b0->MinTime(min_time);
 
         const std::string smooth_bm_name = std::string(name) + "_smooth";
         auto* b1 =
             benchmark::RegisterBenchmark(smooth_bm_name.c_str(), BM_CubeSmooth, name);
         b1->Unit(benchmark::kMicrosecond);
-        b1->MinTime(4.0);
+        b1->MinTime(min_time);
 
         const std::string depth_bm_name = std::string(name) + "_depth";
         auto* b2 = benchmark::RegisterBenchmark(depth_bm_name.c_str(), BM_CubeDepth, name);
         b2->Unit(benchmark::kMicrosecond);
-        b2->MinTime(4.0);
+        b2->MinTime(min_time);
+
+        ++i;
     }
     benchmark::Initialize(&argc, argv);
     benchmark::RunSpecifiedBenchmarks();
