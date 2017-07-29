@@ -34,14 +34,24 @@ target_link_libraries(bench_basic_scene.x
 add_dependencies(bench_basic_scene.x benchmark_files)
 
 
+# benchmarks mostly for traversing geometry
 cuda_add_executable(bench_cube_subdivision.x bench_cube_subdivision.cu)
 target_link_libraries(bench_cube_subdivision.x 
                       management
                       benchmark pthread glfw ${OPENGL_gl_LIBRARY} ${PNG_LIBRARIES})
 add_dependencies(bench_cube_subdivision.x benchmark_files)
 
+add_executable(bench_cube_subdivision_cpu.x bench_cube_subdivision.cpp)
+target_link_libraries(bench_cube_subdivision_cpu.x 
+                      management cpu_kernels
+                      benchmark ${PNG_LIBRARIES})
+add_dependencies(bench_cube_subdivision_cpu.x benchmark_files)
+
+
 
 add_test(NAME bench_basic_scene 
          COMMAND ./bench_basic_scene.x --benchmark_color=false --benchmark_counters_tabular=true)
 add_test(NAME bench_cube_subdivision 
          COMMAND ./bench_cube_subdivision.x --benchmark_color=false --benchmark_counters_tabular=true)
+add_test(NAME bench_cube_subdivision_cpu
+         COMMAND ./bench_cube_subdivision_cpu.x --benchmark_color=false --benchmark_counters_tabular=true)

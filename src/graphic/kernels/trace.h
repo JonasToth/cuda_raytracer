@@ -23,7 +23,7 @@ __global__ void trace_many_triangles_with_camera(cudaSurfaceObject_t surface, Ca
 #include "management/memory_surface.h"
 void trace_single_triangle(memory_surface& surface, const triangle& t);
 template <typename Camera>
-void trace_many_triangles_with_camera(memory_surface& surface, camera c,
+void trace_many_triangles_with_camera(memory_surface& surface, Camera c,
                                       const triangle* triangles, std::size_t n_triangles);
 
 #endif
