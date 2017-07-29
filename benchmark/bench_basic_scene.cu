@@ -49,7 +49,7 @@ static void BM_SceneRender(benchmark::State& state)
     const auto& triangles = scene.triangles();
 
     while (state.KeepRunning()) {
-        render_flat<no_shadow_tag>(render_surface.getSurface(), scene.handle());
+        render_flat<no_shadow_tag>(render_surface.getSurface(), c, scene.handle());
     }
     render_surface.render_gl_texture();
     render_surface.save_as_png("material_scene.png");
