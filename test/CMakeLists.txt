@@ -176,6 +176,7 @@ add_custom_target(integration_test_files
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_flat_cube_room.png ${PROJECT_BINARY_DIR}/test/integration_tests/
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_structured_underground.png ${PROJECT_BINARY_DIR}/test/integration_tests/
     COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_complex.png ${PROJECT_BINARY_DIR}/test/integration_tests/
+    COMMAND ln -sf ${PROJECT_SOURCE_DIR}/test/reference/reference_equirectengular_complex.png ${PROJECT_BINARY_DIR}/test/integration_tests/
 )
 
 
@@ -187,7 +188,7 @@ SET(CPU_RENDER
 SET(GPU_RENDER
     flat_phong_shader
     smooth_phong_shader
-    smooth_equirectengular_phong_shader
+    equirectengular_phong_shader
     )
 
 FOREACH(renderer IN LISTS CPU_RENDER)
@@ -220,11 +221,6 @@ SET(FLAT_INTEGRATION_TESTS
     cube_room
     materials
     )
-SET(SMOOTH_INTEGRATION_TESTS
-    cube
-    materials
-    )
-
 FOREACH(test IN LISTS FLAT_INTEGRATION_TESTS)
     add_test(NAME gpu_flat_${test}
              COMMAND ./validate.sh ../gpu_flat_phong_shader.x ${test}_flat.obj gpu_flat_${test}.png reference_flat_${test}.png
@@ -234,6 +230,11 @@ FOREACH(test IN LISTS FLAT_INTEGRATION_TESTS)
              WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/integration_tests)
 ENDFOREACH(test)
 
+
+SET(SMOOTH_INTEGRATION_TESTS
+    cube
+    materials
+    )
 FOREACH(test IN LISTS SMOOTH_INTEGRATION_TESTS)
     add_test(NAME gpu_smooth_${test}
              COMMAND ./validate.sh ../gpu_smooth_phong_shader.x ${test}_smooth.obj gpu_smooth_${test}.png reference_smooth_${test}.png
@@ -242,6 +243,16 @@ FOREACH(test IN LISTS SMOOTH_INTEGRATION_TESTS)
              COMMAND ./validate.sh ../cpu_smooth_phong_shader.x ${test}_smooth.obj cpu_smooth_${test}.png reference_smooth_${test}.png
              WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/integration_tests)
 ENDFOREACH(test)
+
+
+SET(EQUIRECTENGULAR_INTEGRATION_TESTS
+    complex
+    )
+#FOREACH(test in LISTS EQUIRECTENGULAR_INTEGRATION_TESTS)
+    add_test(NAME gpu_smooth_equirectengular_${test}
+             COMMAND ./validate.sh ../gpu_equirectengular_phong_shader.x ${test}.obj gpu_equirectengular_${test}.png reference_equirectengular_${test}.png
+             WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/integration_tests)
+#ENDFOREACH(test)
 
 add_test(NAME scene_structured_underground
          COMMAND ./validate.sh ../gpu_smooth_phong_shader.x structured_underground.obj structured_underground.png reference_structured_underground.png
