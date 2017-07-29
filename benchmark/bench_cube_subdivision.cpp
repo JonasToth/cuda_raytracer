@@ -66,7 +66,9 @@ auto BM_CubeDepth = [](benchmark::State& state, std::string base_name) {
 
     camera c{width, height, {0.0f, 0.0f, 5.0f}, {0.01f, 0.f, -1.f}};
     while (state.KeepRunning()) {
-        raytrace_many_cuda(render_surface, c, scene.handle().triangles);
+        // does not compile cpu
+        //raytrace_many_cuda(render_surface, c, scene.handle().triangles);
+        //render_smooth<no_shadow_tag>(render_surface, c, scene.handle());
     }
 
     render_surface.save_as_png(base_name + "_depth_cpu.png");
@@ -77,7 +79,7 @@ int main(int argc, char** argv)
     int i = 1;
     for (const auto& name : {"cube_subdiv_1", "cube_subdiv_2", "cube_subdiv_3",
                              "cube_subdiv_4", "cube_subdiv_5", "cube_subdiv_6"}) {
-        const float min_time = i * 2.0;
+        const float min_time = i * i * 2.0;
 
         const std::string render_bm_name = std::string(name) + "_flat";
         auto* b0 =
@@ -93,11 +95,13 @@ int main(int argc, char** argv)
         b1->MinTime(min_time);
         b1->UseRealTime();
 
+#if 0
         const std::string depth_bm_name = std::string(name) + "_depth";
         auto* b2 = benchmark::RegisterBenchmark(depth_bm_name.c_str(), BM_CubeDepth, name);
         b2->Unit(benchmark::kMicrosecond);
         b2->MinTime(min_time);
         b2->UseRealTime();
+#endif
 
         ++i;
     }

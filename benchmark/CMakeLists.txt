@@ -41,9 +41,13 @@ target_link_libraries(bench_cube_subdivision.x
                       benchmark pthread glfw ${OPENGL_gl_LIBRARY} ${PNG_LIBRARIES})
 add_dependencies(bench_cube_subdivision.x benchmark_files)
 
-add_executable(bench_cube_subdivision_cpu.x bench_cube_subdivision.cpp)
+add_executable(bench_cube_subdivision_cpu.x bench_cube_subdivision.cpp
+               ${PROJECT_SOURCE_DIR}/src/management/world.cu)
+target_compile_options(bench_cube_subdivision_cpu.x PUBLIC "-fopenmp")
+target_compile_definitions(bench_cube_subdivision_cpu.x
+                           PRIVATE -DTHRUST_DEVICE_SYSTEM=THRUST_DEVICE_SYSTEM_CPP)
 target_link_libraries(bench_cube_subdivision_cpu.x 
-                      management cpu_kernels
+                      cpu_kernels pthread
                       benchmark ${PNG_LIBRARIES})
 add_dependencies(bench_cube_subdivision_cpu.x benchmark_files)
 

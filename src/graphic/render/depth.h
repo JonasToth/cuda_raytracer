@@ -35,7 +35,7 @@ template <typename Camera>
 inline void raytrace_many_cuda(memory_surface& s, Camera c,
                                gsl::span<const triangle> triangles)
 {
-    trace_many_triangles_with_camera(s, c, triangles, triangles.size());
+    trace_many_triangles_with_camera(s, c, triangles.data(), triangles.size());
 }
 
 inline void raytrace_cuda(memory_surface& s, const triangle& t)
