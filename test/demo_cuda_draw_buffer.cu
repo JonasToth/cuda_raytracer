@@ -54,11 +54,13 @@ static void handle_keys(GLFWwindow* w)
 
 static void handle_mouse_movement()
 {
-    const auto& im = input_manager::instance();
+    auto& im = input_manager::instance();
 
     double yaw = -2. * M_PI * im.mouse_diff_x() / Width;
     double pitch = M_PI * im.mouse_diff_y() / Height;
     c.turn(yaw, pitch);
+
+    im.move_mouse(im.mouse_x(), im.mouse_y());
 }
 
 void invokeRenderingKernel(cudaSurfaceObject_t Surface, float t)
