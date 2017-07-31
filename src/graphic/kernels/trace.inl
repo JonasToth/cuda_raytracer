@@ -8,9 +8,9 @@ __global__ void trace_single_triangle(cudaSurfaceObject_t surface, const triangl
 
     if (x < width && y < height) {
         ray r;
-        r.origin = coord{0.f, 0.f, -1.f};
-        float dx = 2.f / ((float)width - 1);
-        float dy = 2.f / ((float)height - 1);
+        r.origin    = coord{0.f, 0.f, -1.f};
+        float dx    = 2.f / ((float)width - 1);
+        float dy    = 2.f / ((float)height - 1);
         r.direction = coord{x * dx - 1.f, y * dy - 1.f, focal_length};
 
         uchar4 pixel_color;
@@ -29,8 +29,8 @@ __global__ void trace_single_triangle(cudaSurfaceObject_t surface, const triangl
 
 template <typename Camera>
 __global__ void trace_many_triangles_with_camera(cudaSurfaceObject_t surface, Camera c,
-                                                 const triangle* triangles,
-                                                 int n_triangles, int width, int height)
+                                                 gsl::span<const triangle> triangles,
+                                                 int width, int height)
 {
     const auto x = blockIdx.x * blockDim.x + threadIdx.x;
     const auto y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -44,12 +44,11 @@ __global__ void trace_many_triangles_with_camera(cudaSurfaceObject_t surface, Ca
         pixel_color.z = 255;
         pixel_color.w = 255;
 
-        triangle const* nearest = nullptr;
         intersect nearest_hit;
-        const auto result_pair = calculate_intersection(r, triangles, n_triangles);
-        nearest = result_pair.first;
-        nearest_hit = result_pair.second;
-
+        triangle const* nearest = nullptr;
+        const auto result_pair  = calculate_intersection(r, triangles);
+        nearest                 = result_pair.first;
+        nearest_hit             = result_pair.second;
 
         if (nearest != nullptr) {
             pixel_color.x = nearest_hit.depth * 5.f;

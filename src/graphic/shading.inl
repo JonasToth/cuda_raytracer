@@ -26,15 +26,14 @@ ALWAYS_INLINE inline coord shading_normal(const triangle& t, coord hit,
 template <typename ShadingStyleTag, typename ShadowTag>
 color phong_shading(const phong_material* m, const float ambient_constant,
                     const coord& ray_direction, const intersect& hit,
-                    const light_source* lights, std::size_t n_lights,
-                    const triangle* triangles, std::size_t n_triangles,
-                    ShadingStyleTag sst, ShadowTag st)
+                    gsl::span<const light_source> lights,
+                    gsl::span<const triangle> triangles, ShadingStyleTag sst, ShadowTag st)
 {
     const auto N = shading_normal(*hit.face, hit.hit, sst);
     const auto V = normalize(coord(ray_direction.x, ray_direction.y, ray_direction.z));
     const auto shadow_hit = [&hit, &N]() {
         auto new_hit = hit;
-        new_hit.hit = new_hit.hit + 0.001 * N;
+        new_hit.hit  = new_hit.hit + 0.001 * N;
         return new_hit;
     }();
 
@@ -49,16 +48,17 @@ color phong_shading(const phong_material* m, const float ambient_constant,
     c.g = ambient(mg.ambient_reflection(), ambient_constant);
     c.b = ambient(mb.ambient_reflection(), ambient_constant);
 
-    for (std::size_t i = 0; i < n_lights; ++i) {
-        if (!luminated_by_light(shadow_hit, lights[i], triangles, n_triangles, st))
+    // for (std::size_t i = 0; i < n_lights; ++i) {
+    for (const auto& light : lights) {
+        if (!luminated_by_light(shadow_hit, light, triangles, st))
             continue;
 
-        const auto& lr = lights[i].light.r;
-        const auto& lg = lights[i].light.g;
-        const auto& lb = lights[i].light.b;
+        const auto& lr = light.light.r;
+        const auto& lg = light.light.g;
+        const auto& lb = light.light.b;
 
         // Vector zu Licht
-        const auto L = normalize(lights[i].position - hit.hit);
+        const auto L = normalize(light.position - hit.hit);
         // Reflectionsrichtung des Lichts
         const auto R = normalize(2 * dot(L, N) * N - L);
 
@@ -88,14 +88,14 @@ color phong_shading(const phong_material* m, const float ambient_constant,
 }
 
 inline bool luminated_by_light(const intersect& hit, const light_source& l,
-                               const triangle* triangles, std::size_t n_triangles,
+                               gsl::span<const triangle> triangles,
                                hard_shadow_tag /*unused*/)
 {
-    const auto L = normalize(l.position - hit.hit);
+    const auto L      = normalize(l.position - hit.hit);
     const auto origin = hit.hit;
 
     ray r;
-    r.origin = origin;
+    r.origin    = origin;
     r.direction = L;
 
 #if 0
@@ -106,16 +106,17 @@ inline bool luminated_by_light(const intersect& hit, const light_source& l,
 
     return false;
 #else
-    //std::clog << "Shadow Ray with Origin = " << r.origin
-              //<< " and direction = " << r.direction << " emitted." << std::endl;
+    // std::clog << "Shadow Ray with Origin = " << r.origin
+    //<< " and direction = " << r.direction << " emitted." << std::endl;
     const auto max_depth = norm(l.position - hit.hit);
-    //std::clog << "Max Depth = " << max_depth << std::endl;
-    for (std::size_t i = 0; i < n_triangles; ++i) {
+    // std::clog << "Max Depth = " << max_depth << std::endl;
+    for (std::size_t i = 0; i < triangles.size(); ++i) {
         const auto traced = r.intersects(triangles[i]);
         if (traced.first) {
-            //std::clog << "Shadow Ray did hit Triangle" << std::endl;
+            // std::clog << "Shadow Ray did hit Triangle" << std::endl;
             if (traced.second.depth < max_depth) {
-                //std::clog << "Shadow Ray got absorbed before light source" << std::endl;
+                // std::clog << "Shadow Ray got absorbed before light source" <<
+                // std::endl;
                 return false;
             }
         }

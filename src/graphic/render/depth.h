@@ -14,7 +14,7 @@ inline void raytrace_many_cuda(cudaSurfaceObject_t Surface, Camera c,
                  (c.height() + dimBlock.y) / dimBlock.y);
     black_kernel<<<dimGrid, dimBlock>>>(Surface, c.width(), c.height());
     trace_many_triangles_with_camera<<<dimGrid, dimBlock>>>(
-        Surface, c, triangles.data(), triangles.size(), c.width(), c.height());
+        Surface, c, triangles, c.width(), c.height());
     cudaDeviceSynchronize();
 }
 
@@ -35,7 +35,7 @@ template <typename Camera>
 inline void raytrace_many_cuda(memory_surface& s, Camera c,
                                gsl::span<const triangle> triangles)
 {
-    trace_many_triangles_with_camera(s, c, triangles.data(), triangles.size());
+    trace_many_triangles_with_camera(s, c, triangles);
 }
 
 inline void raytrace_cuda(memory_surface& s, const triangle& t)

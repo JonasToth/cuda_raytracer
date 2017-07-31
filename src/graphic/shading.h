@@ -51,15 +51,14 @@ CUCALL inline coord shading_normal(const triangle& t, coord hit,
 template <typename ShadingStyleTag, typename ShadowTag>
 CUCALL color phong_shading(const phong_material* m, float ambient_constant,
                            const coord& ray_direction, const intersect& hit,
-                           const light_source* lights, std::size_t n_lights,
-                           const triangle* triangles, std::size_t n_triangles,
-                           ShadingStyleTag sst, ShadowTag st);
+                           gsl::span<const light_source> lights,
+                           gsl::span<const triangle> triangles, ShadingStyleTag sst,
+                           ShadowTag st);
 
 /// Returns always true, since no shadows shall be calculated
 CUCALL ALWAYS_INLINE inline bool luminated_by_light(const intersect& /*unused*/,
                                                     const light_source& /*unused*/,
-                                                    const triangle* /*unused*/,
-                                                    std::size_t /*unused*/,
+                                                    gsl::span<const triangle> /*unused*/,
                                                     no_shadow_tag /*unused*/)
 {
     return true;
@@ -67,7 +66,7 @@ CUCALL ALWAYS_INLINE inline bool luminated_by_light(const intersect& /*unused*/,
 
 /// Test if there is a triangle between the intersection point and the light source l.
 CUCALL inline bool luminated_by_light(const intersect& hit, const light_source& l,
-                                      const triangle* triangles, std::size_t n_triangles,
+                                      gsl::span<const triangle> triangles,
                                       hard_shadow_tag /*unused*/);
 
 #include "shading.inl"

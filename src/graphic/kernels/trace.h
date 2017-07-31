@@ -14,8 +14,8 @@ __global__ void trace_single_triangle(cudaSurfaceObject_t surface, const triangl
                                       std::size_t width, std::size_t height);
 template <typename Camera>
 __global__ void trace_many_triangles_with_camera(cudaSurfaceObject_t surface, Camera c,
-                                                 const triangle* triangles,
-                                                 int n_triangles, int width, int height);
+                                                 gsl::span<const triangle> triangles,
+                                                 int width, int height);
 #include "graphic/kernels/trace.inl"
 
 #else
@@ -24,7 +24,7 @@ __global__ void trace_many_triangles_with_camera(cudaSurfaceObject_t surface, Ca
 void trace_single_triangle(memory_surface& surface, const triangle& t);
 template <typename Camera>
 void trace_many_triangles_with_camera(memory_surface& surface, Camera c,
-                                      const triangle* triangles, std::size_t n_triangles);
+                                      gsl::span<const triangle> triangles);
 
 #endif
 

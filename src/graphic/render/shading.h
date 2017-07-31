@@ -15,8 +15,7 @@ void render_flat(cudaSurfaceObject_t surface, Camera c, world_geometry::data_han
                  (c.height() + dimBlock.y) / dimBlock.y);
     black_kernel<<<dimGrid, dimBlock>>>(surface, c.width(), c.height());
     trace_triangles_shaded<<<dimGrid, dimBlock>>>(
-        surface, c, dh.triangles.data(), dh.triangles.size(), dh.lights.data(),
-        dh.lights.size(), flat_shading_tag{}, ShadowTag{});
+        surface, c, dh.triangles, dh.lights, flat_shading_tag{}, ShadowTag{});
     cudaDeviceSynchronize();
 }
 template <typename ShadowTag, typename Camera>
@@ -27,8 +26,7 @@ void render_smooth(cudaSurfaceObject_t surface, Camera c, world_geometry::data_h
                  (c.height() + dimBlock.y) / dimBlock.y);
     black_kernel<<<dimGrid, dimBlock>>>(surface, c.width(), c.height());
     trace_triangles_shaded<<<dimGrid, dimBlock>>>(
-        surface, c, dh.triangles.data(), dh.triangles.size(), dh.lights.data(),
-        dh.lights.size(), smooth_shading_tag{}, ShadowTag{});
+        surface, c, dh.triangles, dh.lights, smooth_shading_tag{}, ShadowTag{});
     cudaDeviceSynchronize();
 }
 

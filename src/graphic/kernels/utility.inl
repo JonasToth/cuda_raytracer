@@ -24,12 +24,10 @@ __global__ void stupid_colors(cudaSurfaceObject_t surface, int width, int height
     if (x < width && y < height) {
         uchar4 color;
         char new_t = t;
-        color.x = x - new_t;
-        color.y = y + new_t;
-        color.z = new_t;
-        color.w = 255;
+        color.x    = x - new_t;
+        color.y    = y + new_t;
+        color.z    = new_t;
+        color.w    = 255;
         surf2Dwrite(color, surface, x * sizeof(color), y);
     }
 }
-
-

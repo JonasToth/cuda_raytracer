@@ -32,8 +32,8 @@ CUCALL inline float clamp(float lowest, float value, float highest)
 
 template <typename Camera, typename ShadingStyleTag, typename ShadowTag>
 __global__ void trace_triangles_shaded(cudaSurfaceObject_t surface, Camera c,
-                                       const triangle* triangles, std::size_t n_triangles,
-                                       const light_source* lights, std::size_t n_lights,
+                                       gsl::span<const triangle> triangles,
+                                       gsl::span<const light_source> lights,
                                        ShadingStyleTag sst, ShadowTag st);
 #include "graphic/kernels/shaded.inl"
 

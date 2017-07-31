@@ -4,15 +4,15 @@
 void trace_single_triangle(memory_surface& surface, const triangle& t)
 {
     const float focal_length = 1.f;
-    const auto width = surface.width();
-    const auto height = surface.height();
+    const auto width         = surface.width();
+    const auto height        = surface.height();
 
     PIXEL_LOOP(surface)
     {
         ray r;
-        r.origin = coord{0.f, 0.f, -1.f};
-        float dx = 2.f / ((float)width - 1);
-        float dy = 2.f / ((float)height - 1);
+        r.origin    = coord{0.f, 0.f, -1.f};
+        float dx    = 2.f / ((float)width - 1);
+        float dy    = 2.f / ((float)height - 1);
         r.direction = coord{x * dx - 1.f, y * dy - 1.f, focal_length};
 
         pixel_rgba pixel_color;
@@ -31,7 +31,7 @@ void trace_single_triangle(memory_surface& surface, const triangle& t)
 
 template <typename Camera>
 void trace_many_triangles_with_camera(memory_surface& surface, Camera c,
-                                      const triangle* triangles, std::size_t n_triangles)
+                                      gsl::span<const triangle> triangles)
 {
     PIXEL_LOOP(surface)
     {
@@ -45,9 +45,9 @@ void trace_many_triangles_with_camera(memory_surface& surface, Camera c,
 
         triangle const* nearest = nullptr;
         intersect nearest_hit;
-        const auto result_pair = calculate_intersection(r, triangles, n_triangles);
-        nearest = result_pair.first;
-        nearest_hit = result_pair.second;
+        const auto result_pair = calculate_intersection(r, triangles);
+        nearest                = result_pair.first;
+        nearest_hit            = result_pair.second;
 
         if (nearest != nullptr) {
             pixel_color.r = nearest_hit.depth * 5.f;

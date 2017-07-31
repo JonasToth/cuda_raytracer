@@ -24,10 +24,10 @@ TEST(shading, diffuse_coeff)
     const coord RealDirection1(normalize(coord(10.0f, 20.0f, -4.0f)));
     const coord RealDirection2(normalize(coord(2.0f, 1.0f, -6.0f)));
 
-    const float MatNone = 0.0f;
+    const float MatNone   = 0.0f;
     const float LightNone = 0.0f;
 
-    const float MatGud = 0.5f;
+    const float MatGud   = 0.5f;
     const float LightGud = 1.6f;
 
     const float dot_product = dot(RealDirection1, RealDirection2);
@@ -64,14 +64,14 @@ TEST(shading, specular_coeff)
     const coord RealDirection1(normalize(coord(10.0f, 20.0f, -4.0f)));
     const coord RealDirection2(normalize(coord(2.0f, 1.0f, -6.0f)));
 
-    const float MatNone = 0.0f;
+    const float MatNone   = 0.0f;
     const float LightNone = 0.0f;
 
-    const float MatGud = 0.5f;
+    const float MatGud   = 0.5f;
     const float LightGud = 1.6f;
 
     const float ShineNone = 0.0f;
-    const float ShineGud = 2.0f;
+    const float ShineGud  = 2.0f;
 
     // playing with material coefficients
     float dot_product = dot(RealDirection1, RealDirection2);
@@ -117,8 +117,8 @@ TEST(shading, complex_shade_one_channel)
 
     for (float x_dir = 2.0f; x_dir > 0.0f; x_dir -= 0.5f) {
         const auto lv =
-            phong_shading(&m, 0.1, normalize(coord(x_dir, 0.0f, -1.0f)), hit, &ls, 1ul,
-                          &T, 1ul, flat_shading_tag{}, no_shadow_tag{});
+            phong_shading(&m, 0.1, normalize(coord(x_dir, 0.0f, -1.0f)), hit, {&ls, 1ul},
+                          {&T, 1ul}, flat_shading_tag{}, no_shadow_tag{});
         EXPECT_GT(lv.r, 0.0f) << "Light must be there";
         EXPECT_GT(lv.g, 0.0f) << "Light must be there";
         EXPECT_GT(lv.b, 0.0f) << "Light must be there";
@@ -168,16 +168,16 @@ TEST(shading, complex_with_shadow)
 
     // no shadow point
     const auto no_shadow_color =
-        phong_shading(&m, 0.0, rays[0].direction, rays[0].intersects(T[1]).second, L, 2ul,
-                      T, 2ul, flat_shading_tag{}, hard_shadow_tag{});
+        phong_shading(&m, 0.0, rays[0].direction, rays[0].intersects(T[1]).second,
+                      {L, 2ul}, {T, 2ul}, flat_shading_tag{}, hard_shadow_tag{});
 
     const auto half_shadow_color =
-        phong_shading(&m, 0.0, rays[1].direction, rays[1].intersects(T[1]).second, L, 2ul,
-                      T, 2ul, flat_shading_tag{}, hard_shadow_tag{});
+        phong_shading(&m, 0.0, rays[1].direction, rays[1].intersects(T[1]).second,
+                      {L, 2ul}, {T, 2ul}, flat_shading_tag{}, hard_shadow_tag{});
 
     const auto full_shadow_color =
-        phong_shading(&m, 0.0, rays[2].direction, rays[2].intersects(T[1]).second, L, 2ul,
-                      T, 2ul, flat_shading_tag{}, hard_shadow_tag{});
+        phong_shading(&m, 0.0, rays[2].direction, rays[2].intersects(T[1]).second,
+                      {L, 2ul}, {T, 2ul}, flat_shading_tag{}, hard_shadow_tag{});
 
     EXPECT_GT(no_shadow_color.r, half_shadow_color.r)
         << "No shadow need higher intensity";
